@@ -94,7 +94,7 @@ def _run_process(args: List, exit_on_error=False, timeout=None, **kwargs) -> int
             sys.exit(returncode)
     return returncode
 
-
+    
 def discover_kit_files(target_directory: Path) -> List:
     if not target_directory.is_dir():
         return []

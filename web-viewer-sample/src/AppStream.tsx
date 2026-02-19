@@ -132,7 +132,7 @@ export default class AppStream extends Component<AppStreamProps, AppStreamState>
             }
 
             else {
-                console.error(`Unknown stream source: ${StreamConfig.source}`);
+                console.error({ message:  StreamConfig});
                 return
             }
 

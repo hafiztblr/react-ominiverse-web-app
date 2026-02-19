@@ -1,0 +1,23 @@
+{
+    "/World/Sphere": {
+        "status": "Operational",
+        "temperature": "42.5°C",
+        "lastMaintenance": "2024-02-10",
+        "energyUsage": "0.8 kWh",
+        "load": "Low"
+    },
+    "/World/Cube": {
+        "status": "Warning",
+        "temperature": "65.2°C",
+        "lastMaintenance": "2023-11-20",
+        "energyUsage": "2.4 kWh",
+        "load": "High"
+    },
+    "/World/Cone": {
+        "status": "Offline",
+        "temperature": "18.0°C",
+        "lastMaintenance": "2024-01-05",
+        "energyUsage": "0.0 kWh",
+        "load": "None"
+    }
+}

@@ -9,12 +9,13 @@
  * without an express license agreement from NVIDIA CORPORATION or
  * its affiliates is strictly prohibited.
  */
- 
+
 /* For the loading indicator */
 @keyframes rotation {
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
@@ -22,11 +23,10 @@
 
 video#remote-video {
     width: 100%;
-    height: auto;
-    max-height: 100%;
-    object-fit: contain;
-    object-position: left top;
-    background-color: transparent;
+    height: 100%;
+    object-fit: cover;
+    /* Ensures focus/selection remains accurate by filling the element */
+    background-color: #000;
 }
 
 .header-bar {
@@ -42,7 +42,8 @@ video#remote-video {
 }
 
 .header-logo {
-    height: 32px; /* Adjust based on your logo's aspect ratio */
+    height: 32px;
+    /* Adjust based on your logo's aspect ratio */
     margin-right: 10px;
 }
 
@@ -59,7 +60,8 @@ video#remote-video {
     padding-top: 25px;
     width: 100%;
     background-color: rgba(255, 255, 255);
-    color: #76b900; /* NVIDIA green */
+    color: #76b900;
+    /* NVIDIA green */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -69,27 +71,36 @@ video#remote-video {
 
 .nvidia-button {
     font-size: 14px;
-    margin-top: 6px; /* Space above the button */
-    padding: 4px 8px; /* Padding inside the button */
-    background-color: #76b900; /* NVIDIA green */
-    color: white; /* Text color */
+    margin-top: 6px;
+    /* Space above the button */
+    padding: 4px 8px;
+    /* Padding inside the button */
+    background-color: #76b900;
+    /* NVIDIA green */
+    color: white;
+    /* Text color */
     border: solid;
     border-color: #76b900;
     border-width: 2px;
-    cursor: pointer; /* Pointer cursor on hover */
+    cursor: pointer;
+    /* Pointer cursor on hover */
 }
 
 .nvidia-button:hover {
-    background-color: #ffffff; /* Darker green on hover */
+    background-color: #ffffff;
+    /* Darker green on hover */
     color: black;
     border-color: #76b900;
 }
 
 .nvidia-dropdown {
     width: 100%;
-    background-color: #76b900; /* NVIDIA green */
-    color: #ffffff; /* White text */
-    font-size: 16px; /* Adjust font size as needed */
+    background-color: #76b900;
+    /* NVIDIA green */
+    color: #ffffff;
+    /* White text */
+    font-size: 16px;
+    /* Adjust font size as needed */
     border: none;
     height: 35px;
     border-radius: 6px;
@@ -100,23 +111,31 @@ video#remote-video {
 }
 
 .nvidia-dropdown-option {
-    background-color: #FEFEFE; /* Light background for options */
-    color: #000000; /* Dark text for options */
+    background-color: #FEFEFE;
+    /* Light background for options */
+    color: #000000;
+    /* Dark text for options */
 }
 
 .form-check-input:checked {
-    background-color: #76b900; /* NVIDIA green */
-    border-color: #76b900; /* NVIDIA green */
-  }
-  
-.form-check-input:focus, .form-check-input:focus-visible {
-    outline: none; /* Remove the default outline */
-    box-shadow: 0 0 0 0.2rem rgba(118, 185, 0, 0.5); /* Custom green focus shadow */
-  }
+    background-color: #76b900;
+    /* NVIDIA green */
+    border-color: #76b900;
+    /* NVIDIA green */
+}
+
+.form-check-input:focus,
+.form-check-input:focus-visible {
+    outline: none;
+    /* Remove the default outline */
+    box-shadow: 0 0 0 0.2rem rgba(118, 185, 0, 0.5);
+    /* Custom green focus shadow */
+}
 
 .form-control:focus {
     outline: none;
-    box-shadow: 0 0 0 0.25rem rgba(118, 185, 0, 0.5); /* Custom green focus */
+    box-shadow: 0 0 0 0.25rem rgba(118, 185, 0, 0.5);
+    /* Custom green focus */
     border-color: #76b900;
 }
 
@@ -127,4 +146,136 @@ video#remote-video {
     max-width: 100% !important;
     object-fit: contain !important;
     object-position: left top !important;
+}
+
+/* Immersive UI Overlay - Glassmorphism */
+.immersive-overlay {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    width: 320px;
+    max-height: calc(100% - 40px);
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow-y: auto;
+    padding-right: 10px;
+    /* Space for scrollbar */
+}
+
+/* Custom Scrollbar for Overlay */
+.immersive-overlay::-webkit-scrollbar {
+    width: 4px;
+}
+
+.immersive-overlay::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.immersive-overlay::-webkit-scrollbar-thumb {
+    background: rgba(118, 185, 0, 0.3);
+    border-radius: 10px;
+}
+
+.immersive-overlay>* {
+    pointer-events: auto;
+    background: rgba(0, 0, 0, 0.4);
+    /* Darker for better contrast */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    color: white;
+    flex-shrink: 0;
+    /* Prevent squashing */
+}
+
+/* Override existing component backgrounds to be transparent within overlay */
+.usdAssetContainer,
+.usdStageContainer,
+.usdPropertiesContainer {
+    background: transparent !important;
+    border: none !important;
+}
+
+.usdStageHeader,
+.usdAssetHeader,
+.usdPropertiesHeader {
+    color: #76b900 !important;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 5px !important;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.property-item {
+    padding: 5px 0;
+}
+
+.property-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+}
+
+.property-value {
+    font-size: 14px;
+    color: white;
+}
+
+.property-section-header {
+    margin-top: 15px;
+    font-size: 11px;
+    color: #76b900;
+    border-bottom: 1px solid rgba(118, 185, 0, 0.2);
+    padding-bottom: 2px;
+    margin-bottom: 8px;
+}
+
+.transform-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.transform-row {
+    display: grid;
+    grid-template-columns: 20px 1fr 1fr 1fr;
+    gap: 5px;
+    font-size: 12px;
+}
+
+.transform-row span:first-child {
+    color: #76b900;
+    font-weight: bold;
+}
+
+.transform-row span:not(:first-child) {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 2px 4px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.list-item {
+    color: rgba(255, 255, 255, 0.8) !important;
+    transition: all 0.2s ease;
+}
+
+.list-item:hover {
+    background: rgba(118, 185, 0, 0.2) !important;
+    color: white !important;
+}
+
+.list-item.selected {
+    background: rgba(118, 185, 0, 0.3) !important;
+    color: white !important;
+    border-left: 3px solid #76b900;
 }
