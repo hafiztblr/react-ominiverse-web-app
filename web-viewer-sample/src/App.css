@@ -52,21 +52,52 @@ video#remote-video {
     font-weight: bold;
 }
 
-.loading-indicator-label {
-    margin-top: 50px;
-    padding-bottom: 25px;
-    padding-left: 50px;
-    padding-right: 50px;
-    padding-top: 25px;
-    width: 100%;
-    background-color: rgba(255, 255, 255);
-    color: #76b900;
-    /* NVIDIA green */
+.loading-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 30px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
     align-items: center;
-    font-weight: bold;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+}
+
+.progress-percentage {
+    font-size: 48px;
+    font-weight: 800;
+    color: #76b900;
+    margin-bottom: 10px;
+    font-family: 'Inter', sans-serif;
+}
+
+.loading-text {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #76b900, #b2ff59);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nvidia-button {
@@ -278,4 +309,134 @@ video#remote-video {
     background: rgba(118, 185, 0, 0.3) !important;
     color: white !important;
     border-left: 3px solid #76b900;
+}
+
+/* Unified Dashboard Layout */
+.dashboard-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
+
+/* SVG Sidebar */
+.svg-sidebar {
+    width: 320px;
+    height: 100%;
+    background: rgba(18, 18, 18, 0.8);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 5;
+}
+
+.sidebar-header {
+    margin-bottom: 30px;
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.sidebar-logo h2 {
+    font-size: 1.2rem;
+    margin: 0;
+    color: #fff;
+    font-weight: 700;
+}
+
+.sidebar-header p {
+    font-size: 0.8rem;
+    color: #888;
+    margin: 0;
+}
+
+.sidebar-svg-container {
+    flex-grow: 1;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-footer {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.status-badge-mini {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.7rem;
+    color: #76b900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    background: #76b900;
+    border-radius: 50%;
+}
+
+/* Interactive SVG Styles */
+.interactive-group {
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.interactive-group:hover,
+.interactive-group.selected {
+    transform: translateY(-5px);
+}
+
+.svg-item {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    stroke: transparent;
+}
+
+.interactive-group:hover .svg-item {
+    filter: drop-shadow(0 0 10px rgba(118, 185, 0, 0.5));
+}
+
+.interactive-group.selected .svg-item {
+    filter: drop-shadow(0 0 15px rgba(118, 185, 0, 0.8));
+    stroke: #76B900 !important;
+    stroke-width: 3px !important;
+    stroke-dasharray: 4;
+    animation: dash-pulse-sidebar 1.5s linear infinite;
+}
+
+.interactive-group.selected text {
+    fill: #76B900;
+    font-weight: bold;
+}
+
+@keyframes dash-pulse-sidebar {
+    from {
+        stroke-dashoffset: 20;
+    }
+
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* Main Content Area */
+.main-viewer-content {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
 }

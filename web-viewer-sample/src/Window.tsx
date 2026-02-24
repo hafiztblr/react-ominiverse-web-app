@@ -11,12 +11,14 @@
  */
 import React from 'react';
 import './App.css';
-import AppStream from './AppStream'; // Ensure .tsx extension if needed
+import AppStream from './AppStream';
 import StreamConfig from '../stream.config.json';
 import USDAsset from "./USDAsset";
 import USDStage from "./USDStage";
 import USDProperties from "./USDProperties";
 import { headerHeight } from './App';
+import entityMapping from './assets/entity_mapping.json';
+import SVGSelectionPanel from './svg/SVGSelectionPanel';
 
 
 interface USDAssetType {
@@ -51,6 +53,10 @@ interface AppState {
     showUI: boolean;
     isLoading: boolean;
     loadingText: string;
+    pendingFocusId: string | null;
+    progress: number;
+    displayProgress: number;
+    selectedSVGId: string | null;
 }
 
 interface AppStreamMessageType {
@@ -61,6 +67,7 @@ interface AppStreamMessageType {
 export default class App extends React.Component<AppProps, AppState> {
 
     private usdStageRef = React.createRef<USDStage>();
+    private _progressInterval: any = null;
     // private _streamConfig: StreamConfigType = getConfig();
 
     constructor(props: AppProps) {
@@ -86,7 +93,70 @@ export default class App extends React.Component<AppProps, AppState> {
             showStream: false,
             showUI: false,
             loadingText: StreamConfig.source === "gfn" ? "Log in to GeForce NOW to view stream" : (StreamConfig.source === "stream" ? "Waiting for stream to initialize" : "Waiting for stream to begin"),
-            isLoading: StreamConfig.source === "stream" ? true : false
+            isLoading: true,
+            pendingFocusId: new URLSearchParams(window.location.search).get('focus'),
+            progress: 0,
+            displayProgress: 0,
+            selectedSVGId: null
+        }
+    }
+
+    componentDidMount() {
+        console.info("Window component mounted.");
+        // Start simulation immediately if stream isn't shown yet
+        if (!this.state.showStream) {
+            console.info("Starting robust progress simulation...");
+            this._startProgressSimulation();
+        }
+    }
+
+    componentWillUnmount() {
+        this._stopProgressSimulation();
+    }
+
+    private _handleSVGSelect = (id: string) => {
+        console.log(`DASHBOARD: 2D Selection triggered for ID: ${id}`);
+        this.setState({ selectedSVGId: id });
+
+        const mapping: { [key: string]: string } = entityMapping;
+        const usdPath = mapping[id];
+
+        if (usdPath) {
+            // Instant feedback: Hide any old loaders and move camera
+            this._stopProgressSimulation();
+            this._selectAndFrame(usdPath);
+        }
+    }
+
+    private _startProgressSimulation() {
+        this._stopProgressSimulation(); // Clear any existing
+        this.setState({ displayProgress: 0, progress: 0 });
+
+        this._progressInterval = setInterval(() => {
+            if (this.state.showStream) {
+                console.log("Stream ready, stopping simulation.");
+                this._stopProgressSimulation();
+                return;
+            }
+            this.setState(prevState => {
+                const { progress, displayProgress } = prevState;
+                // If real progress is ahead, jump to it
+                if (progress > displayProgress) {
+                    return { displayProgress: progress };
+                }
+                // Slow down as we reach the end if no real progress
+                const increment = displayProgress < 90 ? 0.8 : 0.1;
+                const nextProgress = Math.min(99, displayProgress + increment);
+                console.log(`Simulating progress: ${nextProgress.toFixed(1)}%`);
+                return { displayProgress: Number(nextProgress.toFixed(1)) };
+            });
+        }, 200); // Update every 200ms to be less intensive
+    }
+
+    private _stopProgressSimulation() {
+        if (this._progressInterval) {
+            clearInterval(this._progressInterval);
+            this._progressInterval = null;
         }
     }
 
@@ -127,7 +197,58 @@ export default class App extends React.Component<AppProps, AppState> {
 
         console.info("polling Kit availability")
         this._queryLoadingState()
+
+        // After polling, check if we need to focus an object from the URL
+        this._checkInitialFocus();
+
         setTimeout(() => this._pollForKitReady(), 3000); // Poll every 3 seconds
+    }
+
+    private _checkInitialFocus(): void {
+        const focusId = this.state.pendingFocusId;
+        if (focusId && this.state.isKitReady) {
+            const mapping: { [key: string]: string } = entityMapping;
+            const usdPath = mapping[focusId];
+            if (usdPath) {
+                console.log(`Checking if we can focus on: ${usdPath}`);
+                // Only execute if we have enough info or wait for children
+                this._selectAndFrame(usdPath);
+            }
+        }
+    }
+
+    private _selectAndFrame(path: string): void {
+        console.log(`Executing focus/frame for: ${path}`);
+
+        // 1. Select the prim in Kit
+        const selectMessage: AppStreamMessageType = {
+            event_type: "selectPrimsRequest",
+            payload: {
+                paths: [path]
+            }
+        };
+        AppStream.sendMessage(JSON.stringify(selectMessage));
+
+        // 2. Update local UI state
+        // Try to find the prim in our tree, or create a skeleton so the property panel updates
+        let usdPrim = this._findUSDPrimByPath(path);
+        if (!usdPrim) {
+            console.warn(`Prim ${path} not found in UI tree, creating skeleton for details panel.`);
+            const name = path.split('/').pop() || path;
+            usdPrim = { name, path };
+        }
+
+        this.setState({ selectedUSDPrims: new Set([usdPrim]) });
+
+        // 3. Frame the prim (Focus) - slightly delayed to allow selection to register
+        setTimeout(() => {
+            console.log(`Sending frameSelection for: ${path}`);
+            const frameMessage: AppStreamMessageType = {
+                event_type: "frameSelection",
+                payload: {}
+            };
+            AppStream.sendMessage(JSON.stringify(frameMessage));
+        }, 1000); // 1s delay for better Kit stability
     }
 
     /**
@@ -169,6 +290,7 @@ export default class App extends React.Component<AppProps, AppState> {
     * Send a request to load an asset based on the currently selected asset
     */
     private _openSelectedAsset(): void {
+        this._startProgressSimulation();
         this.setState({ loadingText: "Loading Asset...", showStream: false, isLoading: true })
         this.setState({ usdPrims: [], selectedUSDPrims: new Set<USDPrimType>() });
         this.usdStageRef.current?.resetExpandedIds();
@@ -362,15 +484,18 @@ export default class App extends React.Component<AppProps, AppState> {
 
                 // show stream and populate children if the stage is valid and it's done loading
                 if (isStageValid && event.payload.loading_state === "idle") {
+                    this._stopProgressSimulation();
+                    this.setState({ displayProgress: 100, showStream: true, loadingText: "Asset loaded", showUI: true, isLoading: false })
                     this._getChildren()
-                    this.setState({ showStream: true, loadingText: "Asset loaded", showUI: true, isLoading: false })
                 }
             }
         }
 
         // Loading progress amount notification.
         else if (event.event_type === "updateProgressAmount") {
-            console.log('Kit App communicates progress amount.');
+            const progress = Math.round(event.payload.amount * 100);
+            console.log(`Kit App communicates progress: ${progress}%`);
+            this.setState({ progress });
         }
 
         // Loading activity notification.
@@ -415,6 +540,21 @@ export default class App extends React.Component<AppProps, AppState> {
             if (Array.isArray(children)) {
                 this._makePickable(children);
             }
+
+            // Check if we have a pending focus that matches one of these children
+            if (this.state.pendingFocusId) {
+                const mapping: { [key: string]: string } = entityMapping;
+                const targetPath = mapping[this.state.pendingFocusId];
+                if (targetPath) {
+                    const foundInThisBatch = children?.some((c: any) => c.path === targetPath) ||
+                        this._findUSDPrimByPath(targetPath);
+                    if (foundInThisBatch) {
+                        console.log(`Target path ${targetPath} found. Executing focus.`);
+                        this._selectAndFrame(targetPath);
+                        this.setState({ pendingFocusId: null }); // Clear once handled
+                    }
+                }
+            }
         }
         // other messages from app to kit
         else if (event.messageRecipient === "kit") {
@@ -444,6 +584,7 @@ export default class App extends React.Component<AppProps, AppState> {
     render() {
         return (
             <div
+                className="dashboard-container"
                 style={{
                     position: 'absolute',
                     top: headerHeight,
@@ -452,68 +593,83 @@ export default class App extends React.Component<AppProps, AppState> {
                     overflow: 'hidden'
                 }}
             >
-                {/* Full-Screen Streamed app */}
-                <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    zIndex: 1
-                }}>
-                    {!this.state.showStream &&
-                        <div className="loading-indicator-label">
-                            {this.state.loadingText}
-                            <div className="spinner-border" role="status" style={{ marginTop: 10, visibility: this.state.isLoading ? 'visible' : 'hidden' }} />
-                        </div>
-                    }
+                {/* Left Sidebar: 2D SVG Selection */}
+                <SVGSelectionPanel
+                    onSelect={this._handleSVGSelect}
+                    selectedId={this.state.selectedSVGId}
+                />
 
-                    <AppStream
-                        sessionId={this.props.sessionId}
-                        backendUrl={this.props.backendUrl}
-                        signalingserver={this.props.signalingserver}
-                        signalingport={this.props.signalingport}
-                        mediaserver={this.props.mediaserver}
-                        mediaport={this.props.mediaport}
-                        accessToken={this.props.accessToken}
-                        onStarted={() => this._onStreamStarted()}
-                        onFocus={() => this._handleAppStreamFocus()}
-                        onBlur={() => this._handleAppStreamBlur()}
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            visibility: this.state.showStream ? 'visible' : 'hidden'
-                        }}
-                        onLoggedIn={(userId) => this._onLoggedIn(userId)}
-                        handleCustomEvent={(event) => this._handleCustomEvent(event)}
-                        onStreamFailed={this.props.onStreamFailed}
-                    />
-                </div>
+                {/* Right Side: Main Viewer Content */}
+                <div className="main-viewer-content">
+                    {/* Full-Screen Streamed app */}
+                    <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        zIndex: 1
+                    }}>
+                        {!this.state.showStream &&
+                            <div className="loading-container">
+                                <div className="progress-percentage">{Math.floor(this.state.displayProgress)}%</div>
+                                <div className="loading-text">{this.state.loadingText}</div>
+                                <div className="progress-bar-container">
+                                    <div
+                                        className="progress-bar-fill"
+                                        style={{ width: `${this.state.displayProgress}%` }}
+                                    />
+                                </div>
+                            </div>
+                        }
 
-                {/* Floating Immersive Overlay */}
-                {this.state.showUI &&
-                    <div className="immersive-overlay">
-                        <USDAsset
-                            usdAssets={this.state.usdAssets}
-                            selectedAssetUrl={this.state.selectedUSDAsset?.url}
-                            onSelectUSDAsset={(value) => this._onSelectUSDAsset(value)}
-                            width={300}
-                        />
-                        <USDStage
-                            ref={this.usdStageRef}
-                            width={300}
-                            usdPrims={this.state.usdPrims}
-                            onSelectUSDPrims={(value) => this._onSelectUSDPrims(value)}
-                            selectedUSDPrims={this.state.selectedUSDPrims}
-                            fillUSDPrim={(value) => this._onFillUSDPrim(value)}
-                            onReset={() => this._onStageReset()}
-                        />
-                        <USDProperties
-                            width={300}
-                            selectedUSDPrims={this.state.selectedUSDPrims}
+                        <AppStream
+                            sessionId={this.props.sessionId}
+                            backendUrl={this.props.backendUrl}
+                            signalingserver={this.props.signalingserver}
+                            signalingport={this.props.signalingport}
+                            mediaserver={this.props.mediaserver}
+                            mediaport={this.props.mediaport}
+                            accessToken={this.props.accessToken}
+                            onStarted={() => this._onStreamStarted()}
+                            onFocus={() => this._handleAppStreamFocus()}
+                            onBlur={() => this._handleAppStreamBlur()}
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                visibility: this.state.showStream ? 'visible' : 'hidden'
+                            }}
+                            onLoggedIn={(userId) => this._onLoggedIn(userId)}
+                            handleCustomEvent={(event) => this._handleCustomEvent(event)}
+                            onStreamFailed={this.props.onStreamFailed}
                         />
                     </div>
-                }
+
+                    {/* Floating Immersive Overlay (Now relative to viewer only) */}
+                    {this.state.showUI &&
+                        <div className="immersive-overlay">
+                            <USDAsset
+                                usdAssets={this.state.usdAssets}
+                                selectedAssetUrl={this.state.selectedUSDAsset?.url}
+                                onSelectUSDAsset={(value) => this._onSelectUSDAsset(value)}
+                                width={300}
+                            />
+                            <USDStage
+                                ref={this.usdStageRef}
+                                width={300}
+                                usdPrims={this.state.usdPrims}
+                                onSelectUSDPrims={(value) => this._onSelectUSDPrims(value)}
+                                selectedUSDPrims={this.state.selectedUSDPrims}
+                                fillUSDPrim={(value) => this._onFillUSDPrim(value)}
+                                onReset={() => this._onStageReset()}
+                            />
+                            <USDProperties
+                                width={300}
+                                selectedUSDPrims={this.state.selectedUSDPrims}
+                            />
+                        </div>
+                    }
+                </div>
             </div>
         );
     }

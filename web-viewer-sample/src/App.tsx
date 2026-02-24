@@ -52,7 +52,7 @@ export enum Forms {
 
 interface AppState {
     currentForm: Forms,
-    useWebUI: boolean 
+    useWebUI: boolean
     streamServer: string,
     appServer: string,
     applications: Application[];
@@ -72,11 +72,11 @@ interface AppState {
     sessionId: string;
 }
 
-class App extends Component<{}, AppState>{
+class App extends Component<{}, AppState> {
     constructor(props: {}) {
         super(props);
         this.state = {
-            currentForm: Forms.AppOnly,
+            currentForm: StreamConfig.source === "stream" ? Forms.StreamURLs : Forms.Stream,
             useWebUI: true,
             streamServer: StreamConfig.stream.streamServer,
             appServer: StreamConfig.stream.appServer,
@@ -105,7 +105,7 @@ class App extends Component<{}, AppState>{
     */
     private _resetState() {
         this.setState({
-            currentForm: Forms.AppOnly,
+            currentForm: StreamConfig.source === "stream" ? Forms.StreamURLs : Forms.Stream,
             useWebUI: true,
             streamServer: StreamConfig.stream.streamServer,
             appServer: StreamConfig.stream.appServer,
@@ -144,7 +144,7 @@ class App extends Component<{}, AppState>{
             }
             else {
                 setTimeout(() => this.pollForSessionReady(sessionId), 10000);
-                console.log( `Waiting for session ${sessionId} to be ready... Last checked at ${new Date().toLocaleTimeString()}`)
+                console.log(`Waiting for session ${sessionId} to be ready... Last checked at ${new Date().toLocaleTimeString()}`)
             }
         } catch (error) {
             console.error('Error polling session info:', error);
@@ -159,18 +159,18 @@ class App extends Component<{}, AppState>{
      * @param profile - The profile of the Kit application
      * @returns 
      */
-   async _startStream(appId: string, version: string, profile: string) {
-        this.setState({ currentForm: Forms.IDLE, selectedApplicationProfile: profile})
+    async _startStream(appId: string, version: string, profile: string) {
+        this.setState({ currentForm: Forms.IDLE, selectedApplicationProfile: profile })
         console.log(`Creating Session for ${appId} ${version}. Errors are expected as the stream updates.`);
         this.setState({ connectionText: "Attempting to create streaming session..." })
         const createdStreamResponse = await createStreamingSession(this.state.streamServer, appId, version, profile);
         if (createdStreamResponse.status > 400) {
-                console.log(`Failed to create a new streaming session for ${appId} ${version}. Error code ${createdStreamResponse.status}`);
-                alert(`Failed to create a new streaming session for ${appId} ${version}. Error code ${createdStreamResponse.status}`)
-                this._resetState()
-                return;
-            }
-        
+            console.log(`Failed to create a new streaming session for ${appId} ${version}. Error code ${createdStreamResponse.status}`);
+            alert(`Failed to create a new streaming session for ${appId} ${version}. Error code ${createdStreamResponse.status}`)
+            this._resetState()
+            return;
+        }
+
         this.setState({ sessionId: (createdStreamResponse.data as StreamItem).id, streamStatus: StreamStatus.INITIALIZING, connectionText: "Attempting to load stream..." })
         if (createdStreamResponse.status === 202) {
             this.pollForSessionReady((createdStreamResponse.data as StreamItem).id);
@@ -179,7 +179,7 @@ class App extends Component<{}, AppState>{
 
         this.setupStream((createdStreamResponse.data as StreamItem));
     }
-        
+
     /**
      * Sets up the stream with the created stream data
      * 
@@ -187,19 +187,19 @@ class App extends Component<{}, AppState>{
      */
     setupStream(createdStream: StreamItem) {
         console.info("createdStream", createdStream);
-        
+
         const sessionId = createdStream.id;
         const serverIP = Object.keys(createdStream.routes)[0];
         const routeData = createdStream.routes[serverIP].routes;
 
         const signalingData = routeData.find((item: any) => item.description === 'signaling');
         const mediaData = routeData.find((item: any) => item.description === 'media');
-    
+
         if (!signalingData || !mediaData) {
             console.error('Signaling or media data is missing');
             return;
         }
-                    
+
         this.setState({
             backendUrl: `${this.state.streamServer}/streaming/stream`,
             signalingserver: serverIP,
@@ -212,7 +212,7 @@ class App extends Component<{}, AppState>{
             streamStatus: StreamStatus.INITIALIZED
         });
     }
-    
+
     /**
      * Button press for ending stream
     */
@@ -236,7 +236,7 @@ class App extends Component<{}, AppState>{
         if (response.status !== 200) {
             return;
         }
-        
+
         const destroyResponse = await destroyStreamingSession(this.state.streamServer, sessionId);
         if ('detail' in destroyResponse) {
             alert(destroyResponse.detail);
@@ -245,125 +245,125 @@ class App extends Component<{}, AppState>{
 
         console.info(`Streaming Session ${sessionId} Destroyed`);
     }
-            
+
     render() {
 
         return (
             <div
-            style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%'
-            }}
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%'
+                }}
             >
 
-            {/* Header */}
-            <div className="header-bar">
-                <img src={LogoImage} alt="Logo" className="header-logo" />
+                {/* Header */}
+                <div className="header-bar">
+                    <img src={LogoImage} alt="Logo" className="header-logo" />
                     <span className="header-title">Omniverse Embedded Web Viewer Example</span>
                 </div>
 
-            { /* End Stream button */}
-            {StreamConfig.source === "stream" &&
-                <button className="nvidia-button"
-                onClick={() => this._resetStream()}
-                style={{ position: "absolute", right: "15px", top:"8px", width: "250px", visibility: this.state.streamStatus === StreamStatus.INITIALIZING || this.state.streamStatus === StreamStatus.INITIALIZED? "visible": "hidden" }}
-                >
-                End Stream
-                </button>
-            }
-            
-            { /* Idle Form */}
-            {this.state.currentForm === Forms.IDLE &&
-                <div>
-                    <div className="loading-indicator-label">
-                        {this.state.connectionText}          
-                        <div className="spinner-border" role="status" style={{ marginTop: 10, visibility: this.state.streamStatus === (StreamStatus.INITIALIZING) ? 'visible': 'hidden'}} />
+                { /* End Stream button */}
+                {StreamConfig.source === "stream" &&
+                    <button className="nvidia-button"
+                        onClick={() => this._resetStream()}
+                        style={{ position: "absolute", right: "15px", top: "8px", width: "250px", visibility: this.state.streamStatus === StreamStatus.INITIALIZING || this.state.streamStatus === StreamStatus.INITIALIZED ? "visible" : "hidden" }}
+                    >
+                        End Stream
+                    </button>
+                }
+
+                { /* Idle Form */}
+                {this.state.currentForm === Forms.IDLE &&
+                    <div>
+                        <div className="loading-indicator-label">
+                            {this.state.connectionText}
+                            <div className="spinner-border" role="status" style={{ marginTop: 10, visibility: this.state.streamStatus === (StreamStatus.INITIALIZING) ? 'visible' : 'hidden' }} />
+                        </div>
                     </div>
-                </div>
-            }
-
-            { /* App Only Form  */}
-            {(this.state.currentForm === Forms.AppOnly) &&
-                <AppOnlyForm
-                onNext={(state) => this.setState(StreamConfig.source === "stream" ?
-                    { currentForm: Forms.StreamURLs, useWebUI: state.useWebUI } :
-                    { currentForm: Forms.Stream, useWebUI: state.useWebUI })}
-                    />        
                 }
 
-            { /* Stream URLs Form  */}
-            {(this.state.currentForm === Forms.StreamURLs) &&
-                <ServerURLsForm
-                    appServer={this.state.appServer}
-                    streamServer={this.state.streamServer}
-                    onNext={(appServer, streamServer, applications) => this.setState({currentForm: Forms.Applications, appServer: appServer, streamServer: streamServer, applications: applications })}
-                    onBack={(appServer, streamServer) => this.setState({currentForm: Forms.AppOnly, appServer: appServer, streamServer: streamServer })}
-                />         
-            }
-                
-            { /* Applications Form  */}
-            {(this.state.currentForm === Forms.Applications) &&
-                <ApplicationsForm
-                appServer={this.state.appServer}
-                applications={this.state.applications}
-                onNext={(applicationId, versions) => this.setState({currentForm: Forms.Versions, selectedApplicationId: applicationId, applicationVersions: versions})}
-                onBack={() => this.setState({currentForm: Forms.StreamURLs, selectedApplicationId: '', applicationVersions: []})}
-                />           
-            }
-                
-            { /* Application Versions Form  */}
-            {(this.state.currentForm === Forms.Versions) &&
-                <VersionsForm
-                appServer={this.state.appServer}
-                applicationId={this.state.selectedApplicationId}
-                versions={this.state.applicationVersions}
-                onNext={(selectedVersion, profiles) => this.setState({ currentForm: Forms.Profiles, selectedApplicationVersion: selectedVersion, applicationProfiles: profiles })}
-                onBack={() => this.setState({currentForm: Forms.Applications,  selectedApplicationVersion: '', applicationProfiles: []})}
-                />   
-            }
-                
-            { /* Application Profiles Form  */}
-            {(this.state.currentForm === Forms.Profiles) &&
-                <ProfilesForm
-                profiles={this.state.applicationProfiles}
-                onNext={(selectedApplicationProfile) => this._startStream(this.state.selectedApplicationId, this.state.selectedApplicationVersion, selectedApplicationProfile)}
-                onBack={() => this.setState({currentForm: Forms.Versions, selectedApplicationProfile: '', applicationProfiles: [] })}
-                />       
-            }
-                
-            { /* Stream with UI Form  */}
-            {(this.state.currentForm === Forms.Stream) && this.state.useWebUI &&
-                <Window
-                    sessionId={this.state.sessionId}
-                    backendUrl={this.state.backendUrl}
-                    signalingserver={this.state.signalingserver}
-                    signalingport={this.state.signalingport}
-                    mediaserver={this.state.mediaserver}
-                    mediaport={this.state.mediaport}
-                    accessToken={this.state.accessToken}
-                    onStreamFailed={this._resetStream}
-                />    
+                { /* App Only Form  */}
+                {(this.state.currentForm === Forms.AppOnly) &&
+                    <AppOnlyForm
+                        onNext={(state) => this.setState(StreamConfig.source === "stream" ?
+                            { currentForm: Forms.StreamURLs, useWebUI: state.useWebUI } :
+                            { currentForm: Forms.Stream, useWebUI: state.useWebUI })}
+                    />
                 }
-                
-            { /* Stream without UI Form  */}
-            {(this.state.currentForm === Forms.Stream) && (!this.state.useWebUI) &&
-                <StreamOnlyWindow
-                    sessionId={this.state.sessionId}
-                    backendUrl={this.state.backendUrl}
-                    signalingserver={this.state.signalingserver}
-                    signalingport={this.state.signalingport}
-                    mediaserver={this.state.mediaserver}
-                    mediaport={this.state.mediaport}
-                    accessToken={this.state.accessToken}
-                    onStreamFailed={this._resetStream}
-                />    
-            }  
-        </div>
-    )
-}    
+
+                { /* Stream URLs Form  */}
+                {(this.state.currentForm === Forms.StreamURLs) &&
+                    <ServerURLsForm
+                        appServer={this.state.appServer}
+                        streamServer={this.state.streamServer}
+                        onNext={(appServer, streamServer, applications) => this.setState({ currentForm: Forms.Applications, appServer: appServer, streamServer: streamServer, applications: applications })}
+                        onBack={(appServer, streamServer) => this.setState({ currentForm: Forms.AppOnly, appServer: appServer, streamServer: streamServer })}
+                    />
+                }
+
+                { /* Applications Form  */}
+                {(this.state.currentForm === Forms.Applications) &&
+                    <ApplicationsForm
+                        appServer={this.state.appServer}
+                        applications={this.state.applications}
+                        onNext={(applicationId, versions) => this.setState({ currentForm: Forms.Versions, selectedApplicationId: applicationId, applicationVersions: versions })}
+                        onBack={() => this.setState({ currentForm: Forms.StreamURLs, selectedApplicationId: '', applicationVersions: [] })}
+                    />
+                }
+
+                { /* Application Versions Form  */}
+                {(this.state.currentForm === Forms.Versions) &&
+                    <VersionsForm
+                        appServer={this.state.appServer}
+                        applicationId={this.state.selectedApplicationId}
+                        versions={this.state.applicationVersions}
+                        onNext={(selectedVersion, profiles) => this.setState({ currentForm: Forms.Profiles, selectedApplicationVersion: selectedVersion, applicationProfiles: profiles })}
+                        onBack={() => this.setState({ currentForm: Forms.Applications, selectedApplicationVersion: '', applicationProfiles: [] })}
+                    />
+                }
+
+                { /* Application Profiles Form  */}
+                {(this.state.currentForm === Forms.Profiles) &&
+                    <ProfilesForm
+                        profiles={this.state.applicationProfiles}
+                        onNext={(selectedApplicationProfile) => this._startStream(this.state.selectedApplicationId, this.state.selectedApplicationVersion, selectedApplicationProfile)}
+                        onBack={() => this.setState({ currentForm: Forms.Versions, selectedApplicationProfile: '', applicationProfiles: [] })}
+                    />
+                }
+
+                { /* Stream with UI Form  */}
+                {(this.state.currentForm === Forms.Stream) && this.state.useWebUI &&
+                    <Window
+                        sessionId={this.state.sessionId}
+                        backendUrl={this.state.backendUrl}
+                        signalingserver={this.state.signalingserver}
+                        signalingport={this.state.signalingport}
+                        mediaserver={this.state.mediaserver}
+                        mediaport={this.state.mediaport}
+                        accessToken={this.state.accessToken}
+                        onStreamFailed={this._resetStream}
+                    />
+                }
+
+                { /* Stream without UI Form  */}
+                {(this.state.currentForm === Forms.Stream) && (!this.state.useWebUI) &&
+                    <StreamOnlyWindow
+                        sessionId={this.state.sessionId}
+                        backendUrl={this.state.backendUrl}
+                        signalingserver={this.state.signalingserver}
+                        signalingport={this.state.signalingport}
+                        mediaserver={this.state.mediaserver}
+                        mediaport={this.state.mediaport}
+                        accessToken={this.state.accessToken}
+                        onStreamFailed={this._resetStream}
+                    />
+                }
+            </div>
+        )
+    }
 }
 
 export default App;

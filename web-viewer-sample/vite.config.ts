@@ -20,5 +20,12 @@ export default defineConfig({
         viteExternalsPlugin({
             GFN: 'GFN'
         }),
-    ]
+    ],
+    build: {
+        rollupOptions: {
+            input: {
+                main: 'index.html'
+            }
+        }
+    }
 });
