@@ -20,7 +20,7 @@ const SVGSelectionPanel: React.FC<SVGSelectionPanelProps> = ({ onSelect, selecte
             </header>
 
             <div className="sidebar-svg-container">
-                <svg width="100%" height="auto" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                <svg width="100%" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
                     {/* Background Grid */}
                     <defs>
                         <pattern id="grid-sidebar" width="40" height="40" patternUnits="userSpaceOnUse">
