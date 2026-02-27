@@ -13,7 +13,7 @@ import React from 'react';
 import './App.css';
 import AppStream from './AppStream';
 import StreamConfig from '../stream.config.json';
-import USDProperties from "./USDProperties";
+import DashboardOverlay from "./DashboardOverlay";
 import { headerHeight } from './App';
 import entityMapping from './assets/entity_mapping.json';
 import SVGSelectionPanel from './svg/SVGSelectionPanel';
@@ -56,6 +56,7 @@ interface AppState {
     displayProgress: number;
     selectedSVGId: string | null;
     animationState: 'stopped' | 'playing' | 'paused';
+    isDashboardCollapsed: boolean;
 }
 
 interface AppStreamMessageType {
@@ -92,6 +93,7 @@ export default class App extends React.Component<AppProps, AppState> {
             displayProgress: 0,
             selectedSVGId: null,
             animationState: 'stopped',
+            isDashboardCollapsed: false,
         }
     }
 
@@ -110,7 +112,7 @@ export default class App extends React.Component<AppProps, AppState> {
 
     private _handleSVGSelect = (id: string) => {
         console.log(`DASHBOARD: 2D Selection triggered for ID: ${id}`);
-        this.setState({ selectedSVGId: id });
+        this.setState({ selectedSVGId: id, isDashboardCollapsed: false });
 
         const mapping: { [key: string]: string } = entityMapping;
         const usdPath = mapping[id];
@@ -334,16 +336,6 @@ export default class App extends React.Component<AppProps, AppState> {
         AppStream.sendMessage(JSON.stringify(message));
     }
 
-    /**
-    * @function _onFillUSDPrim
-    *
-    * If the usdPrim has a children property a request is sent for its children.
-    */
-    private _onFillUSDPrim(usdPrim: USDPrimType): void {
-        if (usdPrim !== null && "children" in usdPrim && !Array.isArray(usdPrim.children)) {
-            this._getChildren(usdPrim);
-        }
-    }
 
     /**
     * @function _onStageReset
@@ -520,7 +512,7 @@ export default class App extends React.Component<AppProps, AppState> {
                         usdPrimsToSelect.add(result);
                     }
                 });
-                this.setState({ selectedUSDPrims: usdPrimsToSelect });
+                this.setState({ selectedUSDPrims: usdPrimsToSelect, isDashboardCollapsed: false });
             }
         }
         // Streamed app provides children of a parent USDPrimType
@@ -687,12 +679,35 @@ export default class App extends React.Component<AppProps, AppState> {
 
                     {/* Floating Immersive Overlay (Now relative to viewer only) */}
                     {this.state.showUI &&
-                        <div className="immersive-overlay">
-                            {/* Removed USDStage per user request */}
-                            <USDProperties
-                                width={300}
-                                selectedUSDPrims={this.state.selectedUSDPrims}
-                            />
+                        <div
+                            className={`immersive-overlay ${this.state.isDashboardCollapsed ? 'collapsed' : ''}`}
+                            style={{
+                                width: this.state.isDashboardCollapsed ? '60px' : '350px',
+                                transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                overflow: this.state.isDashboardCollapsed ? 'visible' : 'auto',
+                                minHeight: this.state.isDashboardCollapsed ? '100px' : 'auto'
+                            }}
+                        >
+                            <button
+                                className="dashboard-toggle-btn"
+                                onClick={() => this.setState({ isDashboardCollapsed: !this.state.isDashboardCollapsed })}
+                                title={this.state.isDashboardCollapsed ? "Expand Dashboard" : "Collapse Dashboard"}
+                            >
+                                {this.state.isDashboardCollapsed ? '»' : '«'}
+                            </button>
+
+                            {!this.state.isDashboardCollapsed && (
+                                <DashboardOverlay
+                                    selectedAsset={
+                                        this.state.selectedUSDPrims.size > 0
+                                            ? {
+                                                name: Array.from(this.state.selectedUSDPrims)[0].name || Array.from(this.state.selectedUSDPrims)[0].path.split('/').pop() || '',
+                                                path: Array.from(this.state.selectedUSDPrims)[0].path
+                                            }
+                                            : null
+                                    }
+                                />
+                            )}
                         </div>
                     }
                 </div>
