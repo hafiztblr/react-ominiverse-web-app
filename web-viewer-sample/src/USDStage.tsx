@@ -26,7 +26,6 @@ interface USDStageProps {
     selectedUSDPrims: Set<USDPrimType>;
     onSelectUSDPrims: (selectedUsdPrims: Set<USDPrimType>) => void;
     fillUSDPrim: (usdPrim: USDPrimType) => void;
-    onReset: () => void;
 }
 
 export default class USDStage extends React.Component<USDStageProps, { expandedIds: Set<string> }> {
@@ -34,16 +33,16 @@ export default class USDStage extends React.Component<USDStageProps, { expandedI
         super(props);
         this.state = { expandedIds: new Set<string>() };
     }
-    
+
     /**
     * @function resetExpandedIds
     *
     * Public function for resetting the expanded state of the list.
     */
-    public resetExpandedIds (): void {
+    public resetExpandedIds(): void {
         this.setState({ expandedIds: new Set<string>() });
     }
-    
+
     /**
     * @function _toggleExpand
     *
@@ -62,7 +61,7 @@ export default class USDStage extends React.Component<USDStageProps, { expandedI
             return { expandedIds: newExpandedIds };
         });
     }
-    
+
     /**
     * @function _handleListClick
     *
@@ -78,7 +77,7 @@ export default class USDStage extends React.Component<USDStageProps, { expandedI
         }
         this.props.onSelectUSDPrims(newSelectedItems);
     }
-    
+
     /**
     * @function _renderList
     *
@@ -118,16 +117,12 @@ export default class USDStage extends React.Component<USDStageProps, { expandedI
         });
     }
 
-    _onReset = () => {
-        this.props.onReset();
-    };
 
     render() {
         return (
             <div className="usdStageContainer" style={{ width: this.props.width }}>
                 <div className="usdStageHeader">
                     {'USD Stage'}
-                    <button className="nvidia-button" onClick={this._onReset}>Reset</button>
                 </div>
                 <ul className="list-container">
                     {this._renderList(this.props.usdPrims)}

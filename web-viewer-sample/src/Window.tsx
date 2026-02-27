@@ -13,8 +13,6 @@ import React from 'react';
 import './App.css';
 import AppStream from './AppStream';
 import StreamConfig from '../stream.config.json';
-import USDAsset from "./USDAsset";
-import USDStage from "./USDStage";
 import USDProperties from "./USDProperties";
 import { headerHeight } from './App';
 import entityMapping from './assets/entity_mapping.json';
@@ -57,6 +55,7 @@ interface AppState {
     progress: number;
     displayProgress: number;
     selectedSVGId: string | null;
+    animationState: 'stopped' | 'playing' | 'paused';
 }
 
 interface AppStreamMessageType {
@@ -66,7 +65,6 @@ interface AppStreamMessageType {
 
 export default class App extends React.Component<AppProps, AppState> {
 
-    private usdStageRef = React.createRef<USDStage>();
     private _progressInterval: any = null;
     // private _streamConfig: StreamConfigType = getConfig();
 
@@ -74,15 +72,10 @@ export default class App extends React.Component<AppProps, AppState> {
         super(props);
 
         // list of selectable USD assets
-        const usdAssets: USDAssetType[] = StreamConfig.source === "stream" ? [
+        const usdAssets: USDAssetType[] = [
             { name: "Factory", url: "C:/Users/USER/Desktop/Hafiz/Omiverse/web-app/kit-app-template/source/examples/Factory.usd" },
             { name: "Boat", url: "C:/Users/USER/Desktop/Hafiz/Omiverse/web-app/kit-app-template/source/examples/Boat.usd" },
-        ]
-            :
-            [
-                { name: "Factory", url: "./samples/Factory.usd" },
-                { name: "Boat", url: "./samples/Boat.usd" },
-            ];
+        ];
 
         this.state = {
             usdAssets: usdAssets,
@@ -97,7 +90,8 @@ export default class App extends React.Component<AppProps, AppState> {
             pendingFocusId: new URLSearchParams(window.location.search).get('focus'),
             progress: 0,
             displayProgress: 0,
-            selectedSVGId: null
+            selectedSVGId: null,
+            animationState: 'stopped',
         }
     }
 
@@ -248,7 +242,7 @@ export default class App extends React.Component<AppProps, AppState> {
                 payload: {}
             };
             AppStream.sendMessage(JSON.stringify(frameMessage));
-        }, 1000); // 1s delay for better Kit stability
+        }, 1500); // Increased delay for larger Factory scene stability
     }
 
     /**
@@ -293,7 +287,6 @@ export default class App extends React.Component<AppProps, AppState> {
         this._startProgressSimulation();
         this.setState({ loadingText: "Loading Asset...", showStream: false, isLoading: true })
         this.setState({ usdPrims: [], selectedUSDPrims: new Set<USDPrimType>() });
-        this.usdStageRef.current?.resetExpandedIds();
         console.log(`Sending request to open asset: ${this.state.selectedUSDAsset.url}.`);
         const message: AppStreamMessageType = {
             event_type: "openStageRequest",
@@ -302,18 +295,6 @@ export default class App extends React.Component<AppProps, AppState> {
             }
         };
         AppStream.sendMessage(JSON.stringify(message));
-    }
-
-    /**
-    * @function _onSelectUSDAsset
-    *
-    * React to user selecting an asset in the USDAsset selector.
-    */
-    private _onSelectUSDAsset(usdAsset: USDAssetType): void {
-        console.log(`Asset selected: ${usdAsset.name}.`);
-        this.setState({ selectedUSDAsset: usdAsset }, () => {
-            this._openSelectedAsset();
-        });
     }
 
     /**
@@ -354,24 +335,14 @@ export default class App extends React.Component<AppProps, AppState> {
     }
 
     /**
-    * @function _onSelectUSDPrims
+    * @function _onFillUSDPrim
     *
-    * React to user selecting items in the USDStage list.
-    * Sends a request to change the selection in the USD Stage.
+    * If the usdPrim has a children property a request is sent for its children.
     */
-    private _onSelectUSDPrims(selectedUsdPrims: Set<USDPrimType>): void {
-        console.log(`Sending request to select: ${selectedUsdPrims}.`);
-        this.setState({ selectedUSDPrims: selectedUsdPrims });
-        const paths: string[] = Array.from(selectedUsdPrims).map(obj => obj.path);
-        const message: AppStreamMessageType = {
-            event_type: "selectPrimsRequest",
-            payload: {
-                paths: paths
-            }
-        };
-        AppStream.sendMessage(JSON.stringify(message));
-
-        selectedUsdPrims.forEach(usdPrim => { this._onFillUSDPrim(usdPrim) });
+    private _onFillUSDPrim(usdPrim: USDPrimType): void {
+        if (usdPrim !== null && "children" in usdPrim && !Array.isArray(usdPrim.children)) {
+            this._getChildren(usdPrim);
+        }
     }
 
     /**
@@ -380,7 +351,10 @@ export default class App extends React.Component<AppProps, AppState> {
     * Clears the selection and sends a request to reset the stage to how it was at the time it loaded.
     */
     private _onStageReset(): void {
+        console.log("DASHBOARD: Reset Stage triggered.");
         this.setState({ selectedUSDPrims: new Set<USDPrimType>() });
+
+        // 1. Clear selection in Kit
         const selection_message: AppStreamMessageType = {
             event_type: "selectPrimsRequest",
             payload: {
@@ -389,26 +363,51 @@ export default class App extends React.Component<AppProps, AppState> {
         };
         AppStream.sendMessage(JSON.stringify(selection_message));
 
+        // 2. Clear SVG selection
+        this.setState({ selectedSVGId: null });
+
+        // 3. Reset Stage in Kit
         const reset_message: AppStreamMessageType = {
             event_type: "resetStage",
             payload: {}
         };
         AppStream.sendMessage(JSON.stringify(reset_message));
+        this.setState({ animationState: 'stopped' });
     }
 
     /**
-    * @function _onFillUSDPrim
+    * @function _onPlayAnimation
     *
-    * If the usdPrim has a children property a request is sent for its children.
-    * When the streaming app sends an empty children value it is not an array.
-    * When a prim does not have children the streaming app does not provide a children
-    * property to begin with.
+    * Sends a 'playAnimation' message to the Kit extension to start / resume the USD timeline.
     */
-    private _onFillUSDPrim(usdPrim: USDPrimType): void {
-        if (usdPrim !== null && "children" in usdPrim && !Array.isArray(usdPrim.children)) {
-            this._getChildren(usdPrim);
-        }
+    private _onPlayAnimation(): void {
+        const msg: AppStreamMessageType = { event_type: "playAnimation", payload: {} };
+        AppStream.sendMessage(JSON.stringify(msg));
+        this.setState({ animationState: 'playing' });
     }
+
+    /**
+    * @function _onPauseAnimation
+    *
+    * Sends a 'pauseAnimation' message to the Kit extension to pause the USD timeline.
+    */
+    private _onPauseAnimation(): void {
+        const msg: AppStreamMessageType = { event_type: "pauseAnimation", payload: {} };
+        AppStream.sendMessage(JSON.stringify(msg));
+        this.setState({ animationState: 'paused' });
+    }
+
+    /**
+    * @function _onStopAnimation
+    *
+    * Sends a 'stopAnimation' message to the Kit extension to stop and reset the USD timeline.
+    */
+    private _onStopAnimation(): void {
+        const msg: AppStreamMessageType = { event_type: "stopAnimation", payload: {} };
+        AppStream.sendMessage(JSON.stringify(msg));
+        this.setState({ animationState: 'stopped' });
+    }
+
 
     /**
     * @function _findUSDPrimByPath
@@ -645,24 +644,51 @@ export default class App extends React.Component<AppProps, AppState> {
                         />
                     </div>
 
+                    {/* Bottom Center Controls */}
+                    {this.state.showStream && (
+                        <div className="bottom-center-controls">
+                            {/* Play / Pause toggle */}
+                            {this.state.animationState !== 'playing' ? (
+                                <button
+                                    className="anim-control-button play-button"
+                                    onClick={() => this._onPlayAnimation()}
+                                    title="Play Animation"
+                                >
+                                    ▶ Play
+                                </button>
+                            ) : (
+                                <button
+                                    className="anim-control-button pause-button"
+                                    onClick={() => this._onPauseAnimation()}
+                                    title="Pause Animation"
+                                >
+                                    ⏸ Pause
+                                </button>
+                            )}
+                            {/* Stop button — only shown when playing or paused */}
+                            {this.state.animationState !== 'stopped' && (
+                                <button
+                                    className="anim-control-button stop-button"
+                                    onClick={() => this._onStopAnimation()}
+                                    title="Stop Animation"
+                                >
+                                    ⏹ Stop
+                                </button>
+                            )}
+                            <button
+                                className="reset-scene-button"
+                                onClick={() => this._onStageReset()}
+                                title="Reset Scene"
+                            >
+                                ↺ Reset Scene
+                            </button>
+                        </div>
+                    )}
+
                     {/* Floating Immersive Overlay (Now relative to viewer only) */}
                     {this.state.showUI &&
                         <div className="immersive-overlay">
-                            <USDAsset
-                                usdAssets={this.state.usdAssets}
-                                selectedAssetUrl={this.state.selectedUSDAsset?.url}
-                                onSelectUSDAsset={(value) => this._onSelectUSDAsset(value)}
-                                width={300}
-                            />
-                            <USDStage
-                                ref={this.usdStageRef}
-                                width={300}
-                                usdPrims={this.state.usdPrims}
-                                onSelectUSDPrims={(value) => this._onSelectUSDPrims(value)}
-                                selectedUSDPrims={this.state.selectedUSDPrims}
-                                fillUSDPrim={(value) => this._onFillUSDPrim(value)}
-                                onReset={() => this._onStageReset()}
-                            />
+                            {/* Removed USDStage per user request */}
                             <USDProperties
                                 width={300}
                                 selectedUSDPrims={this.state.selectedUSDPrims}

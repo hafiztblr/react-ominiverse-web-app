@@ -1,5 +1,18 @@
 {
-    "438833": "/World/Sphere",
-    "438834": "/World/Cube",
-    "438835": "/World/Cone"
+    "zone_welding": "/World/Samples/Welding_Assembly_Animated_Adjust",
+    "zone_racks": "/World/Stage/Racks",
+    "zone_robots": "/World/Samples/Robot_Arm_Adjust",
+    "zone_hanger": "/World/Samples/Vehicle_Hanger_Adjust",
+    "zone_catwalk": "/World/Stage/Walkways",
+    "zone_pedestal": "/World/Samples/Pedestal_Adjust",
+    "zone_car_lift": "/World/Samples/Car_Lift_Adjust",
+    "zone_shell": "/World/Samples/Factory_Shell_Adjust",
+    "zone_fencing": "/World/Stage/Fencing",
+    "zone_pipes": "/World/Stage/Pipes",
+    "zone_wires": "/World/Stage/Wires",
+    "zone_floor": "/World/Stage/Floor",
+    "zone_lights": "/World/Lights",
+    "zone_hoodrack1": "/World/Stage/HoodRack",
+    "zone_hoodrack2": "/World/Stage/HoodRack_01",
+    "zone_paintlines": "/World/Stage/PaintLines"
 }

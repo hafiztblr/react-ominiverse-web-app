@@ -440,3 +440,79 @@ video#remote-video {
     position: relative;
     overflow: hidden;
 }
+
+/* Bottom Center Controls */
+.bottom-center-controls {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.bottom-center-controls>* {
+    pointer-events: auto;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.reset-scene-button {
+    background-color: transparent !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    padding: 8px 16px;
+}
+
+.reset-scene-button:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    transform: scale(1.05);
+}
+
+/* Animation control buttons */
+.anim-control-button {
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    padding: 8px 18px;
+    border: none !important;
+    text-transform: uppercase;
+}
+
+.anim-control-button:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+}
+
+.play-button {
+    background-color: #76b900 !important;
+    color: white !important;
+}
+
+.pause-button {
+    background-color: #f0a500 !important;
+    color: white !important;
+}
+
+.stop-button {
+    background-color: #cc3300 !important;
+    color: white !important;
+}
