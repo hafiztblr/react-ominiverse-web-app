@@ -111,7 +111,7 @@ export default class App extends React.Component<AppProps, AppState> {
     }
 
     private _handleSVGSelect = (id: string) => {
-        console.log(`DASHBOARD: 2D Selection triggered for ID: ${id}`);
+        console.log(`UI_DEBUG: SVG Selection triggered for ID: ${id}`);
         this.setState({ selectedSVGId: id, isDashboardCollapsed: false });
 
         const mapping: { [key: string]: string } = entityMapping;
@@ -179,7 +179,9 @@ export default class App extends React.Component<AppProps, AppState> {
      * openedStageResult message.
      */
     private _onStreamStarted(): void {
-        this._pollForKitReady()
+        this._pollForKitReady();
+        // Proactively make the whole root pickable to cover all deep hierarchy objects
+        this._makePickable([{ name: 'World', path: '/World' }]);
     }
 
     /**
@@ -312,7 +314,7 @@ export default class App extends React.Component<AppProps, AppState> {
             event_type: "getChildrenRequest",
             payload: {
                 prim_path: usdPrim ? usdPrim.path : '/World',
-                filters: ['USDGeom']
+                filters: [] // Empty filter to get ALL prims for pickability
             }
         };
         AppStream.sendMessage(JSON.stringify(message));
@@ -498,20 +500,26 @@ export default class App extends React.Component<AppProps, AppState> {
 
         // Notification from Kit about user changing the selection via the viewport.
         else if (event.event_type === "stageSelectionChanged") {
-            console.log(event.payload.prims.constructor.name);
-            if (!Array.isArray(event.payload.prims) || event.payload.prims.length === 0) {
-                console.log('Kit App communicates an empty stage selection.');
+            const prims = event.payload.prims;
+            console.log('UI_DEBUG: stageSelectionChanged received', prims);
+
+            if (!Array.isArray(prims) || prims.length === 0) {
+                console.log('UI_DEBUG: Empty stage selection.');
                 this.setState({ selectedUSDPrims: new Set<USDPrimType>() });
             }
             else {
-                console.log('Kit App communicates selection of a USDPrimType: ' + event.payload.prims.map((obj: any) => obj).join(', '));
                 const usdPrimsToSelect: Set<USDPrimType> = new Set<USDPrimType>();
-                event.payload.prims.forEach((obj: any) => {
+                prims.forEach((obj: any) => {
                     const result = this._findUSDPrimByPath(obj);
                     if (result !== null) {
                         usdPrimsToSelect.add(result);
+                    } else {
+                        // Create skeleton prim if not found in tree
+                        const name = obj.split('/').pop() || obj;
+                        usdPrimsToSelect.add({ name, path: obj });
                     }
                 });
+                console.log('UI_DEBUG: Updating state with new selection', Array.from(usdPrimsToSelect));
                 this.setState({ selectedUSDPrims: usdPrimsToSelect, isDashboardCollapsed: false });
             }
         }
