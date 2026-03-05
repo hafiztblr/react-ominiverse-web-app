@@ -1,0 +1,476 @@
+#usda 1.0
+(
+    defaultPrim = "PortScene"
+    upAxis = "Y"
+    metersPerUnit = 1.0
+    doc = "Port scene — ship position driven live by sensor extension. No baked animation."
+)
+
+def Xform "PortScene" (kind = "assembly")
+{
+    def Mesh "Water"
+    {
+        uniform bool doubleSided = false
+        int[] faceVertexCounts = [4,4,4,4,4,4,4,4,4]
+        int[] faceVertexIndices = [
+            0,1,5,4,  1,2,6,5,  2,3,7,6,
+            4,5,9,8,  5,6,10,9, 6,7,11,10,
+            8,9,13,12, 9,10,14,13, 10,11,15,14
+        ]
+        point3f[] points = [
+            (-80,0,-80),(-30,0,-80),(30,0,-80),(80,0,-80),
+            (-80,0,-30),(-30,0,-30),(30,0,-30),(80,0,-30),
+            (-80,0, 30),(-30,0, 30),(30,0, 30),(80,0, 30),
+            (-80,0, 80),(-30,0, 80),(30,0, 80),(80,0, 80)
+        ]
+        normal3f[] normals = [
+            (0,1,0),(0,1,0),(0,1,0),(0,1,0),
+            (0,1,0),(0,1,0),(0,1,0),(0,1,0),
+            (0,1,0),(0,1,0),(0,1,0),(0,1,0),
+            (0,1,0),(0,1,0),(0,1,0),(0,1,0)
+        ]
+        rel material:binding = </PortScene/Materials/WaterMat>
+    }
+
+    def Xform "Dock"
+    {
+        def Mesh "QuayDeck"
+        {
+            uniform bool doubleSided = false
+            int[] faceVertexCounts = [4]
+            int[] faceVertexIndices = [0,1,2,3]
+            point3f[] points = [(-35,2,-12),(35,2,-12),(35,2,12),(-35,2,12)]
+            normal3f[] normals = [(0,1,0),(0,1,0),(0,1,0),(0,1,0)]
+            rel material:binding = </PortScene/Materials/ConcreteMat>
+        }
+        def Mesh "QuayFront"
+        {
+            uniform bool doubleSided = false
+            int[] faceVertexCounts = [4]
+            int[] faceVertexIndices = [0,1,2,3]
+            point3f[] points = [(-35,2,-12),(35,2,-12),(35,-1,-12),(-35,-1,-12)]
+            normal3f[] normals = [(0,0,-1),(0,0,-1),(0,0,-1),(0,0,-1)]
+            rel material:binding = </PortScene/Materials/ConcreteMat>
+        }
+        def Mesh "QuayBack"
+        {
+            uniform bool doubleSided = false
+            int[] faceVertexCounts = [4]
+            int[] faceVertexIndices = [0,1,2,3]
+            point3f[] points = [(-35,2,12),(35,2,12),(35,-1,12),(-35,-1,12)]
+            normal3f[] normals = [(0,0,1),(0,0,1),(0,0,1),(0,0,1)]
+            rel material:binding = </PortScene/Materials/ConcreteMat>
+        }
+        def Mesh "QuaySideLeft"
+        {
+            uniform bool doubleSided = false
+            int[] faceVertexCounts = [4]
+            int[] faceVertexIndices = [0,1,2,3]
+            point3f[] points = [(-35,2,-12),(-35,2,12),(-35,-1,12),(-35,-1,-12)]
+            normal3f[] normals = [(-1,0,0),(-1,0,0),(-1,0,0),(-1,0,0)]
+            rel material:binding = </PortScene/Materials/ConcreteMat>
+        }
+        def Mesh "QuaySideRight"
+        {
+            uniform bool doubleSided = false
+            int[] faceVertexCounts = [4]
+            int[] faceVertexIndices = [0,1,2,3]
+            point3f[] points = [(35,2,-12),(35,2,12),(35,-1,12),(35,-1,-12)]
+            normal3f[] normals = [(1,0,0),(1,0,0),(1,0,0),(1,0,0)]
+            rel material:binding = </PortScene/Materials/ConcreteMat>
+        }
+
+        def Xform "Rails"
+        {
+            def Mesh "RailA"
+            {
+                uniform bool doubleSided = true
+                int[] faceVertexCounts = [4]
+                int[] faceVertexIndices = [0,1,2,3]
+                point3f[] points = [(-34,2.35,-5.25),(34,2.35,-5.25),(34,2.45,-5.25),(-34,2.45,-5.25)]
+                rel material:binding = </PortScene/Materials/SteelMat>
+            }
+            def Mesh "RailB"
+            {
+                uniform bool doubleSided = true
+                int[] faceVertexCounts = [4]
+                int[] faceVertexIndices = [0,1,2,3]
+                point3f[] points = [(-34,2.35,4.95),(34,2.35,4.95),(34,2.45,4.95),(-34,2.45,4.95)]
+                rel material:binding = </PortScene/Materials/SteelMat>
+            }
+            def Mesh "Sleepers"
+            {
+                uniform bool doubleSided = false
+                int[] faceVertexCounts = [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]
+                int[] faceVertexIndices = [
+                     0, 1, 2, 3,   4, 5, 6, 7,   8, 9,10,11,
+                    12,13,14,15,  16,17,18,19,  20,21,22,23,
+                    24,25,26,27,  28,29,30,31,  32,33,34,35,
+                    36,37,38,39,  40,41,42,43,  44,45,46,47,
+                    48,49,50,51,  52,53,54,55,  56,57,58,59,
+                    60,61,62,63,  64,65,66,67,  68,69,70,71,
+                    72,73,74,75,  76,77,78,79,  80,81,82,83,
+                    84,85,86,87
+                ]
+                point3f[] points = [
+                    (-33,2.05,-5.8),(-32,2.05,-5.8),(-32,2.05,5.8),(-33,2.05,5.8),
+                    (-30,2.05,-5.8),(-29,2.05,-5.8),(-29,2.05,5.8),(-30,2.05,5.8),
+                    (-27,2.05,-5.8),(-26,2.05,-5.8),(-26,2.05,5.8),(-27,2.05,5.8),
+                    (-24,2.05,-5.8),(-23,2.05,-5.8),(-23,2.05,5.8),(-24,2.05,5.8),
+                    (-21,2.05,-5.8),(-20,2.05,-5.8),(-20,2.05,5.8),(-21,2.05,5.8),
+                    (-18,2.05,-5.8),(-17,2.05,-5.8),(-17,2.05,5.8),(-18,2.05,5.8),
+                    (-15,2.05,-5.8),(-14,2.05,-5.8),(-14,2.05,5.8),(-15,2.05,5.8),
+                    (-12,2.05,-5.8),(-11,2.05,-5.8),(-11,2.05,5.8),(-12,2.05,5.8),
+                    ( -9,2.05,-5.8),( -8,2.05,-5.8),( -8,2.05,5.8),( -9,2.05,5.8),
+                    ( -6,2.05,-5.8),( -5,2.05,-5.8),( -5,2.05,5.8),( -6,2.05,5.8),
+                    ( -3,2.05,-5.8),( -2,2.05,-5.8),( -2,2.05,5.8),( -3,2.05,5.8),
+                    (  0,2.05,-5.8),(  1,2.05,-5.8),(  1,2.05,5.8),(  0,2.05,5.8),
+                    (  3,2.05,-5.8),(  4,2.05,-5.8),(  4,2.05,5.8),(  3,2.05,5.8),
+                    (  6,2.05,-5.8),(  7,2.05,-5.8),(  7,2.05,5.8),(  6,2.05,5.8),
+                    (  9,2.05,-5.8),( 10,2.05,-5.8),( 10,2.05,5.8),(  9,2.05,5.8),
+                    ( 12,2.05,-5.8),( 13,2.05,-5.8),( 13,2.05,5.8),( 12,2.05,5.8),
+                    ( 15,2.05,-5.8),( 16,2.05,-5.8),( 16,2.05,5.8),( 15,2.05,5.8),
+                    ( 18,2.05,-5.8),( 19,2.05,-5.8),( 19,2.05,5.8),( 18,2.05,5.8),
+                    ( 21,2.05,-5.8),( 22,2.05,-5.8),( 22,2.05,5.8),( 21,2.05,5.8),
+                    ( 24,2.05,-5.8),( 25,2.05,-5.8),( 25,2.05,5.8),( 24,2.05,5.8),
+                    ( 27,2.05,-5.8),( 28,2.05,-5.8),( 28,2.05,5.8),( 27,2.05,5.8),
+                    ( 30,2.05,-5.8),( 31,2.05,-5.8),( 31,2.05,5.8),( 30,2.05,5.8)
+                ]
+                rel material:binding = </PortScene/Materials/WoodMat>
+            }
+        }
+
+        def Xform "Trolley"
+        {
+            def Mesh "LegFL"
+            {
+                uniform bool doubleSided = true
+                int[] faceVertexCounts = [4,4,4,4]
+                int[] faceVertexIndices = [0,1,2,3, 4,5,6,7, 0,3,7,4, 1,2,6,5]
+                point3f[] points = [
+                    ( 2,2.45,-5.5),( 2.6,2.45,-5.5),( 2.6,2.45,-4.5),( 2,2.45,-4.5),
+                    ( 2,13,  -5.5),( 2.6,13,  -5.5),( 2.6,13,  -4.5),( 2,13,  -4.5)
+                ]
+                rel material:binding = </PortScene/Materials/CraneMat>
+            }
+            def Mesh "LegFR"
+            {
+                uniform bool doubleSided = true
+                int[] faceVertexCounts = [4,4,4,4]
+                int[] faceVertexIndices = [0,1,2,3, 4,5,6,7, 0,3,7,4, 1,2,6,5]
+                point3f[] points = [
+                    ( 2,2.45, 4.5),( 2.6,2.45, 4.5),( 2.6,2.45, 5.5),( 2,2.45, 5.5),
+                    ( 2,13,   4.5),( 2.6,13,   4.5),( 2.6,13,   5.5),( 2,13,   5.5)
+                ]
+                rel material:binding = </PortScene/Materials/CraneMat>
+            }
+            def Mesh "LegBL"
+            {
+                uniform bool doubleSided = true
+                int[] faceVertexCounts = [4,4,4,4]
+                int[] faceVertexIndices = [0,1,2,3, 4,5,6,7, 0,3,7,4, 1,2,6,5]
+                point3f[] points = [
+                    (-2.6,2.45,-5.5),(-2,2.45,-5.5),(-2,2.45,-4.5),(-2.6,2.45,-4.5),
+                    (-2.6,13,  -5.5),(-2,13,  -5.5),(-2,13,  -4.5),(-2.6,13,  -4.5)
+                ]
+                rel material:binding = </PortScene/Materials/CraneMat>
+            }
+            def Mesh "LegBR"
+            {
+                uniform bool doubleSided = true
+                int[] faceVertexCounts = [4,4,4,4]
+                int[] faceVertexIndices = [0,1,2,3, 4,5,6,7, 0,3,7,4, 1,2,6,5]
+                point3f[] points = [
+                    (-2.6,2.45, 4.5),(-2,2.45, 4.5),(-2,2.45, 5.5),(-2.6,2.45, 5.5),
+                    (-2.6,13,   4.5),(-2,13,   4.5),(-2,13,   5.5),(-2.6,13,   5.5)
+                ]
+                rel material:binding = </PortScene/Materials/CraneMat>
+            }
+            def Mesh "BridgeBeam"
+            {
+                uniform bool doubleSided = false
+                int[] faceVertexCounts = [4,4,4,4,4,4]
+                int[] faceVertexIndices = [0,1,2,3, 4,5,6,7, 0,4,7,3, 1,2,6,5, 0,1,5,4, 3,2,6,7]
+                point3f[] points = [
+                    (-3,13,-7),(3,13,-7),(3,13,7),(-3,13,7),
+                    (-3,14,-7),(3,14,-7),(3,14,7),(-3,14,7)
+                ]
+                rel material:binding = </PortScene/Materials/CraneMat>
+            }
+            def Mesh "HoistCable"
+            {
+                uniform bool doubleSided = true
+                int[] faceVertexCounts = [4]
+                int[] faceVertexIndices = [0,1,2,3]
+                point3f[] points = [(-0.05,14,0),(0.05,14,0),(0.05,6,0),(-0.05,6,0)]
+                rel material:binding = </PortScene/Materials/SteelMat>
+            }
+            def Mesh "Spreader"
+            {
+                uniform bool doubleSided = true
+                int[] faceVertexCounts = [4,4]
+                int[] faceVertexIndices = [0,1,2,3, 4,5,6,7]
+                point3f[] points = [
+                    (-2.5,6,-0.1),(2.5,6,-0.1),(2.5,6.4,-0.1),(-2.5,6.4,-0.1),
+                    (-0.1,6,-2.5),(-0.1,6,2.5),(-0.1,6.4,2.5),(-0.1,6.4,-2.5)
+                ]
+                rel material:binding = </PortScene/Materials/CraneMat>
+            }
+        }
+
+        def Xform "Bollards"
+        {
+            def Mesh "Bollard_1"
+            {
+                uniform bool doubleSided = false
+                int[] faceVertexCounts = [4,4,4,4,4]
+                int[] faceVertexIndices = [0,1,5,4, 1,2,6,5, 2,3,7,6, 3,0,4,7, 4,5,6,7]
+                point3f[] points = [
+                    (-25,2,-11.5),(-24,2,-11.5),(-24,2,-10.5),(-25,2,-10.5),
+                    (-25,4,-11.5),(-24,4,-11.5),(-24,4,-10.5),(-25,4,-10.5)
+                ]
+                rel material:binding = </PortScene/Materials/SteelMat>
+            }
+            def Mesh "Bollard_2"
+            {
+                uniform bool doubleSided = false
+                int[] faceVertexCounts = [4,4,4,4,4]
+                int[] faceVertexIndices = [0,1,5,4, 1,2,6,5, 2,3,7,6, 3,0,4,7, 4,5,6,7]
+                point3f[] points = [
+                    (-5,2,-11.5),(-4,2,-11.5),(-4,2,-10.5),(-5,2,-10.5),
+                    (-5,4,-11.5),(-4,4,-11.5),(-4,4,-10.5),(-5,4,-10.5)
+                ]
+                rel material:binding = </PortScene/Materials/SteelMat>
+            }
+            def Mesh "Bollard_3"
+            {
+                uniform bool doubleSided = false
+                int[] faceVertexCounts = [4,4,4,4,4]
+                int[] faceVertexIndices = [0,1,5,4, 1,2,6,5, 2,3,7,6, 3,0,4,7, 4,5,6,7]
+                point3f[] points = [
+                    (20,2,-11.5),(21,2,-11.5),(21,2,-10.5),(20,2,-10.5),
+                    (20,4,-11.5),(21,4,-11.5),(21,4,-10.5),(20,4,-10.5)
+                ]
+                rel material:binding = </PortScene/Materials/SteelMat>
+            }
+        }
+    }
+
+    # ═══════════════════════════════════════════════════
+    # SHIP — NO time samples, position set by extension
+    # Sensor extension writes to xformOp:translate live
+    # Initial position: Z=-50 (out at sea)
+    # Docked position:  Z=-14 (alongside quay)
+    # ═══════════════════════════════════════════════════
+    def Xform "Ship" (
+        kind = "component"
+        doc = "Ship driven by sensor extension. Target: /PortScene/Ship xformOp:translate"
+    )
+    {
+        double3 xformOp:translate = (0, 0, -50)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Mesh "Hull"
+        {
+            uniform bool doubleSided = false
+            int[] faceVertexCounts = [4,4,4,4,3,4]
+            int[] faceVertexIndices = [
+                0,1,2,3,
+                0,3,7,4,
+                1,5,6,2,
+                4,7,6,5,
+                3,2,8,
+                0,1,9,10
+            ]
+            point3f[] points = [
+                (-15,0,-4.5),(-15,0, 4.5),(12,0, 3.5),(12,0,-3.5),
+                (-15,6,-4.5),(-15,6, 4.5),(12,6, 3.0),(12,6,-3.0),
+                (17, 3, 0  ),
+                (-15,-1,-4.5),(-15,-1,4.5)
+            ]
+            rel material:binding = </PortScene/Materials/HullMat>
+        }
+        def Mesh "Deck"
+        {
+            uniform bool doubleSided = false
+            int[] faceVertexCounts = [4,3]
+            int[] faceVertexIndices = [0,1,2,3, 3,2,4]
+            point3f[] points = [
+                (-15,6,-4),(-15,6,4),(12,6,3),(12,6,-3),(17,3,0)
+            ]
+            rel material:binding = </PortScene/Materials/DeckMat>
+        }
+        def Mesh "Bridge"
+        {
+            uniform bool doubleSided = false
+            int[] faceVertexCounts = [4,4,4,4,4,4]
+            int[] faceVertexIndices = [
+                0,1,2,3, 4,5,6,7,
+                0,3,7,4, 1,2,6,5,
+                0,1,5,4, 3,2,6,7
+            ]
+            point3f[] points = [
+                (-10,6,-3),(-10,6,3),(0,6,3),(0,6,-3),
+                (-10,12,-3),(-10,12,3),(0,12,3),(0,12,-3)
+            ]
+            rel material:binding = </PortScene/Materials/SuperMat>
+        }
+        def Mesh "BridgeWindows"
+        {
+            uniform bool doubleSided = false
+            int[] faceVertexCounts = [4,4,4]
+            int[] faceVertexIndices = [0,1,2,3, 4,5,6,7, 8,9,10,11]
+            point3f[] points = [
+                (-9,10,-3.05),(-7,10,-3.05),(-7,11,-3.05),(-9,11,-3.05),
+                (-6,10,-3.05),(-4,10,-3.05),(-4,11,-3.05),(-6,11,-3.05),
+                (-3,10,-3.05),(-1,10,-3.05),(-1,11,-3.05),(-3,11,-3.05)
+            ]
+            rel material:binding = </PortScene/Materials/GlassMat>
+        }
+        def Mesh "Funnel"
+        {
+            uniform bool doubleSided = true
+            int[] faceVertexCounts = [4,4,4,4]
+            int[] faceVertexIndices = [0,3,7,4, 1,2,6,5, 0,4,5,1, 3,7,6,2]
+            point3f[] points = [
+                (-7,12,-1.2),(-7,12,1.2),(-5,12,1.2),(-5,12,-1.2),
+                (-7,17,-1.2),(-7,17,1.2),(-5,17,1.2),(-5,17,-1.2)
+            ]
+            rel material:binding = </PortScene/Materials/FunnelMat>
+        }
+        def Mesh "Mast"
+        {
+            uniform bool doubleSided = true
+            int[] faceVertexCounts = [4]
+            int[] faceVertexIndices = [0,1,2,3]
+            point3f[] points = [(11,6,-0.15),(11,6,0.15),(11,16,0.15),(11,16,-0.15)]
+            rel material:binding = </PortScene/Materials/SteelMat>
+        }
+    }
+
+    def Scope "Materials"
+    {
+        def Material "WaterMat"
+        {
+            token outputs:surface.connect = </PortScene/Materials/WaterMat/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.04, 0.22, 0.52)
+                float inputs:roughness = 0.08
+                float inputs:metallic = 0.0
+                float inputs:opacity = 0.88
+                token outputs:surface
+            }
+        }
+        def Material "ConcreteMat"
+        {
+            token outputs:surface.connect = </PortScene/Materials/ConcreteMat/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.62, 0.60, 0.56)
+                float inputs:roughness = 0.92
+                float inputs:metallic = 0.0
+                token outputs:surface
+            }
+        }
+        def Material "SteelMat"
+        {
+            token outputs:surface.connect = </PortScene/Materials/SteelMat/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.38, 0.38, 0.40)
+                float inputs:roughness = 0.25
+                float inputs:metallic = 0.95
+                token outputs:surface
+            }
+        }
+        def Material "WoodMat"
+        {
+            token outputs:surface.connect = </PortScene/Materials/WoodMat/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.42, 0.28, 0.14)
+                float inputs:roughness = 0.88
+                float inputs:metallic = 0.0
+                token outputs:surface
+            }
+        }
+        def Material "HullMat"
+        {
+            token outputs:surface.connect = </PortScene/Materials/HullMat/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.34, 0.12, 0.05)
+                float inputs:roughness = 0.55
+                float inputs:metallic = 0.18
+                token outputs:surface
+            }
+        }
+        def Material "DeckMat"
+        {
+            token outputs:surface.connect = </PortScene/Materials/DeckMat/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.50, 0.46, 0.36)
+                float inputs:roughness = 0.82
+                float inputs:metallic = 0.0
+                token outputs:surface
+            }
+        }
+        def Material "SuperMat"
+        {
+            token outputs:surface.connect = </PortScene/Materials/SuperMat/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.90, 0.88, 0.84)
+                float inputs:roughness = 0.45
+                float inputs:metallic = 0.1
+                token outputs:surface
+            }
+        }
+        def Material "GlassMat"
+        {
+            token outputs:surface.connect = </PortScene/Materials/GlassMat/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.35, 0.65, 0.88)
+                float inputs:roughness = 0.04
+                float inputs:metallic = 0.0
+                float inputs:opacity = 0.55
+                token outputs:surface
+            }
+        }
+        def Material "FunnelMat"
+        {
+            token outputs:surface.connect = </PortScene/Materials/FunnelMat/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.07, 0.07, 0.07)
+                float inputs:roughness = 0.68
+                float inputs:metallic = 0.22
+                token outputs:surface
+            }
+        }
+        def Material "CraneMat"
+        {
+            token outputs:surface.connect = </PortScene/Materials/CraneMat/Shader.outputs:surface>
+            def Shader "Shader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.88, 0.62, 0.0)
+                float inputs:roughness = 0.38
+                float inputs:metallic = 0.55
+                token outputs:surface
+            }
+        }
+    }
+}

@@ -9,20 +9,43 @@
 # its affiliates is strictly prohibited.
 
 import asyncio
+import math
 from pathlib import Path
 
 import carb.settings
 import carb.tokens
+import carb.events
 import omni.ext
 import omni.kit.app
 import omni.kit.imgui as _imgui
 import omni.usd
+import omni.timeline
 from omni.kit.mainwindow import get_main_window
 from omni.kit.quicklayout import QuickLayout
 from omni.kit.viewport.utility import get_viewport_from_window_name, frame_viewport_selection
+from pxr import Usd, UsdGeom, Gf
+
+# ═══════════════════════════════════════════════════
+# PORT ANIMATION CONSTANTS
+# ═══════════════════════════════════════════════════
+SHIP_PRIM_PATH      = "/PortScene/Ship"
+TROLLEY_PRIM_PATH   = "/PortScene/Dock/Trolley"
+SHIP_Z_RANGE        = (-60.0, -12.0) # Sea to Dock (Z)
+SHIP_X_RANGE        = (50.0, 2.3)    # Approach from Right (X) to Rails
+TROLLEY_Z_RANGE     = (-5.0, 5.0)    # Rail travel
+FPS                 = 60
+BOB_AMPLITUDE       = 0.15
+BOB_FREQUENCY       = 1.2
+ANIM_SPEED          = 0.05 # Movement speed factor
 
 COMMAND_MACRO_SETTING = "/exts/omni.kit.command_macro.core/"
 COMMAND_MACRO_FILE_SETTING = COMMAND_MACRO_SETTING + "macro_file"
+
+
+def _smoothstep(t):
+    """Smooth mathematical interpolation between 0 and 1."""
+    t = max(0.0, min(1.0, t))
+    return t * t * (3.0 - 2.0 * t)
 
 
 async def _load_layout(layout_file: str):
@@ -42,8 +65,10 @@ class SetupExtension(omni.ext.IExt):
         """This is called every time the extension is activated. It is used to
         set up the application and load the stage."""
         self._settings = carb.settings.get_settings()
+        self._anim_manager = None
+        self._subs = []
+
         if self._settings and self._settings.get("/app/warmupMode"):
-            # if warmup mode is enabled, we don't want to load the stage just return
             return
         # get auto load stage name
         stage_url = self._settings.get_as_string("/app/auto_load_usd")
@@ -123,6 +148,10 @@ class SetupExtension(omni.ext.IExt):
         if not timed_out:
             await usd_context.open_stage_async(
                 url, omni.usd.UsdContextInitialLoadSet.LOAD_ALL)
+            
+            # Start animation if it's the port scene
+            if "port2.usda" in url:
+                self._start_port_animation()
         else:
             carb.log_warn(
                 f"SetupExtension: Timed out waiting to open stage {url}")
@@ -149,11 +178,13 @@ class SetupExtension(omni.ext.IExt):
                 from pxr import UsdLux
                 # Use Define instead of DefineAttribute or similar to be safe
                 dome_light = UsdLux.DomeLight.Define(stage, "/DefaultDomeLight")
-                # Use the older GetAttribute style for better compatibility
                 if dome_light.GetIntensityAttr():
-                    dome_light.GetIntensityAttr().Set(5000)
+                    dome_light.GetIntensityAttr().Set(200) # Moody nighttime dock
                 if dome_light.GetExposureAttr():
-                    dome_light.GetExposureAttr().Set(1.0)
+                    dome_light.GetExposureAttr().Set(-1.0)
+                # Add a cooler blue tint to the base light
+                if dome_light.GetColorAttr():
+                    dome_light.GetColorAttr().Set(Gf.Vec3f(0.5, 0.65, 1.0))
         except Exception as e:
             carb.log_error(f"SetupExtension: Failed to add light: {e}")
 
@@ -201,6 +232,108 @@ class SetupExtension(omni.ext.IExt):
         except Exception as e:
             carb.log_error(f"SetupExtension: Failed to frame viewport: {e}")
 
+    def _start_port_animation(self):
+        """Initializes the live movement logic."""
+        carb.log_info("SetupExtension: Initializing port animation.")
+        
+        # Configure the timeline for the Port animation
+        self._setup_timeline()
+
+        if self._anim_manager:
+            self._anim_manager.shutdown()
+        
+        self._anim_manager = PortAnimationManager()
+        self._subs.append(
+            omni.kit.app.get_app().get_update_event_stream().create_subscription_to_pop(
+                self._anim_manager.on_update
+            )
+        )
+        carb.log_info("SetupExtension: Port Animation Manager started.")
+
     def on_shutdown(self):
         """This is called every time the extension is deactivated."""
+        for sub in self._subs:
+            sub.unsubscribe()
+        self._subs = []
+        if self._anim_manager:
+            self._anim_manager.shutdown()
         return
+
+    def _setup_timeline(self):
+        """Standardize timeline for the Port docking sequence (10 seconds)."""
+        try:
+            tl = omni.timeline.get_timeline_interface()
+            tl.set_start_time(0.0)
+            tl.set_end_time(10.0) # Matches our 'duration' in on_update
+            tl.set_time_codes_per_second(FPS)
+            carb.log_info("SetupExtension: Timeline configured (0.0 to 10.0s)")
+        except Exception as e:
+            carb.log_error(f"SetupExtension: Failed to setup timeline: {e}")
+
+class PortAnimationManager:
+    """Simulates live sensor-driven movement for Port assets."""
+    def __init__(self):
+        self._time = 0.0
+        self._ship_docked_amount = 0.0 
+        self._trolley_pos = 0.0 
+        self._last_telemetry_time = 0.0 # For throttling
+        
+    def shutdown(self):
+        pass
+
+    def on_update(self, event: carb.events.IEvent):
+        stage = omni.usd.get_context().get_stage()
+        if not stage:
+            return
+
+        # Link animation to the central timeline
+        tl = omni.timeline.get_timeline_interface()
+        curr_time = tl.get_current_time()
+        is_playing = tl.is_playing()
+        
+        # 1. Animate Ship (Movement + Bobbing)
+        duration = 10.0
+        progress = _smoothstep(curr_time / duration)
+        
+        ship_prim = stage.GetPrimAtPath(SHIP_PRIM_PATH)
+        if ship_prim.IsValid():
+            # Apply transformation
+            z = SHIP_Z_RANGE[0] + (SHIP_Z_RANGE[1] - SHIP_Z_RANGE[0]) * progress
+            x = SHIP_X_RANGE[0] + (SHIP_X_RANGE[1] - SHIP_X_RANGE[0]) * progress
+            y = math.sin(curr_time * BOB_FREQUENCY) * BOB_AMPLITUDE
+            
+            xformable = UsdGeom.Xformable(ship_prim)
+            translate_op = self._get_or_create_translate_op(xformable)
+            translate_op.Set(Gf.Vec3d(x, y, z))
+
+            # --- PHASE 5: THROTTLED TELEMETRY ---
+            # Only send telemetry every 100ms (10 FPS) and only when playing
+            import time
+            real_now = time.time()
+            if is_playing and (real_now - self._last_telemetry_time) > 0.1:
+                self._last_telemetry_time = real_now
+                
+                try:
+                    from carb.eventdispatcher import get_eventdispatcher
+                    payload = {
+                        "time": round(curr_time, 2),
+                        "ship_y": round(y, 3),
+                        "ship_z": round(z, 2)
+                    }
+                    get_eventdispatcher().dispatch_event("sensorData", payload=payload)
+                    
+                    # Log to console for user verification (REDUNDANT LOGS)
+                    msg = f"TELEMETRY | Time: {curr_time:.2f}s | Pos: ({x:.2f}, {y:.3f}, {z:.2f})"
+                    print(msg) # Standard terminal output
+                    carb.log_warn(msg) # Yellow alert in Kit Console
+                except Exception as e:
+                    # Silently skip if bridge is busy
+                    pass
+
+    def _get_or_create_translate_op(self, xformable):
+        """Finds existing translate op or creates one without clearing others."""
+        ops = xformable.GetOrderedXformOps()
+        for op in ops:
+            if op.GetOpType() == UsdGeom.XformOp.TypeTranslate:
+                return op
+        return xformable.AddTranslateOp()

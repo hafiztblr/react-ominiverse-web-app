@@ -45,6 +45,8 @@ class StageManager:
             "makePrimsPickableResponse",
             # response to the request to reset camera attributes
             "resetStageResponse",
+            # live sensor data for digital twin
+            "sensorData",
         ]
 
         for o in outgoing:

@@ -30,6 +30,11 @@ interface USDPrimType {
     children?: USDPrimType[];
 }
 
+export interface LiveSensorData {
+    label: string;
+    value: number;
+}
+
 export interface AppProps {
     sessionId: string
     backendUrl: string
@@ -57,6 +62,8 @@ interface AppState {
     selectedSVGId: string | null;
     animationState: 'stopped' | 'playing' | 'paused';
     isDashboardCollapsed: boolean;
+    shipYHistory: LiveSensorData[];
+    shipZHistory: LiveSensorData[];
 }
 
 interface AppStreamMessageType {
@@ -74,6 +81,8 @@ export default class App extends React.Component<AppProps, AppState> {
 
         // list of selectable USD assets
         const usdAssets: USDAssetType[] = [
+            { name: "Port v2", url: "C:/Users/USER/Desktop/Hafiz/Omiverse/web-app/kit-app-template/source/examples/port2.usda" },
+            { name: "Port", url: "C:/Users/USER/Desktop/Hafiz/Omiverse/web-app/kit-app-template/source/examples/port1.usda" },
             { name: "Factory", url: "C:/Users/USER/Desktop/Hafiz/Omiverse/web-app/kit-app-template/source/examples/Factory.usd" },
             { name: "Boat", url: "C:/Users/USER/Desktop/Hafiz/Omiverse/web-app/kit-app-template/source/examples/Boat.usd" },
         ];
@@ -94,6 +103,8 @@ export default class App extends React.Component<AppProps, AppState> {
             selectedSVGId: null,
             animationState: 'stopped',
             isDashboardCollapsed: false,
+            shipYHistory: [],
+            shipZHistory: [],
         }
     }
 
@@ -560,6 +571,23 @@ export default class App extends React.Component<AppProps, AppState> {
             console.log("onCustomEvent");
             console.log(JSON.parse(event.data).event_type);
         }
+
+        // --- PHASE 3: REAL-TIME SENSOR DATA ---
+        else if (event.event_type === "sensorData") {
+            const { time, ship_y, ship_z } = event.payload;
+            const label = `${time}s`;
+
+            this.setState(prevState => {
+                const newYHistory = [...prevState.shipYHistory, { label, value: ship_y }];
+                const newZHistory = [...prevState.shipZHistory, { label, value: ship_z }];
+
+                // Keep only last 20 points for smooth charting
+                return {
+                    shipYHistory: newYHistory.slice(-20),
+                    shipZHistory: newZHistory.slice(-20)
+                };
+            });
+        }
     }
 
     /**
@@ -714,6 +742,8 @@ export default class App extends React.Component<AppProps, AppState> {
                                             }
                                             : null
                                     }
+                                    shipYHistory={this.state.shipYHistory}
+                                    shipZHistory={this.state.shipZHistory}
                                 />
                             )}
                         </div>
