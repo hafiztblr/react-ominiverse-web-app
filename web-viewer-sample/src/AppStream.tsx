@@ -11,7 +11,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { AppStreamer, StreamEvent, StreamProps, DirectConfig, GFNConfig, StreamType } from '@nvidia/omniverse-webrtc-streaming-library';
+import { AppStreamer, StreamEvent, StreamProps, DirectConfig, GFNConfig, StreamType, LogLevel } from '@nvidia/omniverse-webrtc-streaming-library';
 import StreamConfig from '../stream.config.json';
 
 
@@ -98,8 +98,8 @@ export default class AppStream extends Component<AppStreamProps, AppStreamState>
                     onUpdate: (message: StreamEvent) => this._onUpdate(message),
                     onStart: (message: StreamEvent) => this._onStart(message),
                     onCustomEvent: (message: any) => this._onCustomEvent(message),
-                    onStop: (message: StreamEvent) => { console.log(message) },
-                    onTerminate: (message: StreamEvent) => { console.log(message) }
+                    onStop: (_message: StreamEvent) => { /* no-op */ },
+                    onTerminate: (_message: StreamEvent) => { /* no-op */ }
                 };
             }
 
@@ -126,8 +126,8 @@ export default class AppStream extends Component<AppStreamProps, AppStreamState>
                     onUpdate: (message: StreamEvent) => this._onUpdate(message),
                     onStart: (message: StreamEvent) => this._onStart(message),
                     onCustomEvent: (message: any) => this._onCustomEvent(message),
-                    onStop: (message: StreamEvent) => { console.log(message) },
-                    onTerminate: (message: StreamEvent) => { console.log(message) },
+                    onStop: (_message: StreamEvent) => { /* no-op */ },
+                    onTerminate: (_message: StreamEvent) => { /* no-op */ },
                 };
             }
 
@@ -137,10 +137,11 @@ export default class AppStream extends Component<AppStreamProps, AppStreamState>
             }
 
             try {
-                streamProps = { streamConfig, streamSource }
+                streamProps = { streamConfig, streamSource, logLevel: LogLevel.ERROR }
                 AppStreamer.connect(streamProps)
                     .then((result: StreamEvent) => {
-                        console.info(result);
+                        // use debug sliders in the browser console only if needed
+                        // console.info(result);
                     })
                     .catch((error: StreamEvent) => {
                         console.error(error);
@@ -181,7 +182,7 @@ export default class AppStream extends Component<AppStreamProps, AppStreamState>
         }
 
         if (message.status === "error" && StreamConfig.source === "stream") {
-            console.log(message.info);
+            // console.log(message.info);
             alert(message.info);
             this.props.onStreamFailed();
             return;

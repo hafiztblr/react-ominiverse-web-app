@@ -36,6 +36,7 @@ template_name = "omni.usd_viewer"
 "omni.usd_viewer.samples" = {}
 "usdrt.scenegraph" = {}
 "my_company.my_usd_viewer_setup_extension" = { order = 1000 }
+"my_company.my_usd_viewer_messaging_extension" = {}
 
 
 [settings.persistent.app]
@@ -56,7 +57,7 @@ rtx-transient.resourcemanager.enableTextureStreaming = true  # Texture Streaming
 [settings.app]
 titleVersion = "0.1.0"
 content.emptyStageOnStart = false
-auto_load_usd = "C:/Users/USER/Desktop/Hafiz/Omiverse/web-app/kit-app-template/source/examples/Factory.usd"
+auto_load_usd = "C:/Users/USER/Desktop/Hafiz/thingspine/player/app-viewer/src/assets/images/usd/pump.usda"
 fastShutdown = true  # Skip long full shutdown and exit quickly
 livestream.allowResize = 1
 livestream.skipCapture = 1  # livestream skipCapture ON for local streaming
@@ -173,6 +174,7 @@ enabled = [
 	"omni.no_code_ui.bundle-1.1.4",
 	"omni.usd.schema.sequence-3.1.2",
 	"omni.usd_viewer.samples-106.3.3",
+	"my_company.my_usd_viewer_messaging_extension-0.1.0",
 ]
 
 ########################################################################################################################

@@ -42,6 +42,16 @@ class SetupExtension(omni.ext.IExt):
         """This is called every time the extension is activated. It is used to
         set up the application and load the stage."""
         self._settings = carb.settings.get_settings()
+        # Core Visibility Fixes: Force absolute black background and clear environment
+        self._settings.set("/rtx/renderer/clearColor", (0.0, 0.0, 0.0))
+        self._settings.set("/rtx/post/background/color", (0.0, 0.0, 0.0))
+        self._settings.set("/rtx/post/background/useBackground", True)
+        self._settings.set("/rtx/post/background/colorMode", 1)  # Force constant color mode
+        self._settings.set("/rtx/post/background/alpha", 1.0)
+        self._settings.set("/rtx/hydra/enabledVisualizer", "")  # Disable any weird visualizers
+        self._settings.set("/app/viewport/grid/enabled", False)  # Disable the grid
+        self._settings.set("/rtx/eco/enabled", False)          # Disable eco mode if washing out pixels
+
         if self._settings and self._settings.get("/app/warmupMode"):
             # if warmup mode is enabled, we don't want to load the stage just return
             return
@@ -151,7 +161,7 @@ class SetupExtension(omni.ext.IExt):
                 dome_light = UsdLux.DomeLight.Define(stage, "/DefaultDomeLight")
                 # Use the older GetAttribute style for better compatibility
                 if dome_light.GetIntensityAttr():
-                    dome_light.GetIntensityAttr().Set(5000)
+                    dome_light.GetIntensityAttr().Set(3000)
                 if dome_light.GetExposureAttr():
                     dome_light.GetExposureAttr().Set(1.0)
         except Exception as e:
