@@ -1,0 +1,1016 @@
+ MFiX (25.3) simulation on host: tblr-lws-62
+ Run name: BIOMASS               Time: 10:44                    Date:  3-16-2026
+ Project version: 65
+________________________________________________________________________
+
+
+ >>>>>-----------------------------------------------------------------
+MESSAGE from open_files.f:373
+This is a rectangular geometry simulation.
+Mesh generation will be performed.
+No mesh file will be written, only the [RUN_NAME]_boundary.vtk file will be written.
+ <<<<<-----------------------------------------------------------------
+
+
+ >>>>>-----------------------------------------------------------------
+MESSAGE from check_data/check_gas_phase.f:317
+The energy equations are being solved (ENERGY_EQ) and
+the constant gas specific heat is undefined (C_PG0). The thermochemical
+database will be used to gather specific heat data on the individual gas
+phase species.
+ <<<<<-----------------------------------------------------------------
+
+
+ >>>>>-----------------------------------------------------------------
+MESSAGE from check_data/check_gas_phase.f:365
+Searching thermochemical databases for gas phase'species data.
+  >  1: Species: O2
+        Checking for  O2 in Biomass.mfx : Found.
+        Checking Specific Heat is defined along entire temperature range: Yes
+        Summary of thermochemical data read from the database:
+Species: O2
+Phase index :   0, species index:   1
+Minimum allowed temperature (TMIN) =   50.000    K
+Maximum allowed temperature (TMAX) =   4000.0    K
+Low  temperature range (Tlow to Tcom)  =   200.00    K to  1000.0    K
+High temperature range (Tcom to Thigh) =   1000.0    K to  6000.0    K
+Polynomial coefficients:
+        Low range     High range
+ A(1)    3.7825        3.6610
+ A(2)  -0.29967E-02   0.65637E-03
+ A(3)   0.98473E-05  -0.14115E-06
+ A(4)  -0.96813E-08   0.20580E-10
+ A(5)   0.32437E-11  -0.12991E-14
+ A(6)   -1063.9       -1216.0
+ A(7)    3.6577        3.4154
+ Molecular weight =   32.000
+ Heat of formation/R =   0.0000
+  >  2: Species: N2
+        Checking for  N2 in Biomass.mfx : Found.
+        Checking Specific Heat is defined along entire temperature range: Yes
+        Summary of thermochemical data read from the database:
+Species: N2
+Phase index :   0, species index:   2
+Minimum allowed temperature (TMIN) =   50.000    K
+Maximum allowed temperature (TMAX) =   4000.0    K
+Low  temperature range (Tlow to Tcom)  =   200.00    K to  1000.0    K
+High temperature range (Tcom to Thigh) =   1000.0    K to  6000.0    K
+Polynomial coefficients:
+        Low range     High range
+ A(1)    3.5310        2.9526
+ A(2)  -0.12366E-03   0.13969E-02
+ A(3)  -0.50300E-06  -0.49263E-06
+ A(4)   0.24353E-08   0.78601E-10
+ A(5)  -0.14088E-11  -0.46076E-14
+ A(6)   -1047.0       -923.95
+ A(7)    2.9675        5.8719
+ Molecular weight =   28.000
+ Heat of formation/R =   0.0000
+  >  3: Species: H2O
+        Checking for  H2O in Biomass.mfx : Found.
+        Checking Specific Heat is defined along entire temperature range: Yes
+        Summary of thermochemical data read from the database:
+Species: H2O
+Phase index :   0, species index:   3
+Minimum allowed temperature (TMIN) =   50.000    K
+Maximum allowed temperature (TMAX) =   4000.0    K
+Low  temperature range (Tlow to Tcom)  =   200.00    K to  1000.0    K
+High temperature range (Tcom to Thigh) =   1000.0    K to  6000.0    K
+Polynomial coefficients:
+        Low range     High range
+ A(1)    4.1986        2.6770
+ A(2)  -0.20364E-02   0.29732E-02
+ A(3)   0.65203E-05  -0.77377E-06
+ A(4)  -0.54879E-08   0.94434E-10
+ A(5)   0.17720E-11  -0.42690E-14
+ A(6)   -30294.       -29886.
+ A(7)  -0.84901        6.8826
+ Molecular weight =   18.000
+ Heat of formation/R =  -29085.
+  >  4: Species: CO
+        Checking for  CO in Biomass.mfx : Found.
+        Checking Specific Heat is defined along entire temperature range: Yes
+        Summary of thermochemical data read from the database:
+Species: CO
+Phase index :   0, species index:   4
+Minimum allowed temperature (TMIN) =   50.000    K
+Maximum allowed temperature (TMAX) =   4000.0    K
+Low  temperature range (Tlow to Tcom)  =   200.00    K to  1000.0    K
+High temperature range (Tcom to Thigh) =   1000.0    K to  6000.0    K
+Polynomial coefficients:
+        Low range     High range
+ A(1)    3.5795        3.0485
+ A(2)  -0.61035E-03   0.13517E-02
+ A(3)   0.10168E-05  -0.48579E-06
+ A(4)   0.90701E-09   0.78854E-10
+ A(5)  -0.90442E-12  -0.46981E-14
+ A(6)   -14344.       -14266.
+ A(7)    3.5084        6.0171
+ Molecular weight =   28.000
+ Heat of formation/R =  -13294.
+  >  5: Species: CO2
+        Checking for  CO2 in Biomass.mfx : Found.
+        Checking Specific Heat is defined along entire temperature range: Yes
+        Summary of thermochemical data read from the database:
+Species: CO2
+Phase index :   0, species index:   5
+Minimum allowed temperature (TMIN) =   50.000    K
+Maximum allowed temperature (TMAX) =   4000.0    K
+Low  temperature range (Tlow to Tcom)  =   200.00    K to  1000.0    K
+High temperature range (Tcom to Thigh) =   1000.0    K to  6000.0    K
+Polynomial coefficients:
+        Low range     High range
+ A(1)    2.3568        4.6365
+ A(2)   0.89841E-02   0.27415E-02
+ A(3)  -0.71221E-05  -0.99590E-06
+ A(4)   0.24573E-08   0.16039E-09
+ A(5)  -0.14289E-12  -0.91620E-14
+ A(6)   -48372.       -49025.
+ A(7)    9.9009       -1.9349
+ Molecular weight =   44.000
+ Heat of formation/R =  -47328.
+  >  6: Species: H2
+        Checking for  H2 in Biomass.mfx : Found.
+        Checking Specific Heat is defined along entire temperature range: Yes
+        Summary of thermochemical data read from the database:
+Species: H2
+Phase index :   0, species index:   6
+Minimum allowed temperature (TMIN) =   50.000    K
+Maximum allowed temperature (TMAX) =   4000.0    K
+Low  temperature range (Tlow to Tcom)  =   200.00    K to  1000.0    K
+High temperature range (Tcom to Thigh) =   1000.0    K to  6000.0    K
+Polynomial coefficients:
+        Low range     High range
+ A(1)    2.3443        2.9329
+ A(2)   0.79805E-02   0.82661E-03
+ A(3)  -0.19478E-04  -0.14640E-06
+ A(4)   0.20157E-07   0.15410E-10
+ A(5)  -0.73761E-11  -0.68880E-15
+ A(6)   -917.94       -813.07
+ A(7)   0.68301       -1.0243
+ Molecular weight =   2.0000
+ Heat of formation/R =   0.0000
+  >  7: Species: CH4
+        Checking for  CH4 in Biomass.mfx : Found.
+        Checking Specific Heat is defined along entire temperature range: Yes
+        Summary of thermochemical data read from the database:
+Species: CH4
+Phase index :   0, species index:   7
+Minimum allowed temperature (TMIN) =   50.000    K
+Maximum allowed temperature (TMAX) =   4000.0    K
+Low  temperature range (Tlow to Tcom)  =   200.00    K to  1000.0    K
+High temperature range (Tcom to Thigh) =   1000.0    K to  6000.0    K
+Polynomial coefficients:
+        Low range     High range
+ A(1)    5.1491        1.6533
+ A(2)  -0.13662E-01   0.10026E-01
+ A(3)   0.49145E-04  -0.33166E-05
+ A(4)  -0.48425E-07   0.53648E-09
+ A(5)   0.16660E-10  -0.31470E-13
+ A(6)   -10247.       -10010.
+ A(7)   -4.6385        9.9051
+ Molecular weight =   16.000
+ Heat of formation/R =  -8972.3
+  >  8: Species: Tar
+        Checking for  Tar in Biomass.mfx : Found.
+        Checking Specific Heat is defined along entire temperature range: Yes
+        Summary of thermochemical data read from the database:
+Species: Tar
+Phase index :   0, species index:   8
+Minimum allowed temperature (TMIN) =   50.000    K
+Maximum allowed temperature (TMAX) =   4000.0    K
+Low  temperature range (Tlow to Tcom)  =   200.00    K to  1000.0    K
+High temperature range (Tcom to Thigh) =   1000.0    K to  6000.0    K
+Polynomial coefficients:
+        Low range     High range
+ A(1)  -0.82461E-02  -0.82461E-02
+ A(2)   0.36926E-03   0.36926E-03
+ A(3)  -0.21192E-06  -0.21192E-06
+ A(4)   0.50414E-10   0.50414E-10
+ A(5)  -0.16912E-14  -0.16912E-14
+ A(6)    0.0000        0.0000
+ A(7)    0.0000        0.0000
+ Molecular weight =   100.00
+ Heat of formation/R = -0.20738E+06
+  >  9: Species: Tar0
+        Checking for  Tar0 in Biomass.mfx : Found.
+        Checking Specific Heat is defined along entire temperature range: Yes
+        Summary of thermochemical data read from the database:
+Species: Tar0
+Phase index :   0, species index:   9
+Minimum allowed temperature (TMIN) =   50.000    K
+Maximum allowed temperature (TMAX) =   4000.0    K
+Low  temperature range (Tlow to Tcom)  =   200.00    K to  1000.0    K
+High temperature range (Tcom to Thigh) =   1000.0    K to  6000.0    K
+Polynomial coefficients:
+        Low range     High range
+ A(1)  -0.82461E-02  -0.82461E-02
+ A(2)   0.36926E-03   0.36926E-03
+ A(3)  -0.21192E-06  -0.21192E-06
+ A(4)   0.50414E-10   0.50414E-10
+ A(5)  -0.16912E-14  -0.16912E-14
+ A(6)    0.0000        0.0000
+ A(7)    0.0000        0.0000
+ Molecular weight =   100.00
+ Heat of formation/R = -0.20738E+06
+ <<<<<-----------------------------------------------------------------
+
+
+ >>>>>-----------------------------------------------------------------
+MESSAGE from check_data/check_solids_common_all.f:396
+The energy equations are being solved (ENERGY_EQ) and
+the constant solids specific heat is undefined (C_PS0). The
+thermochemical database will be used to gather specific heat data on
+the individual gas phase species.
+ <<<<<-----------------------------------------------------------------
+
+
+ >>>>>-----------------------------------------------------------------
+MESSAGE from check_data/check_solids_common_all.f:418
+One or more species molecular weights are undefined and
+the solids phase species equations are solved (SPECIES_EQ( 1)). The
+thermochemical database will be searched for molecular weight data.
+ <<<<<-----------------------------------------------------------------
+
+
+ >>>>>-----------------------------------------------------------------
+MESSAGE from check_data/check_solids_common_all.f:441
+Searching thermochemical databases for solids phase  1 species data.
+  >  1: Species: Biomass
+        Checking for  Biomass in Biomass.mfx : Found.
+        Checking Specific Heat is defined along entire temperature range: Yes
+        Summary of thermochemical data read from the database:
+Species: Biomass
+Phase index :   1, species index:   1
+Minimum allowed temperature (TMIN) =   50.000    K
+Maximum allowed temperature (TMAX) =   4000.0    K
+Low  temperature range (Tlow to Tcom)  =   200.00    K to  1000.0    K
+High temperature range (Tcom to Thigh) =   1000.0    K to  6000.0    K
+Polynomial coefficients:
+        Low range     High range
+ A(1)  -0.79408      -0.79408
+ A(2)   0.80978E-02   0.80978E-02
+ A(3)  -0.65640E-05  -0.65640E-05
+ A(4)   0.18478E-08   0.18478E-08
+ A(5)    0.0000        0.0000
+ A(6)    0.0000        0.0000
+ A(7)    0.0000        0.0000
+ Molecular weight =   100.00
+ Heat of formation/R =   0.0000
+  >  2: Species: Moisture
+        Checking for  Moisture in Biomass.mfx : Found.
+        Checking Specific Heat is defined along entire temperature range: Yes
+        Summary of thermochemical data read from the database:
+Species: Moisture
+Phase index :   1, species index:   2
+Minimum allowed temperature (TMIN) =   50.000    K
+Maximum allowed temperature (TMAX) =   4000.0    K
+Low  temperature range (Tlow to Tcom)  =   273.15    K to  600.00    K
+High temperature range (Tcom to Thigh) =   600.00    K to  600.00    K
+Polynomial coefficients:
+        Low range     High range
+ A(1)    72.558        0.0000
+ A(2)  -0.66245        0.0000
+ A(3)   0.25620E-02    0.0000
+ A(4)  -0.43659E-05    0.0000
+ A(5)   0.27818E-08    0.0000
+ A(6)   -41887.        0.0000
+ A(7)   -288.28        0.0000
+ Molecular weight =   18.000
+ Heat of formation/R =  -34377.
+  >  3: Species: Char
+        Checking for  Char in Biomass.mfx : Found.
+        Checking Specific Heat is defined along entire temperature range: Yes
+        Summary of thermochemical data read from the database:
+Species: Char
+Phase index :   1, species index:   3
+Minimum allowed temperature (TMIN) =   50.000    K
+Maximum allowed temperature (TMAX) =   4000.0    K
+Low  temperature range (Tlow to Tcom)  =   200.00    K to  1000.0    K
+High temperature range (Tcom to Thigh) =   1000.0    K to  6000.0    K
+Polynomial coefficients:
+        Low range     High range
+ A(1)  -0.79408      -0.79408
+ A(2)   0.80978E-02   0.80978E-02
+ A(3)  -0.65640E-05  -0.65640E-05
+ A(4)   0.18478E-08   0.18478E-08
+ A(5)    0.0000        0.0000
+ A(6)    0.0000        0.0000
+ A(7)    0.0000        0.0000
+ Molecular weight =   12.000
+ Heat of formation/R =   0.0000
+  >  4: Species: Ash
+        Checking for  Ash in Biomass.mfx : Found.
+        Checking Specific Heat is defined along entire temperature range: Yes
+        Summary of thermochemical data read from the database:
+Species: Ash
+Phase index :   1, species index:   4
+Minimum allowed temperature (TMIN) =   50.000    K
+Maximum allowed temperature (TMAX) =   4000.0    K
+Low  temperature range (Tlow to Tcom)  =   200.00    K to  1000.0    K
+High temperature range (Tcom to Thigh) =   1000.0    K to  6000.0    K
+Polynomial coefficients:
+        Low range     High range
+ A(1)    8.7077        8.7077
+ A(2)   0.84541E-02   0.84541E-02
+ A(3)    0.0000        0.0000
+ A(4)    0.0000        0.0000
+ A(5)    0.0000        0.0000
+ A(6)    0.0000        0.0000
+ A(7)    0.0000        0.0000
+ Molecular weight =   120.00
+ Heat of formation/R =   0.0000
+ <<<<<-----------------------------------------------------------------
+
+
+ >>>>>-----------------------------------------------------------------
+MESSAGE from check_data/check_solids_common_all.f:396
+The energy equations are being solved (ENERGY_EQ) and
+the constant solids specific heat is undefined (C_PS0). The
+thermochemical database will be used to gather specific heat data on
+the individual gas phase species.
+ <<<<<-----------------------------------------------------------------
+
+
+ >>>>>-----------------------------------------------------------------
+MESSAGE from check_data/check_solids_common_all.f:441
+Searching thermochemical databases for solids phase  2 species data.
+  >  1: Species: Sand
+        Checking for  Sand in Biomass.mfx : Found.
+        Checking Specific Heat is defined along entire temperature range: Yes
+        Summary of thermochemical data read from the database:
+Species: Sand
+Phase index :   2, species index:   1
+Minimum allowed temperature (TMIN) =   50.000    K
+Maximum allowed temperature (TMAX) =   4000.0    K
+Low  temperature range (Tlow to Tcom)  =   200.00    K to  1000.0    K
+High temperature range (Tcom to Thigh) =   1000.0    K to  6000.0    K
+Polynomial coefficients:
+        Low range     High range
+ A(1)    3.7647        2.5809
+ A(2)  -0.71206E-02  -0.20654E-03
+ A(3)   0.15731E-04   0.19338E-06
+ A(4)  -0.15382E-07  -0.45736E-10
+ A(5)   0.55318E-11   0.33720E-14
+ A(6)    53205.        53383.
+ A(7)   0.30223        5.6052
+ Molecular weight =   28.085
+ Heat of formation/R =   54122.
+ <<<<<-----------------------------------------------------------------
+   |--------------------------------------------------------------------|
+   | Name: DRYING                                                       |
+   |--------------------------------------------------------------------|
+   | Chemical Eq:  MOISTURE --> H2O                                     |
+   |--------------------------------------------------------------------|
+   | Classification: Heterogeneous                                      |
+   |--------------------------------------------------------------------|
+   | Species  |   Stoich    |         | Species | Molecular  |          |
+   |  Alias   |   Coeff.    |  Phase  |  Index  |   Weight   |   Type   |
+   |----------|-------------|---------|---------|------------|----------|
+   | MOISTURE |     1.0000  | Solid 1 |     2   |    18.0000 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    H2O   |     1.0000  |   Gas   |     3   |    18.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |--------------------------------------------------------------------|
+   | Name: PYROLYSIS                                                    |
+   |--------------------------------------------------------------------|
+   | Chemical Eq:  BIOMASS --> 0.9639*CO + 0.8771*CO2 + 0.3491*CH4 + 1.6|
+   |--------------------------------------------------------------------|
+   | Classification: Heterogeneous                                      |
+   |--------------------------------------------------------------------|
+   | Species  |   Stoich    |         | Species | Molecular  |          |
+   |  Alias   |   Coeff.    |  Phase  |  Index  |   Weight   |   Type   |
+   |----------|-------------|---------|---------|------------|----------|
+   |  BIOMASS |     1.0000  | Solid 1 |     1   |   100.0004 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CO    |     0.9639  |   Gas   |     4   |    28.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CO2   |     0.8771  |   Gas   |     5   |    44.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CH4   |     0.3491  |   Gas   |     7   |    16.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |    H2    |     1.6276  |   Gas   |     6   |     2.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |    H2O   |     1.4210  |   Gas   |     3   |    18.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |--------------------------------------------------------------------|
+   | Name: CHARRING                                                     |
+   |--------------------------------------------------------------------|
+   | Chemical Eq:  BIOMASS --> 8.3334*CHAR                              |
+   |--------------------------------------------------------------------|
+   | Classification: Homogeneous                                        |
+   |--------------------------------------------------------------------|
+   | Species  |   Stoich    |         | Species | Molecular  |          |
+   |  Alias   |   Coeff.    |  Phase  |  Index  |   Weight   |   Type   |
+   |----------|-------------|---------|---------|------------|----------|
+   |  BIOMASS |     1.0000  | Solid 1 |     1   |   100.0004 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |   CHAR   |     8.3334  | Solid 1 |     3   |    12.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |--------------------------------------------------------------------|
+   | Name: TARRING                                                      |
+   |--------------------------------------------------------------------|
+   | Chemical Eq:  BIOMASS --> TAR                                      |
+   |--------------------------------------------------------------------|
+   | Classification: Heterogeneous                                      |
+   |--------------------------------------------------------------------|
+   | Species  |   Stoich    |         | Species | Molecular  |          |
+   |  Alias   |   Coeff.    |  Phase  |  Index  |   Weight   |   Type   |
+   |----------|-------------|---------|---------|------------|----------|
+   |  BIOMASS |     1.0000  | Solid 1 |     1   |   100.0004 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    TAR   |     1.0000  |   Gas   |     8   |   100.0016 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |--------------------------------------------------------------------|
+   | Name: TAR_CRACKING                                                 |
+   |--------------------------------------------------------------------|
+   | Chemical Eq:  TAR --> 2*CO + 0.5*CO2 + 0.75*CH4 + 5*H2             |
+   |--------------------------------------------------------------------|
+   | Classification: Homogeneous                                        |
+   |--------------------------------------------------------------------|
+   | Species  |   Stoich    |         | Species | Molecular  |          |
+   |  Alias   |   Coeff.    |  Phase  |  Index  |   Weight   |   Type   |
+   |----------|-------------|---------|---------|------------|----------|
+   |    TAR   |     1.0000  |   Gas   |     8   |   100.0016 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CO    |     2.0000  |   Gas   |     4   |    28.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CO2   |     0.5000  |   Gas   |     5   |    44.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CH4   |     0.7500  |   Gas   |     7   |    16.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |    H2    |     5.0000  |   Gas   |     6   |     2.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |--------------------------------------------------------------------|
+   | Name: CHAR_CO2_GASIF                                               |
+   |--------------------------------------------------------------------|
+   | Chemical Eq:  CHAR + CO2 --> 2*CO                                  |
+   |--------------------------------------------------------------------|
+   | Classification: Heterogeneous                                      |
+   |--------------------------------------------------------------------|
+   | Species  |   Stoich    |         | Species | Molecular  |          |
+   |  Alias   |   Coeff.    |  Phase  |  Index  |   Weight   |   Type   |
+   |----------|-------------|---------|---------|------------|----------|
+   |   CHAR   |     1.0000  | Solid 1 |     3   |    12.0000 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CO2   |     1.0000  |   Gas   |     5   |    44.0000 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CO    |     2.0000  |   Gas   |     4   |    28.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |--------------------------------------------------------------------|
+   | Name: CHAR_H2O_GASIF                                               |
+   |--------------------------------------------------------------------|
+   | Chemical Eq:  CHAR + H2O --> CO + H2                               |
+   |--------------------------------------------------------------------|
+   | Classification: Heterogeneous                                      |
+   |--------------------------------------------------------------------|
+   | Species  |   Stoich    |         | Species | Molecular  |          |
+   |  Alias   |   Coeff.    |  Phase  |  Index  |   Weight   |   Type   |
+   |----------|-------------|---------|---------|------------|----------|
+   |   CHAR   |     1.0000  | Solid 1 |     3   |    12.0000 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    H2O   |     1.0000  |   Gas   |     3   |    18.0000 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CO    |     1.0000  |   Gas   |     4   |    28.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |    H2    |     1.0000  |   Gas   |     6   |     2.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |--------------------------------------------------------------------|
+   | Name: CHAR_COMBUSTION                                              |
+   |--------------------------------------------------------------------|
+   | Chemical Eq:  CHAR + O2 --> CO2                                    |
+   |--------------------------------------------------------------------|
+   | Classification: Heterogeneous                                      |
+   |--------------------------------------------------------------------|
+   | Species  |   Stoich    |         | Species | Molecular  |          |
+   |  Alias   |   Coeff.    |  Phase  |  Index  |   Weight   |   Type   |
+   |----------|-------------|---------|---------|------------|----------|
+   |   CHAR   |     1.0000  | Solid 1 |     3   |    12.0000 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    O2    |     1.0000  |   Gas   |     1   |    32.0000 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CO2   |     1.0000  |   Gas   |     5   |    44.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |--------------------------------------------------------------------|
+   | Name: CO_COMBUSTION                                                |
+   |--------------------------------------------------------------------|
+   | Chemical Eq:  CO + 0.5*O2 --> CO2                                  |
+   |--------------------------------------------------------------------|
+   | Classification: Homogeneous                                        |
+   |--------------------------------------------------------------------|
+   | Species  |   Stoich    |         | Species | Molecular  |          |
+   |  Alias   |   Coeff.    |  Phase  |  Index  |   Weight   |   Type   |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CO    |     1.0000  |   Gas   |     4   |    28.0000 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    O2    |     0.5000  |   Gas   |     1   |    32.0000 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CO2   |     1.0000  |   Gas   |     5   |    44.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |--------------------------------------------------------------------|
+   | Name: H2_COMBUSTION                                                |
+   |--------------------------------------------------------------------|
+   | Chemical Eq:  H2 + 0.5*O2 --> H2O                                  |
+   |--------------------------------------------------------------------|
+   | Classification: Homogeneous                                        |
+   |--------------------------------------------------------------------|
+   | Species  |   Stoich    |         | Species | Molecular  |          |
+   |  Alias   |   Coeff.    |  Phase  |  Index  |   Weight   |   Type   |
+   |----------|-------------|---------|---------|------------|----------|
+   |    H2    |     1.0000  |   Gas   |     6   |     2.0000 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    O2    |     0.5000  |   Gas   |     1   |    32.0000 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    H2O   |     1.0000  |   Gas   |     3   |    18.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |--------------------------------------------------------------------|
+   | Name: WATER_GAS_SHIFT                                              |
+   |--------------------------------------------------------------------|
+   | Chemical Eq:  CO + H2O --> CO2 + H2                                |
+   |--------------------------------------------------------------------|
+   | Classification: Homogeneous                                        |
+   |--------------------------------------------------------------------|
+   | Species  |   Stoich    |         | Species | Molecular  |          |
+   |  Alias   |   Coeff.    |  Phase  |  Index  |   Weight   |   Type   |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CO    |     1.0000  |   Gas   |     4   |    28.0000 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    H2O   |     1.0000  |   Gas   |     3   |    18.0000 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CO2   |     1.0000  |   Gas   |     5   |    44.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |    H2    |     1.0000  |   Gas   |     6   |     2.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |--------------------------------------------------------------------|
+   | Name: METHANE_REFORMING                                            |
+   |--------------------------------------------------------------------|
+   | Chemical Eq:  CH4 + H2O --> CO + 3*H2                              |
+   |--------------------------------------------------------------------|
+   | Classification: Homogeneous                                        |
+   |--------------------------------------------------------------------|
+   | Species  |   Stoich    |         | Species | Molecular  |          |
+   |  Alias   |   Coeff.    |  Phase  |  Index  |   Weight   |   Type   |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CH4   |     1.0000  |   Gas   |     7   |    16.0000 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    H2O   |     1.0000  |   Gas   |     3   |    18.0000 | Reactant |
+   |----------|-------------|---------|---------|------------|----------|
+   |    CO    |     1.0000  |   Gas   |     4   |    28.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+   |    H2    |     3.0000  |   Gas   |     6   |     2.0000 | Product  |
+   |----------|-------------|---------|---------|------------|----------|
+
+
+ >>>>>-----------------------------------------------------------------
+MESSAGE from check_data/check_chemical_rxns.f:108
+Reaction rates for fluid reactions will be automatically computed based on Arrhenius expression.
+Any custom reaction rates coded in usr_rates.f will be ignored.
+ <<<<<-----------------------------------------------------------------
+ From GET_STL_FACET_COUNT: Counting STL facets...
+
+
+ >>>>>-----------------------------------------------------------------
+MESSAGE from cartesian_grid/get_stl_data.f:737
+ Total number of STL facets found =           0 
+ Maximum additional facets needed for BC/IS =           42
+ <<<<<-----------------------------------------------------------------
+============================================================================
+ MESH STATISTICS:
+============================================================================
+ NUMBER OF CELLS          =      700
+ NUMBER OF STANDARD CELLS =      700 (100.00 % of Total)
+ NUMBER OF CUT CELLS      =        0 (  0.00 % of Total)
+ NUMBER OF FLUID CELLS    =      700 (100.00 % of Total)
+ NUMBER OF BLOCKED CELLS  =        0 (  0.00 % of Total)
+============================================================================
+ WROTE BOUNDARY IN VTK FILE : BIOMASS_boundary.vtk
+ From GET_STL_DATA_IS: Analyzing ISs...
+  IS_ID    IS_TYPE
+ Number of IS using STL =      0
+   Compressible: IJK_P_g remaining undefined.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =   10   J =   14   K =    1 M =    1
+ Eps =  0.19355E-07 Us =  -3034.7     Vs =  -58.836     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    2   J =   37   K =    1 M =    1
+ Eps =  0.19537E-02 Us =  0.72156     Vs =  -30339.     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    3   J =   18   K =    1 M =    1
+ Eps =  0.55107E-03 Us =  -4128.0     Vs =  -3.3646     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =   10   J =   12   K =    1 M =    1
+ Eps =  0.53459E-05 Us =  -8120.2     Vs =  -127.04     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    4   J =   21   K =    1 M =    1
+ Eps =  0.12032E-02 Us =  -4559.6     Vs =  -21.796     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    5   J =   20   K =    1 M =    1
+ Eps =  0.16222E-02 Us =  -4651.9     Vs =  -6.4803     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    2   J =   30   K =    1 M =    1
+ Eps =  0.35599E-02 Us =  0.74349     Vs =  -6313.7     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    2   J =   31   K =    1 M =    1
+ Eps =  0.30792E-02 Us =  0.76312     Vs =  -10919.     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =   10   J =   12   K =    1 M =    1
+ Eps =  0.10333E-03 Us =  -4780.0     Vs =  -25.435     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    6   J =    8   K =    1 M =    1
+ Eps =  0.13067E-04 Us =  -3216.6     Vs =  -60.601     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    7   J =    8   K =    1 M =    1
+ Eps =  0.14496E-04 Us =  -8856.2     Vs =  -108.66     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    4   J =   22   K =    1 M =    1
+ Eps =  0.30655E-02 Us =  -3718.2     Vs =  -2.1451     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =   11   J =   26   K =    1 M =    1
+ Eps =  0.48228E-02 Us =   0.0000     Vs =  -2735.9     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    5   J =   23   K =    1 M =    1
+ Eps =  0.44871E-02 Us =  -3608.1     Vs =  -18.472     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    2   J =   32   K =    1 M =    1
+ Eps =  0.39729E-02 Us =  -16108.     Vs =   5.0592     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    2   J =   33   K =    1 M =    1
+ Eps =  0.46934E-02 Us =  -3071.4     Vs =   1.4882     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    2   J =   15   K =    1 M =    1
+ Eps =  0.36439E-02 Us =  -3675.7     Vs =  -194.80     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    9   J =    7   K =    1 M =    1
+ Eps =  0.17241E-04 Us =  -2677.9     Vs =  -106.83     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    8   J =   22   K =    1 M =    1
+ Eps =  0.52118E-02 Us =  -90.589     Vs =  -3036.0     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =   10   J =    8   K =    1 M =    1
+ Eps =  0.15678E-04 Us =  -2737.7     Vs =  -86.305     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =   10   J =   26   K =    1 M =    2
+ Eps =  0.85682     Us =  -6.5444     Vs =  -3245.0     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+
+
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =   10   J =    9   K =    1 M =    1
+ Eps =  0.11702E-04 Us =  -2654.7     Vs =  -72.933     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =   10   J =   24   K =    1 M =    1
+ Eps =  0.69006E-02 Us =  -12375.     Vs = -0.77119     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =   10   J =   27   K =    1 M =    1
+ Eps =  0.58641E-02 Us =  -12104.     Vs =   30.810     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =   10   J =   10   K =    1 M =    1
+ Eps =  0.12809E-03 Us =  -6378.4     Vs =  -30.968     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+
+
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    5   J =   21   K =    1 M =    1
+ Eps =  0.70011E-02 Us =   3.2723     Vs =  -2771.0     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =    4   J =   21   K =    1 M =    1
+ Eps =  0.67166E-02 Us =  -9359.8     Vs =   6.8702     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =   10   J =   26   K =    1 M =    1
+ Eps =  0.79753E-02 Us =  -18907.     Vs =   21.629     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+ >>>>>=================================================================
+WARNING from utilities_mod.f:182
+Velocity exceeds limit:   2500.0
+in cell: I =   10   J =   26   K =    1 M =    1
+ Eps =  0.94433E-02 Us =  -25495.     Vs =   45.023     Ws =   0.0000
+To change the limit, adjust the scale factor MAX_INLET_VEL_FAC.
+ <<<<<=================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Simulation start time = 0.0000s
+Simulation time reached = 20.00s
+Elapsed real time = 1.380h
+Time spent in I/O = 1.934s

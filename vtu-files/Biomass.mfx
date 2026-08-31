@@ -1,0 +1,595 @@
+#! File written Fri Mar 13 16:54:49 2026
+#! MFiX version 25.3 by toobler on tblr-lws-62
+
+### Run controls
+  description      = 'Biomass gasification with CHEMKIN reactions'
+  run_name         = 'Biomass'
+  units            = 'SI'
+  run_type         = 'new'
+  tstop            = 20.0
+  dt               = 2.000000e-04
+  dt_min           = 1.000000e-09
+  dt_max           = 0.02
+  dt_fac           = 0.9
+  res_dt           = 0.5
+  batch_wallclock  = 172800.0
+  chk_batchq_end   = .False.
+  drag_c1          = 0.8
+  drag_d1          = 2.65
+  drag_type        = 'SYAM_OBRIEN'
+  turbulence_model = 'NONE'
+  enable_dmp_log   = .False.
+  energy_eq        = .True.
+  term_buffer      = 180.0
+  ppo              = .False.
+  project_version  = '65'
+  species_eq(0)    = .True.
+  species_eq(1)    = .True.
+  species_eq(2)    = .False.
+
+### Physical parameters
+  gravity_x = 0.0
+  gravity_y = -9.80665
+  gravity_z = 0.0
+
+### Cartesian grid
+  cartesian_grid  = .False.
+  use_stl         = .False.
+  write_dashboard = .False.
+
+### Numeric
+  max_inlet_vel_fac = 100.0
+  max_nit           = 50
+  ### Discretization
+  discretize(1) = 0
+  discretize(2) = 0
+  discretize(3) = 0
+  discretize(4) = 0
+  discretize(5) = 0
+  discretize(6) = 0
+  discretize(7) = 0
+
+### Geometry
+  coordinates = 'CARTESIAN'
+  imax        = 10
+  jmax        = 70
+  x_max       = 1.2
+  x_min       = 0
+  y_max       = 5.6
+  y_min       = 0
+  z_max       = 0.3
+  z_min       = 0
+  no_k        = .True.
+
+#### Fluid
+  mu_g0      = 3.491000e-05
+  kg_model   = 'AIR'
+  mu_g_model = 'CONSTANT'
+  nmax_g     = 9
+  # Fluid species 1: O2
+    species_g(1)       = 'O2'
+    species_alias_g(1) = 'O2'
+  # Fluid species 2: N2
+    species_g(2)       = 'N2'
+    species_alias_g(2) = 'N2'
+  # Fluid species 3: H2O
+    species_g(3)       = 'H2O'
+    species_alias_g(3) = 'H2O'
+  # Fluid species 4: CO
+    species_g(4)       = 'CO'
+    species_alias_g(4) = 'CO'
+  # Fluid species 5: CO2
+    species_g(5)       = 'CO2'
+    species_alias_g(5) = 'CO2'
+  # Fluid species 6: H2
+    species_g(6)       = 'H2'
+    species_alias_g(6) = 'H2'
+  # Fluid species 7: CH4
+    species_g(7)       = 'CH4'
+    species_alias_g(7) = 'CH4'
+  # Fluid species 8: Tar
+    species_g(8)       = 'Tar'
+    species_alias_g(8) = 'Tar'
+  # Fluid species 9: Tar0
+    species_g(9)       = 'Tar0'
+    species_alias_g(9) = 'Tar0'
+
+#### Solids
+  mmax = 2
+  # Solid 1: Biomass
+    solids_model(1)  = 'TFM'
+    d_p0(1)          = 0.000625
+    nmax_s(1)        = 4
+    close_packed(1)  = .True.
+    inert_species(1) = 4
+    k_s0(1)          = 418.4
+    ks_model(1)      = 'BAUER'
+    # Solid 1 species 1: Biomass
+      species_s(1,1)       = 'Biomass'
+      species_alias_s(1,1) = 'Biomass'
+      ro_xs0(1,1)          = 594.4
+      x_s0(1,1)            = 0.95
+    # Solid 1 species 2: Moisture
+      species_s(1,2)       = 'Moisture'
+      species_alias_s(1,2) = 'Moisture'
+      ro_xs0(1,2)          = 649.0
+      x_s0(1,2)            = 0.0
+    # Solid 1 species 3: Char
+      species_s(1,3)       = 'Char'
+      species_alias_s(1,3) = 'Char'
+      ro_xs0(1,3)          = 450.0
+      x_s0(1,3)            = 0.0
+    # Solid 1 species 4: Ash
+      species_s(1,4)       = 'Ash'
+      species_alias_s(1,4) = 'Ash'
+      ro_xs0(1,4)          = 450.0
+      x_s0(1,4)            = 0.05
+
+  # Solid 2: Sand
+    solids_model(2) = 'TFM'
+    d_p0(2)         = 0.00065
+    ro_s0(2)        = 2649.0
+    nmax_s(2)       = 1
+    close_packed(2) = .True.
+    k_s0(2)         = 418.4
+    ks_model(2)     = 'BAUER'
+    # Solid 2 species 1: Sand
+      species_s(2,1)       = 'Sand'
+      species_alias_s(2,1) = 'Sand'
+
+
+### Initial conditions
+  # Initial condition 1: IC_1
+    ic_x_e(1)       = 1.2
+    ic_x_w(1)       = 0.0
+    ic_y_s(1)       = 2.08
+    ic_y_n(1)       = 5.6
+    ic_ep_g(1)      = 1.0
+    ic_t_g(1)       = 1073.15
+    ic_u_g(1)       = 0.0
+    ic_v_g(1)       = 0.0
+    ic_w_g(1)       = 0.0
+    ic_gama_rg(1)   = 0.0
+    ic_p_g(1)       = 101325.0
+    ic_t_rg(1)      = 293.15
+    ic_x_g(1,1)     = 0.0 !O2
+    ic_x_g(1,2)     = 1.0 !N2
+    ic_x_g(1,3)     = 0.0 !H2O
+    ic_x_g(1,4)     = 0.0 !CO
+    ic_x_g(1,5)     = 0.0 !CO2
+    ic_x_g(1,6)     = 0.0 !H2
+    ic_x_g(1,7)     = 0.0 !CH4
+    ic_x_g(1,8)     = 0.0 !Tar
+    ic_x_g(1,9)     = 0.0 !Tar0
+    ic_ep_s(1,1)    = 0.0
+    ic_t_s(1,1)     = 1073.15
+    ic_u_s(1,1)     = 0.0
+    ic_v_s(1,1)     = 0.0
+    ic_w_s(1,1)     = 0.0
+    ic_gama_rs(1,1) = 0.0
+    ic_t_rs(1,1)    = 293.15
+    ic_x_s(1,1,1)   = 0.0 !Biomass
+    ic_x_s(1,1,2)   = 0.0 !Moisture
+    ic_x_s(1,1,3)   = 0.0 !Char
+    ic_x_s(1,1,4)   = 1.0 !Ash
+    ic_ep_s(1,2)    = 0.0
+    ic_t_s(1,2)     = 1073.15
+    ic_u_s(1,2)     = 0.0
+    ic_v_s(1,2)     = 0.0
+    ic_w_s(1,2)     = 0.0
+    ic_gama_rs(1,2) = 0.0
+    ic_t_rs(1,2)    = 293.15
+    ic_x_s(1,2,1)   = 1.0 !Sand
+
+  # Initial condition 2: IC_2
+    ic_x_e(2)       = 1.2
+    ic_x_w(2)       = 0.0
+    ic_y_s(2)       = 0.0
+    ic_y_n(2)       = 2.08
+    ic_ep_g(2)      = 0.41
+    ic_t_g(2)       = 1073.15
+    ic_u_g(2)       = 0.0
+    ic_v_g(2)       = 0.0
+    ic_w_g(2)       = 0.0
+    ic_gama_rg(2)   = 0.0
+    ic_p_g(2)       = 101325.0
+    ic_t_rg(2)      = 293.15
+    ic_x_g(2,1)     = 0.0 !O2
+    ic_x_g(2,2)     = 1.0 !N2
+    ic_x_g(2,3)     = 0.0 !H2O
+    ic_x_g(2,4)     = 0.0 !CO
+    ic_x_g(2,5)     = 0.0 !CO2
+    ic_x_g(2,6)     = 0.0 !H2
+    ic_x_g(2,7)     = 0.0 !CH4
+    ic_x_g(2,8)     = 0.0 !Tar
+    ic_x_g(2,9)     = 0.0 !Tar0
+    ic_ep_s(2,1)    = 0.0
+    ic_t_s(2,1)     = 1073.15
+    ic_u_s(2,1)     = 0.0
+    ic_v_s(2,1)     = 0.0
+    ic_w_s(2,1)     = 0.0
+    ic_gama_rs(2,1) = 0.0
+    ic_t_rs(2,1)    = 293.15
+    ic_x_s(2,1,1)   = 0.0 !Biomass
+    ic_x_s(2,1,2)   = 0.0 !Moisture
+    ic_x_s(2,1,3)   = 0.0 !Char
+    ic_x_s(2,1,4)   = 1.0 !Ash
+    ic_ep_s(2,2)    = 0.59
+    ic_t_s(2,2)     = 1073.15
+    ic_u_s(2,2)     = 0.0
+    ic_v_s(2,2)     = 0.0
+    ic_w_s(2,2)     = 0.0
+    ic_gama_rs(2,2) = 0.0
+    ic_t_rs(2,2)    = 293.15
+    ic_x_s(2,2,1)   = 1.0 !Sand
+
+
+# Boundary conditions
+  # Boundary condition 1: BC_1
+    bc_type(1)  = 'MI'
+    bc_x_e(1)   = 1.2
+    bc_x_w(1)   = 0.0
+    bc_y_s(1)   = 0.0
+    bc_y_n(1)   = 0.0
+    bc_ep_g(1)  = 1.0
+    bc_p_g(1)   = 101325.0
+    bc_t_g(1)   = 1073.15
+    bc_u_g(1)   = 0.0
+    bc_v_g(1)   = 0.2500
+    bc_w_g(1)   = 0.0
+    bc_x_g(1,1) = 0.24 !O2
+    bc_x_g(1,2) = 0.76 !N2
+    bc_x_g(1,3) = 0 !H2O
+    bc_x_g(1,4) = 0 !CO
+    bc_x_g(1,5) = 0 !CO2
+    bc_x_g(1,6) = 0 !H2
+    bc_x_g(1,7) = 0 !CH4
+    bc_x_g(1,8) = 0 !Tar
+    bc_x_g(1,9) = 0 !Tar0
+    # Solid 1: Biomass
+      bc_ep_s(1,1)  = 0.0
+      bc_t_s(1,1)   = 293.15
+      bc_u_s(1,1)   = 0.0
+      bc_v_s(1,1)   = 0.0
+      bc_w_s(1,1)   = 0.0
+      bc_x_s(1,1,1) = 0.0 !Biomass
+      bc_x_s(1,1,2) = 0.0 !Moisture
+      bc_x_s(1,1,3) = 0.0 !Char
+      bc_x_s(1,1,4) = 1.0 !Ash
+    # Solid 2: Sand
+      bc_ep_s(1,2)  = 0.0
+      bc_t_s(1,2)   = 293.15
+      bc_u_s(1,2)   = 0.0
+      bc_v_s(1,2)   = 0.0
+      bc_w_s(1,2)   = 0.0
+      bc_x_s(1,2,1) = 1.0 !Sand
+
+  # Boundary condition 2: BC_2
+    bc_type(2)  = 'MI'
+    bc_x_e(2)   = 0.0
+    bc_x_w(2)   = 0.0
+    bc_y_s(2)   = 0.48
+    bc_y_n(2)   = 0.8
+    bc_ep_g(2)  = 0.993022
+    bc_p_g(2)   = 101325.0
+    bc_t_g(2)   = 300.0
+    bc_u_g(2)   = 0.1200
+    bc_v_g(2)   = 0.0
+    bc_w_g(2)   = 0.0
+    bc_x_g(2,1) = 0 !O2
+    bc_x_g(2,2) = 1.0 !N2
+    bc_x_g(2,3) = 0 !H2O
+    bc_x_g(2,4) = 0 !CO
+    bc_x_g(2,5) = 0 !CO2
+    bc_x_g(2,6) = 0 !H2
+    bc_x_g(2,7) = 0 !CH4
+    bc_x_g(2,8) = 0 !Tar
+    bc_x_g(2,9) = 0 !Tar0
+    # Solid 1: Biomass
+      bc_ep_s(2,1)  = 0.006978
+      bc_t_s(2,1)   = 300.0
+      bc_u_s(2,1)   = 0.1200
+      bc_v_s(2,1)   = 0.0
+      bc_w_s(2,1)   = 0.0
+      bc_x_s(2,1,1) = 0.9500 !Biomass
+      bc_x_s(2,1,2) = 0.0000 !Moisture
+      bc_x_s(2,1,3) = 0.0 !Char
+      bc_x_s(2,1,4) = 0.05 !Ash
+    # Solid 2: Sand
+      bc_ep_s(2,2)  = 0.0
+      bc_t_s(2,2)   = 300.0
+      bc_u_s(2,2)   = 0.0
+      bc_v_s(2,2)   = 0.0
+      bc_w_s(2,2)   = 0.0
+      bc_x_s(2,2,1) = 1.0 !Sand
+
+  # Boundary condition 5: BC_5
+    bc_type(5) = 'PO'
+    bc_x_e(5)  = 1.2
+    bc_x_w(5)  = 0.0
+    bc_y_s(5)  = 5.6
+    bc_y_n(5)  = 5.6
+    bc_p_g(5)  = 101325.0
+    bc_t_g(5)  = 1073.15
+    # Solid 1: Biomass
+      bc_t_s(5,1) = 1073.15
+    # Solid 2: Sand
+      bc_t_s(5,2) = 1073.15
+
+
+# VTK outputs
+  write_vtk_files         = .True.
+  time_dependent_filename = .True.
+  # VTK output 1: Entire Domain
+    vtk_filebase(1) = 'Entire_Domain'
+    vtk_x_e(1)      = 1.2 #!MFIX-GUI eq{float(xmax)}
+    vtk_x_w(1)      = 0.0 #!MFIX-GUI eq{float(xmin)}
+    vtk_y_s(1)      = 0.0 #!MFIX-GUI eq{float(ymin)}
+    vtk_y_n(1)      = 5.6 #!MFIX-GUI eq{float(ymax)}
+    vtk_data(1)     = 'C'
+    vtk_dt(1)       = 0.1
+    vtk_nxs(1)      = 0
+    vtk_nys(1)      = 0
+    vtk_nzs(1)      = 0
+    vtk_ep_g(1)     = .True.
+    vtk_p_g(1)      = .True.
+    vtk_t_g(1)      = .True.
+    vtk_vel_g(1)    = .True.
+    vtk_x_g(1,1)    = .True. !O2
+    vtk_x_g(1,2)    = .True. !N2
+    vtk_x_g(1,3)    = .True. !H2O
+    vtk_x_g(1,4)    = .True. !CO
+    vtk_x_g(1,5)    = .True. !CO2
+    vtk_x_g(1,6)    = .True. !H2
+    vtk_x_g(1,7)    = .True. !CH4
+    vtk_x_g(1,8)    = .True. !Tar
+    vtk_x_g(1,9)    = .True. !Tar0
+    vtk_t_s(1,1)    = .True.
+    vtk_vel_s(1,1)  = .True.
+    vtk_x_s(1,1,1)  = .True. !Biomass
+    vtk_x_s(1,1,2)  = .True. !Moisture
+    vtk_x_s(1,1,3)  = .True. !Char
+    vtk_x_s(1,1,4)  = .True. !Ash
+    vtk_t_s(1,2)    = .True.
+    vtk_vel_s(1,2)  = .True.
+
+
+# SPx outputs
+  spx_dt(1) = 0.03125 #!MFIX-GUI eq{float(1.0/32.0)}
+  spx_dt(2) = 0.03125 #!MFIX-GUI eq{float(1.0/32.0)}
+  spx_dt(3) = 0.03125 #!MFIX-GUI eq{float(1.0/32.0)}
+  spx_dt(4) = 0.03125 #!MFIX-GUI eq{float(1.0/32.0)}
+  spx_dt(5) = 0.03125 #!MFIX-GUI eq{float(1.0/32.0)}
+  spx_dt(6) = 0.03125 #!MFIX-GUI eq{float(1.0/32.0)}
+  spx_dt(7) = 0.03125 #!MFIX-GUI eq{float(1.0/32.0)}
+  spx_dt(8) = 100.0
+  spx_dt(9) = 100.0
+
+### Residuals
+  group_resid     = .True.
+  resid_string(1) = 'P1'
+  resid_string(2) = 'U1'
+  resid_string(3) = 'V1'
+
+### Two-fluid model
+  c_e                           = 0.97
+  c_f                           = 0.1
+  ep_star                       = 0.4
+  fedors_landel                 = .True.
+  friction_model                = 'SCHAEFFER'
+  phi                           = 55.0
+  rdf_type                      = 'LEBOWITZ'
+  segregation_slope_coefficient = 0.3
+
+### UDF control
+call_usr = .True.
+
+### Output control
+nlog = 100
+
+### Chemical reactions
+arrhenius_rrates_fluid = .True.
+stiff_chem_max_steps   = 1000000
+stiff_chemistry        = .True.
+
+
+# Chemical reaction section
+@(RXNS)
+Drying {
+    chem_eq = "Moisture --> H2O"
+    arrhenius_coeff = 2.50000000e+06 0 8.79621200e+07
+}
+Pyrolysis {
+    chem_eq = "Biomass --> 0.9639*CO + 0.8771*CO2 + 0.3491*CH4 + " &
+        "1.6276*H2 + 1.421*H2O"
+    dh = 14999640.0
+    fracdh(0) = 0.0
+    fracdh(1) = 1.0
+    arrhenius_coeff = 1.30000000e+08 0 1.40340320e+08
+}
+Charring {
+    chem_eq = "Biomass --> 8.3334*Char"
+    dh = 14999640.0
+    fracdh(1) = 1.0
+    arrhenius_coeff = 1.08000000e+07 0 1.21384400e+08
+}
+Tarring {
+    chem_eq = "Biomass --> Tar"
+    dh = 14999640.0
+    fracdh(0) = 0.0
+    fracdh(1) = 1.0
+    arrhenius_coeff = 2.00000000e+08 0 1.33190280e+08
+}
+Tar_Cracking {
+    chem_eq = "Tar --> 2*CO + 0.5*CO2 + 0.75*CH4 + 5*H2"
+    dh = -42000.0
+    fracdh(0) = 1.0
+    arrhenius_coeff = 9.55000000e+04 0 9.36400000e+07
+}
+Char_CO2_Gasif {
+    chem_eq = "Char + CO2 --> 2*CO"
+    dh = 172000000.0
+    fracdh(0) = 1.0
+    fracdh(1) = 0.0
+    arrhenius_coeff = 3.42000000e+01 0 1.30000000e+08
+}
+Char_H2O_Gasif {
+    chem_eq = "Char + H2O --> CO + H2"
+    dh = 131000000.0
+    fracdh(0) = 1.0
+    fracdh(1) = 0.0
+    arrhenius_coeff = 1.27200000e+02 0 1.30000000e+08
+}
+Char_Combustion {
+    chem_eq = "Char + O2 --> CO2"
+    dh = -393500000.0
+    fracdh(0) = 1.0
+    fracdh(1) = 0.0
+    arrhenius_coeff = 8.71000000e+05 0 7.48600000e+07
+}
+CO_Combustion {
+    chem_eq = "CO + 0.5*O2 --> CO2"
+    dh = -283000000.0
+    fracdh(0) = 1.0
+    arrhenius_coeff = 2.24000000e+06 0 1.67000000e+08
+}
+H2_Combustion {
+    chem_eq = "H2 + 0.5*O2 --> H2O"
+    dh = -242000000.0
+    fracdh(0) = 1.0
+    arrhenius_coeff = 6.80000000e+06 0 1.68000000e+08
+}
+Water_Gas_Shift {
+    chem_eq = "CO + H2O --> CO2 + H2"
+    dh = -41200000.0
+    fracdh(0) = 1.0
+    arrhenius_coeff = 2.78000000e+03 0 1.25600000e+08
+}
+Methane_Reforming {
+    chem_eq = "CH4 + H2O --> CO + 3*H2"
+    dh = 206000000.0
+    fracdh(0) = 1.0
+    arrhenius_coeff = 3.12000000e+05 0 1.25100000e+08
+}
+@(END)
+
+# MFIX-GUI section
+#!MFIX-GUI author = cgw
+#!MFIX-GUI created_date = 2021-11-09 15:24
+#!MFIX-GUI modified_time = 2026-03-13 16:53
+#!MFIX-GUI gui_version = 25.3
+#!MFIX-GUI project_notes = ""
+#!MFIX-GUI modified_by = tutorial|cgw|toobler
+#!MFIX-GUI regions_dict = {"order": ["IC_1", "IC_2", "BC_1", "BC_2", "BC_5",
+#!MFIX-GUI   "Entire Domain"], "regions": {"IC_1": {"to": [1.2, 5.6, 0.0],
+#!MFIX-GUI   "from": [0.0, 2.08, 0.0], "color": "#8c8287", "type": "XY-plane"},
+#!MFIX-GUI   "IC_2": {"to": [1.2, 2.08, 0.0], "color": "#70cd8b", "type":
+#!MFIX-GUI   "XY-plane"}, "BC_1": {"to": [1.2, 0.0, 0.0], "color": "#998c66",
+#!MFIX-GUI   "type": "XZ-plane"}, "BC_2": {"to": [0.0, 0.8, 0.0], "from": [0.0,
+#!MFIX-GUI   0.48, 0.0], "color": "#d7669e", "type": "YZ-plane"}, "BC_5": {"to":
+#!MFIX-GUI   [1.2, 5.6, 0.0], "from": [0.0, 5.6, 0.0], "color": "#69ccab",
+#!MFIX-GUI   "type": "XZ-plane"}, "Entire Domain": {"to": [{"__type__":
+#!MFIX-GUI   "equation", "eq": "float(xmax)"}, {"__type__": "equation", "eq":
+#!MFIX-GUI   "float(ymax)"}, {"__type__": "equation", "eq": "float(zmax)"}],
+#!MFIX-GUI   "from": [{"__type__": "equation", "eq": "float(xmin)"},
+#!MFIX-GUI   {"__type__": "equation", "eq": "float(ymin)"}, {"__type__":
+#!MFIX-GUI   "equation", "eq": "float(zmin)"}], "color": "#ffff00"}}}
+#!MFIX-GUI bc_regions = [[[1], ["BC_1"]], [[2], ["BC_2"]], [[5], ["BC_5"]]]
+#!MFIX-GUI ic_regions = [[[1], ["IC_1"]], [[2], ["IC_2"]]]
+#!MFIX-GUI parameters = {"order": ["min", "max", "xmin", "xmax", "ymin", "ymax",
+#!MFIX-GUI   "zmin", "zmax", "km", "m", "cm", "mm", "um", "mile", "yard",
+#!MFIX-GUI   "foot", "inch", "degree", "ft", "ins"], "parameters": {"min": 0.0,
+#!MFIX-GUI   "max": 0.0, "xmin": 0, "xmax": 1.2, "ymin": 0, "ymax": 5.6, "zmin":
+#!MFIX-GUI   0, "zmax": 0.3, "km": 1000.0, "m": 1.0, "cm": 0.01, "mm": 0.001,
+#!MFIX-GUI   "um": 1e-06, "mile": 1609.34, "yard": 0.9144, "foot": 0.3048,
+#!MFIX-GUI   "inch": 0.0254, "degree": 0.017453292519943295, "ft": 0.3048,
+#!MFIX-GUI   "ins": 0.0254}}
+#!MFIX-GUI geometry = {"geometry_dict": {}, "tree": {}}
+#!MFIX-GUI solids_phase_name(1) = Biomass
+#!MFIX-GUI solids_phase_name(2) = Sand
+#!MFIX-GUI BUILD_DMP = 0
+#!MFIX-GUI BUILD_INTERACTIVE = PYMFIX
+#!MFIX-GUI BUILD_PARALLEL = 1
+#!MFIX-GUI BUILD_SMP = 0
+#!MFIX-GUI BUILD_TYPE = RELWITHDEBINFO
+#!MFIX-GUI queue_template = {"JOB_NAME": "Biomass", "CORES": 2, "QUEUE":
+#!MFIX-GUI   "general", "LONG": "", "template": "Joule 3"}
+#!MFIX-GUI OMP_NUM_THREADS = 2
+#!MFIX-GUI submit_to_queue = 0
+#!MFIX-GUI vtk_regions = [[[1], ["Entire Domain"]]]
+#!MFIX-GUI project_version = 65
+#!MFIX-GUI mpirun_flags =
+#!MFIX-GUI mesh_accepted = True
+#!MFIX-GUI mfix_exe = /home/toobler/miniconda3/envs/mfix-25.3/bin/mfixsolver_smp
+
+THERMO DATA
+Ash               tcom=1000.0             0.S   200.000  6000.000  B 120.00000 1
+ 8.70769880E+00 8.45407650E-03 0.00000000E+00 0.00000000E+00 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00 8.70769880E+00 8.45407650E-03 0.00000000E+00    3
+ 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    4
+
+Biomass           tcom=1000.0             0.S   200.000  6000.000  B 100.00036 1
+-7.94079328E-01 8.09779756E-03-6.56398654E-06 1.84781958E-09 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00-7.94079328E-01 8.09779756E-03-6.56398654E-06    3
+ 1.84781958E-09 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    4
+
+CH4               tcom=1000.0             0.G   200.000  6000.000  B  16.00000 1
+ 1.65326226E+00 1.00263099E-02-3.31661238E-06 5.36483138E-10-3.14696758E-14    2
+-1.00095936E+04 9.90506283E+00 5.14911468E+00-1.36622009E-02 4.91453921E-05    3
+-4.84246767E-08 1.66603441E-11-1.02465983E+04-4.63848842E+00-8.97226656E+03    4
+
+Char              tcom=1000.0             0.S   200.000  6000.000  B  12.00000 1
+-7.94079328E-01 8.09779756E-03-6.56398654E-06 1.84781958E-09 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00-7.94079328E-01 8.09779756E-03-6.56398654E-06    3
+ 1.84781958E-09 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    4
+
+CO                tcom=1000.0             0.G   200.000  6000.000  B  28.00000 1
+ 3.04848590E+00 1.35172810E-03-4.85794050E-07 7.88536440E-11-4.69807460E-15    2
+-1.42661170E+04 6.01709770E+00 3.57953350E+00-6.10353690E-04 1.01681430E-06    3
+ 9.07005860E-10-9.04424490E-13-1.43440860E+04 3.50840930E+00-1.32936280E+04    4
+
+CO2               tcom=1000.0             0.G   200.000  6000.000  B  44.00000 1
+ 4.63651110E+00 2.74145690E-03-9.95897590E-07 1.60386660E-10-9.16198570E-15    2
+-4.90249040E+04-1.93489550E+00 2.35681300E+00 8.98412990E-03-7.12206320E-06    3
+ 2.45730080E-09-1.42885480E-13-4.83719710E+04 9.90090350E+00-4.73281050E+04    4
+
+H2                tcom=1000.0             0.G   200.000  6000.000  B   2.00000 1
+ 2.93286575E+00 8.26608026E-04-1.46402364E-07 1.54100414E-11-6.88804800E-16    2
+-8.13065581E+02-1.02432865E+00 2.34433112E+00 7.98052075E-03-1.94781510E-05    3
+ 2.01572094E-08-7.37611761E-12-9.17935173E+02 6.83010238E-01 0.00000000E+00    4
+
+H2O               tcom=1000.0             0.G   200.000  6000.000  B  18.00000 1
+ 2.67703890E+00 2.97318160E-03-7.73768890E-07 9.44335140E-11-4.26899910E-15    2
+-2.98858940E+04 6.88255000E+00 4.19863520E+00-2.03640170E-03 6.52034160E-06    3
+-5.48792690E-09 1.77196800E-12-3.02937260E+04-8.49009010E-01-2.90848170E+04    4
+
+Moisture          tcom=1000.0             0.S   273.150   600.000  B  18.00000 1
+ 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00 7.25575005E+01-6.62445402E-01 2.56198746E-03    3
+-4.36591923E-06 2.78178981E-09-4.18865499E+04-2.88280137E+02-3.43772513E+04    4
+
+N2                tcom=1000.0             0.G   200.000  6000.000  B  28.00000 1
+ 2.95257637E+00 1.39690040E-03-4.92631603E-07 7.86010195E-11-4.60755204E-15    2
+-9.23948688E+02 5.87188762E+00 3.53100528E+00-1.23660988E-04-5.02999433E-07    3
+ 2.43530612E-09-1.40881235E-12-1.04697628E+03 2.96747038E+00 0.00000000E+00    4
+
+O2                tcom=1000.0             0.G   200.000  6000.000  B  32.00000 1
+ 3.66096065E+00 6.56365811E-04-1.41149627E-07 2.05797935E-11-1.29913436E-15    2
+-1.21597718E+03 3.41536279E+00 3.78245636E+00-2.99673416E-03 9.84730201E-06    3
+-9.68129509E-09 3.24372837E-12-1.06394356E+03 3.65767573E+00 0.00000000E+00    4
+
+Sand              tcom=1000.0             0.S   200.000  6000.000  B  28.08550 1
+ 2.58085647E+00-2.06541190E-04 1.93383177E-07-4.57360939E-11 3.37201600E-15    2
+ 5.33829070E+04 5.60524044E+00 3.76474637E+00-7.12058335E-03 1.57314953E-05    3
+-1.53821353E-08 5.53181141E-12 5.32050794E+04 3.02228079E-01 5.41222513E+04    4
+
+Tar               tcom=1000.0             0.G   200.000  6000.000  B 100.00160 1
+-8.24608207E-03 3.69260193E-04-2.11918112E-07 5.04138153E-11-1.69120432E-15    2
+ 0.00000000E+00 0.00000000E+00-8.24608207E-03 3.69260193E-04-2.11918112E-07    3
+ 5.04138153E-11-1.69120432E-15 0.00000000E+00 0.00000000E+00-2.07379339E+05    4
+
+Tar0              tcom=1000.0             0.G   200.000  6000.000  B 100.00000 1
+-8.24608207E-03 3.69260193E-04-2.11918112E-07 5.04138153E-11-1.69120432E-15    2
+ 0.00000000E+00 0.00000000E+00-8.24608207E-03 3.69260193E-04-2.11918112E-07    3
+ 5.04138153E-11-1.69120432E-15 0.00000000E+00 0.00000000E+00-2.07379339E+05    4
+

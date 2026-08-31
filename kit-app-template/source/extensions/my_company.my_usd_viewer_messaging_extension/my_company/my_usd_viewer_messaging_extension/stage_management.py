@@ -8,7 +8,7 @@
 # without an express license agreement from NVIDIA CORPORATION or
 # its affiliates is strictly prohibited.
 
-from pxr import UsdGeom, Usd
+from pxr import Gf, Sdf, UsdGeom, Usd, Vt
 
 import carb
 import carb.dictionary
@@ -45,6 +45,8 @@ class StageManager:
             "makePrimsPickableResponse",
             # response to the request to reset camera attributes
             "resetStageResponse",
+            "cfdFieldsResponse",
+            "cfdFieldChanged",
         ]
 
         for o in outgoing:
@@ -70,6 +72,8 @@ class StageManager:
             'playAnimation': self._on_play_animation,
             'pauseAnimation': self._on_pause_animation,
             'stopAnimation': self._on_stop_animation,
+            'cfdFieldsQuery': self._on_cfd_fields_query,
+            'setCFDField': self._on_set_cfd_field,
         }
 
         ed = get_eventdispatcher()
@@ -331,6 +335,88 @@ class StageManager:
             carb.log_info("Animation stopped and reset to frame 0.")
         except Exception as e:
             carb.log_error(f"Failed to stop animation: {str(e)}")
+
+    @staticmethod
+    def _cfd_mesh():
+        stage = omni.usd.get_context().get_stage()
+        return UsdGeom.Mesh.Get(stage, "/World/CFD/Mesh") if stage else None
+
+    def _scalar_cfd_fields(self):
+        mesh = self._cfd_mesh()
+        if not mesh:
+            return []
+        fields = []
+        for primvar in UsdGeom.PrimvarsAPI(mesh).GetPrimvars():
+            if primvar.GetPrimvarName() == "displayColor":
+                continue
+            if primvar.GetInterpolation() != UsdGeom.Tokens.uniform:
+                continue
+            if primvar.GetAttr().GetTypeName() != Sdf.ValueTypeNames.FloatArray:
+                continue
+            fields.append({
+                "name": primvar.GetPrimvarName(),
+                "displayName": primvar.GetPrimvarName().replace("_", " "),
+                "association": "cell",
+            })
+        return fields
+
+    def _on_cfd_fields_query(self, event: carb.events.IEvent):
+        get_eventdispatcher().dispatch_event(
+            "cfdFieldsResponse", payload={"fields": self._scalar_cfd_fields()}
+        )
+
+    @staticmethod
+    def _cfd_color(value, minimum, maximum):
+        stops = (
+            (0.02, 0.05, 0.45), (0.12, 0.32, 0.78), (0.55, 0.72, 0.92),
+            (0.94, 0.94, 0.88), (0.90, 0.38, 0.18), (0.58, 0.01, 0.03),
+        )
+        normalized = 0.0 if maximum == minimum else max(0.0, min(1.0, (value - minimum) / (maximum - minimum)))
+        scaled = normalized * (len(stops) - 1)
+        left = min(int(scaled), len(stops) - 2)
+        fraction = scaled - left
+        return Gf.Vec3f(*(
+            stops[left][i] * (1.0 - fraction) + stops[left + 1][i] * fraction
+            for i in range(3)
+        ))
+
+    def _on_set_cfd_field(self, event: carb.events.IEvent):
+        field_name = str(event.payload.get("field", ""))
+        mesh = self._cfd_mesh()
+        if not mesh:
+            return
+        source = UsdGeom.PrimvarsAPI(mesh).GetPrimvar(field_name)
+        if not source or source.GetAttr().GetTypeName() != Sdf.ValueTypeNames.FloatArray:
+            carb.log_error(f"Unknown scalar CFD field: {field_name}")
+            return
+        stage = mesh.GetPrim().GetStage()
+        times = source.GetAttr().GetTimeSamples()
+        counts = list(mesh.GetFaceVertexCountsAttr().Get())
+        global_minimum = float("inf")
+        global_maximum = float("-inf")
+        with Usd.EditContext(stage, Usd.EditTarget(stage.GetSessionLayer())):
+            display = UsdGeom.PrimvarsAPI(mesh).CreatePrimvar(
+                "displayColor", Sdf.ValueTypeNames.Color3fArray, UsdGeom.Tokens.faceVarying
+            )
+            display.GetAttr().Clear()
+            for time in times:
+                values = list(source.Get(Usd.TimeCode(time)))
+                if not values:
+                    continue
+                minimum, maximum = min(values), max(values)
+                global_minimum = min(global_minimum, minimum)
+                global_maximum = max(global_maximum, maximum)
+                colors = []
+                for value, corner_count in zip(values, counts):
+                    colors.extend([self._cfd_color(value, minimum, maximum)] * corner_count)
+                display.Set(Vt.Vec3fArray(colors), Usd.TimeCode(time))
+        get_eventdispatcher().dispatch_event("cfdFieldChanged", payload={
+            "field": field_name,
+            "displayName": field_name.replace("_", " "),
+            "minimum": global_minimum,
+            "maximum": global_maximum,
+            "frameCount": len(times),
+        })
 
     def on_shutdown(self):
         """This is called every time the extension is deactivated. It is used

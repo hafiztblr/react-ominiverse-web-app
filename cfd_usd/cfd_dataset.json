@@ -1,0 +1,1423 @@
+{
+  "frameCount": 201,
+  "timeStart": 0.0,
+  "timeEnd": 200.0,
+  "timeStep": 1.0,
+  "colorField": "Gas_temperature",
+  "mesh": {
+    "file": "mesh.usda",
+    "points": 781,
+    "cells": 700,
+    "bounds": [
+      0.0,
+      1.2000000476837158,
+      0.0,
+      5.599999904632568,
+      0.0,
+      0.0
+    ],
+    "vtkCellTypes": [
+      7
+    ],
+    "topologyShared": true
+  },
+  "frames": [
+    {
+      "number": 0,
+      "time": 0.0,
+      "file": "frames/frame_0000.usda",
+      "source": "ENTIRE_DOMAIN_0000.vtu"
+    },
+    {
+      "number": 1,
+      "time": 1.0,
+      "file": "frames/frame_0001.usda",
+      "source": "ENTIRE_DOMAIN_0001.vtu"
+    },
+    {
+      "number": 2,
+      "time": 2.0,
+      "file": "frames/frame_0002.usda",
+      "source": "ENTIRE_DOMAIN_0002.vtu"
+    },
+    {
+      "number": 3,
+      "time": 3.0,
+      "file": "frames/frame_0003.usda",
+      "source": "ENTIRE_DOMAIN_0003.vtu"
+    },
+    {
+      "number": 4,
+      "time": 4.0,
+      "file": "frames/frame_0004.usda",
+      "source": "ENTIRE_DOMAIN_0004.vtu"
+    },
+    {
+      "number": 5,
+      "time": 5.0,
+      "file": "frames/frame_0005.usda",
+      "source": "ENTIRE_DOMAIN_0005.vtu"
+    },
+    {
+      "number": 6,
+      "time": 6.0,
+      "file": "frames/frame_0006.usda",
+      "source": "ENTIRE_DOMAIN_0006.vtu"
+    },
+    {
+      "number": 7,
+      "time": 7.0,
+      "file": "frames/frame_0007.usda",
+      "source": "ENTIRE_DOMAIN_0007.vtu"
+    },
+    {
+      "number": 8,
+      "time": 8.0,
+      "file": "frames/frame_0008.usda",
+      "source": "ENTIRE_DOMAIN_0008.vtu"
+    },
+    {
+      "number": 9,
+      "time": 9.0,
+      "file": "frames/frame_0009.usda",
+      "source": "ENTIRE_DOMAIN_0009.vtu"
+    },
+    {
+      "number": 10,
+      "time": 10.0,
+      "file": "frames/frame_0010.usda",
+      "source": "ENTIRE_DOMAIN_0010.vtu"
+    },
+    {
+      "number": 11,
+      "time": 11.0,
+      "file": "frames/frame_0011.usda",
+      "source": "ENTIRE_DOMAIN_0011.vtu"
+    },
+    {
+      "number": 12,
+      "time": 12.0,
+      "file": "frames/frame_0012.usda",
+      "source": "ENTIRE_DOMAIN_0012.vtu"
+    },
+    {
+      "number": 13,
+      "time": 13.0,
+      "file": "frames/frame_0013.usda",
+      "source": "ENTIRE_DOMAIN_0013.vtu"
+    },
+    {
+      "number": 14,
+      "time": 14.0,
+      "file": "frames/frame_0014.usda",
+      "source": "ENTIRE_DOMAIN_0014.vtu"
+    },
+    {
+      "number": 15,
+      "time": 15.0,
+      "file": "frames/frame_0015.usda",
+      "source": "ENTIRE_DOMAIN_0015.vtu"
+    },
+    {
+      "number": 16,
+      "time": 16.0,
+      "file": "frames/frame_0016.usda",
+      "source": "ENTIRE_DOMAIN_0016.vtu"
+    },
+    {
+      "number": 17,
+      "time": 17.0,
+      "file": "frames/frame_0017.usda",
+      "source": "ENTIRE_DOMAIN_0017.vtu"
+    },
+    {
+      "number": 18,
+      "time": 18.0,
+      "file": "frames/frame_0018.usda",
+      "source": "ENTIRE_DOMAIN_0018.vtu"
+    },
+    {
+      "number": 19,
+      "time": 19.0,
+      "file": "frames/frame_0019.usda",
+      "source": "ENTIRE_DOMAIN_0019.vtu"
+    },
+    {
+      "number": 20,
+      "time": 20.0,
+      "file": "frames/frame_0020.usda",
+      "source": "ENTIRE_DOMAIN_0020.vtu"
+    },
+    {
+      "number": 21,
+      "time": 21.0,
+      "file": "frames/frame_0021.usda",
+      "source": "ENTIRE_DOMAIN_0021.vtu"
+    },
+    {
+      "number": 22,
+      "time": 22.0,
+      "file": "frames/frame_0022.usda",
+      "source": "ENTIRE_DOMAIN_0022.vtu"
+    },
+    {
+      "number": 23,
+      "time": 23.0,
+      "file": "frames/frame_0023.usda",
+      "source": "ENTIRE_DOMAIN_0023.vtu"
+    },
+    {
+      "number": 24,
+      "time": 24.0,
+      "file": "frames/frame_0024.usda",
+      "source": "ENTIRE_DOMAIN_0024.vtu"
+    },
+    {
+      "number": 25,
+      "time": 25.0,
+      "file": "frames/frame_0025.usda",
+      "source": "ENTIRE_DOMAIN_0025.vtu"
+    },
+    {
+      "number": 26,
+      "time": 26.0,
+      "file": "frames/frame_0026.usda",
+      "source": "ENTIRE_DOMAIN_0026.vtu"
+    },
+    {
+      "number": 27,
+      "time": 27.0,
+      "file": "frames/frame_0027.usda",
+      "source": "ENTIRE_DOMAIN_0027.vtu"
+    },
+    {
+      "number": 28,
+      "time": 28.0,
+      "file": "frames/frame_0028.usda",
+      "source": "ENTIRE_DOMAIN_0028.vtu"
+    },
+    {
+      "number": 29,
+      "time": 29.0,
+      "file": "frames/frame_0029.usda",
+      "source": "ENTIRE_DOMAIN_0029.vtu"
+    },
+    {
+      "number": 30,
+      "time": 30.0,
+      "file": "frames/frame_0030.usda",
+      "source": "ENTIRE_DOMAIN_0030.vtu"
+    },
+    {
+      "number": 31,
+      "time": 31.0,
+      "file": "frames/frame_0031.usda",
+      "source": "ENTIRE_DOMAIN_0031.vtu"
+    },
+    {
+      "number": 32,
+      "time": 32.0,
+      "file": "frames/frame_0032.usda",
+      "source": "ENTIRE_DOMAIN_0032.vtu"
+    },
+    {
+      "number": 33,
+      "time": 33.0,
+      "file": "frames/frame_0033.usda",
+      "source": "ENTIRE_DOMAIN_0033.vtu"
+    },
+    {
+      "number": 34,
+      "time": 34.0,
+      "file": "frames/frame_0034.usda",
+      "source": "ENTIRE_DOMAIN_0034.vtu"
+    },
+    {
+      "number": 35,
+      "time": 35.0,
+      "file": "frames/frame_0035.usda",
+      "source": "ENTIRE_DOMAIN_0035.vtu"
+    },
+    {
+      "number": 36,
+      "time": 36.0,
+      "file": "frames/frame_0036.usda",
+      "source": "ENTIRE_DOMAIN_0036.vtu"
+    },
+    {
+      "number": 37,
+      "time": 37.0,
+      "file": "frames/frame_0037.usda",
+      "source": "ENTIRE_DOMAIN_0037.vtu"
+    },
+    {
+      "number": 38,
+      "time": 38.0,
+      "file": "frames/frame_0038.usda",
+      "source": "ENTIRE_DOMAIN_0038.vtu"
+    },
+    {
+      "number": 39,
+      "time": 39.0,
+      "file": "frames/frame_0039.usda",
+      "source": "ENTIRE_DOMAIN_0039.vtu"
+    },
+    {
+      "number": 40,
+      "time": 40.0,
+      "file": "frames/frame_0040.usda",
+      "source": "ENTIRE_DOMAIN_0040.vtu"
+    },
+    {
+      "number": 41,
+      "time": 41.0,
+      "file": "frames/frame_0041.usda",
+      "source": "ENTIRE_DOMAIN_0041.vtu"
+    },
+    {
+      "number": 42,
+      "time": 42.0,
+      "file": "frames/frame_0042.usda",
+      "source": "ENTIRE_DOMAIN_0042.vtu"
+    },
+    {
+      "number": 43,
+      "time": 43.0,
+      "file": "frames/frame_0043.usda",
+      "source": "ENTIRE_DOMAIN_0043.vtu"
+    },
+    {
+      "number": 44,
+      "time": 44.0,
+      "file": "frames/frame_0044.usda",
+      "source": "ENTIRE_DOMAIN_0044.vtu"
+    },
+    {
+      "number": 45,
+      "time": 45.0,
+      "file": "frames/frame_0045.usda",
+      "source": "ENTIRE_DOMAIN_0045.vtu"
+    },
+    {
+      "number": 46,
+      "time": 46.0,
+      "file": "frames/frame_0046.usda",
+      "source": "ENTIRE_DOMAIN_0046.vtu"
+    },
+    {
+      "number": 47,
+      "time": 47.0,
+      "file": "frames/frame_0047.usda",
+      "source": "ENTIRE_DOMAIN_0047.vtu"
+    },
+    {
+      "number": 48,
+      "time": 48.0,
+      "file": "frames/frame_0048.usda",
+      "source": "ENTIRE_DOMAIN_0048.vtu"
+    },
+    {
+      "number": 49,
+      "time": 49.0,
+      "file": "frames/frame_0049.usda",
+      "source": "ENTIRE_DOMAIN_0049.vtu"
+    },
+    {
+      "number": 50,
+      "time": 50.0,
+      "file": "frames/frame_0050.usda",
+      "source": "ENTIRE_DOMAIN_0050.vtu"
+    },
+    {
+      "number": 51,
+      "time": 51.0,
+      "file": "frames/frame_0051.usda",
+      "source": "ENTIRE_DOMAIN_0051.vtu"
+    },
+    {
+      "number": 52,
+      "time": 52.0,
+      "file": "frames/frame_0052.usda",
+      "source": "ENTIRE_DOMAIN_0052.vtu"
+    },
+    {
+      "number": 53,
+      "time": 53.0,
+      "file": "frames/frame_0053.usda",
+      "source": "ENTIRE_DOMAIN_0053.vtu"
+    },
+    {
+      "number": 54,
+      "time": 54.0,
+      "file": "frames/frame_0054.usda",
+      "source": "ENTIRE_DOMAIN_0054.vtu"
+    },
+    {
+      "number": 55,
+      "time": 55.0,
+      "file": "frames/frame_0055.usda",
+      "source": "ENTIRE_DOMAIN_0055.vtu"
+    },
+    {
+      "number": 56,
+      "time": 56.0,
+      "file": "frames/frame_0056.usda",
+      "source": "ENTIRE_DOMAIN_0056.vtu"
+    },
+    {
+      "number": 57,
+      "time": 57.0,
+      "file": "frames/frame_0057.usda",
+      "source": "ENTIRE_DOMAIN_0057.vtu"
+    },
+    {
+      "number": 58,
+      "time": 58.0,
+      "file": "frames/frame_0058.usda",
+      "source": "ENTIRE_DOMAIN_0058.vtu"
+    },
+    {
+      "number": 59,
+      "time": 59.0,
+      "file": "frames/frame_0059.usda",
+      "source": "ENTIRE_DOMAIN_0059.vtu"
+    },
+    {
+      "number": 60,
+      "time": 60.0,
+      "file": "frames/frame_0060.usda",
+      "source": "ENTIRE_DOMAIN_0060.vtu"
+    },
+    {
+      "number": 61,
+      "time": 61.0,
+      "file": "frames/frame_0061.usda",
+      "source": "ENTIRE_DOMAIN_0061.vtu"
+    },
+    {
+      "number": 62,
+      "time": 62.0,
+      "file": "frames/frame_0062.usda",
+      "source": "ENTIRE_DOMAIN_0062.vtu"
+    },
+    {
+      "number": 63,
+      "time": 63.0,
+      "file": "frames/frame_0063.usda",
+      "source": "ENTIRE_DOMAIN_0063.vtu"
+    },
+    {
+      "number": 64,
+      "time": 64.0,
+      "file": "frames/frame_0064.usda",
+      "source": "ENTIRE_DOMAIN_0064.vtu"
+    },
+    {
+      "number": 65,
+      "time": 65.0,
+      "file": "frames/frame_0065.usda",
+      "source": "ENTIRE_DOMAIN_0065.vtu"
+    },
+    {
+      "number": 66,
+      "time": 66.0,
+      "file": "frames/frame_0066.usda",
+      "source": "ENTIRE_DOMAIN_0066.vtu"
+    },
+    {
+      "number": 67,
+      "time": 67.0,
+      "file": "frames/frame_0067.usda",
+      "source": "ENTIRE_DOMAIN_0067.vtu"
+    },
+    {
+      "number": 68,
+      "time": 68.0,
+      "file": "frames/frame_0068.usda",
+      "source": "ENTIRE_DOMAIN_0068.vtu"
+    },
+    {
+      "number": 69,
+      "time": 69.0,
+      "file": "frames/frame_0069.usda",
+      "source": "ENTIRE_DOMAIN_0069.vtu"
+    },
+    {
+      "number": 70,
+      "time": 70.0,
+      "file": "frames/frame_0070.usda",
+      "source": "ENTIRE_DOMAIN_0070.vtu"
+    },
+    {
+      "number": 71,
+      "time": 71.0,
+      "file": "frames/frame_0071.usda",
+      "source": "ENTIRE_DOMAIN_0071.vtu"
+    },
+    {
+      "number": 72,
+      "time": 72.0,
+      "file": "frames/frame_0072.usda",
+      "source": "ENTIRE_DOMAIN_0072.vtu"
+    },
+    {
+      "number": 73,
+      "time": 73.0,
+      "file": "frames/frame_0073.usda",
+      "source": "ENTIRE_DOMAIN_0073.vtu"
+    },
+    {
+      "number": 74,
+      "time": 74.0,
+      "file": "frames/frame_0074.usda",
+      "source": "ENTIRE_DOMAIN_0074.vtu"
+    },
+    {
+      "number": 75,
+      "time": 75.0,
+      "file": "frames/frame_0075.usda",
+      "source": "ENTIRE_DOMAIN_0075.vtu"
+    },
+    {
+      "number": 76,
+      "time": 76.0,
+      "file": "frames/frame_0076.usda",
+      "source": "ENTIRE_DOMAIN_0076.vtu"
+    },
+    {
+      "number": 77,
+      "time": 77.0,
+      "file": "frames/frame_0077.usda",
+      "source": "ENTIRE_DOMAIN_0077.vtu"
+    },
+    {
+      "number": 78,
+      "time": 78.0,
+      "file": "frames/frame_0078.usda",
+      "source": "ENTIRE_DOMAIN_0078.vtu"
+    },
+    {
+      "number": 79,
+      "time": 79.0,
+      "file": "frames/frame_0079.usda",
+      "source": "ENTIRE_DOMAIN_0079.vtu"
+    },
+    {
+      "number": 80,
+      "time": 80.0,
+      "file": "frames/frame_0080.usda",
+      "source": "ENTIRE_DOMAIN_0080.vtu"
+    },
+    {
+      "number": 81,
+      "time": 81.0,
+      "file": "frames/frame_0081.usda",
+      "source": "ENTIRE_DOMAIN_0081.vtu"
+    },
+    {
+      "number": 82,
+      "time": 82.0,
+      "file": "frames/frame_0082.usda",
+      "source": "ENTIRE_DOMAIN_0082.vtu"
+    },
+    {
+      "number": 83,
+      "time": 83.0,
+      "file": "frames/frame_0083.usda",
+      "source": "ENTIRE_DOMAIN_0083.vtu"
+    },
+    {
+      "number": 84,
+      "time": 84.0,
+      "file": "frames/frame_0084.usda",
+      "source": "ENTIRE_DOMAIN_0084.vtu"
+    },
+    {
+      "number": 85,
+      "time": 85.0,
+      "file": "frames/frame_0085.usda",
+      "source": "ENTIRE_DOMAIN_0085.vtu"
+    },
+    {
+      "number": 86,
+      "time": 86.0,
+      "file": "frames/frame_0086.usda",
+      "source": "ENTIRE_DOMAIN_0086.vtu"
+    },
+    {
+      "number": 87,
+      "time": 87.0,
+      "file": "frames/frame_0087.usda",
+      "source": "ENTIRE_DOMAIN_0087.vtu"
+    },
+    {
+      "number": 88,
+      "time": 88.0,
+      "file": "frames/frame_0088.usda",
+      "source": "ENTIRE_DOMAIN_0088.vtu"
+    },
+    {
+      "number": 89,
+      "time": 89.0,
+      "file": "frames/frame_0089.usda",
+      "source": "ENTIRE_DOMAIN_0089.vtu"
+    },
+    {
+      "number": 90,
+      "time": 90.0,
+      "file": "frames/frame_0090.usda",
+      "source": "ENTIRE_DOMAIN_0090.vtu"
+    },
+    {
+      "number": 91,
+      "time": 91.0,
+      "file": "frames/frame_0091.usda",
+      "source": "ENTIRE_DOMAIN_0091.vtu"
+    },
+    {
+      "number": 92,
+      "time": 92.0,
+      "file": "frames/frame_0092.usda",
+      "source": "ENTIRE_DOMAIN_0092.vtu"
+    },
+    {
+      "number": 93,
+      "time": 93.0,
+      "file": "frames/frame_0093.usda",
+      "source": "ENTIRE_DOMAIN_0093.vtu"
+    },
+    {
+      "number": 94,
+      "time": 94.0,
+      "file": "frames/frame_0094.usda",
+      "source": "ENTIRE_DOMAIN_0094.vtu"
+    },
+    {
+      "number": 95,
+      "time": 95.0,
+      "file": "frames/frame_0095.usda",
+      "source": "ENTIRE_DOMAIN_0095.vtu"
+    },
+    {
+      "number": 96,
+      "time": 96.0,
+      "file": "frames/frame_0096.usda",
+      "source": "ENTIRE_DOMAIN_0096.vtu"
+    },
+    {
+      "number": 97,
+      "time": 97.0,
+      "file": "frames/frame_0097.usda",
+      "source": "ENTIRE_DOMAIN_0097.vtu"
+    },
+    {
+      "number": 98,
+      "time": 98.0,
+      "file": "frames/frame_0098.usda",
+      "source": "ENTIRE_DOMAIN_0098.vtu"
+    },
+    {
+      "number": 99,
+      "time": 99.0,
+      "file": "frames/frame_0099.usda",
+      "source": "ENTIRE_DOMAIN_0099.vtu"
+    },
+    {
+      "number": 100,
+      "time": 100.0,
+      "file": "frames/frame_0100.usda",
+      "source": "ENTIRE_DOMAIN_0100.vtu"
+    },
+    {
+      "number": 101,
+      "time": 101.0,
+      "file": "frames/frame_0101.usda",
+      "source": "ENTIRE_DOMAIN_0101.vtu"
+    },
+    {
+      "number": 102,
+      "time": 102.0,
+      "file": "frames/frame_0102.usda",
+      "source": "ENTIRE_DOMAIN_0102.vtu"
+    },
+    {
+      "number": 103,
+      "time": 103.0,
+      "file": "frames/frame_0103.usda",
+      "source": "ENTIRE_DOMAIN_0103.vtu"
+    },
+    {
+      "number": 104,
+      "time": 104.0,
+      "file": "frames/frame_0104.usda",
+      "source": "ENTIRE_DOMAIN_0104.vtu"
+    },
+    {
+      "number": 105,
+      "time": 105.0,
+      "file": "frames/frame_0105.usda",
+      "source": "ENTIRE_DOMAIN_0105.vtu"
+    },
+    {
+      "number": 106,
+      "time": 106.0,
+      "file": "frames/frame_0106.usda",
+      "source": "ENTIRE_DOMAIN_0106.vtu"
+    },
+    {
+      "number": 107,
+      "time": 107.0,
+      "file": "frames/frame_0107.usda",
+      "source": "ENTIRE_DOMAIN_0107.vtu"
+    },
+    {
+      "number": 108,
+      "time": 108.0,
+      "file": "frames/frame_0108.usda",
+      "source": "ENTIRE_DOMAIN_0108.vtu"
+    },
+    {
+      "number": 109,
+      "time": 109.0,
+      "file": "frames/frame_0109.usda",
+      "source": "ENTIRE_DOMAIN_0109.vtu"
+    },
+    {
+      "number": 110,
+      "time": 110.0,
+      "file": "frames/frame_0110.usda",
+      "source": "ENTIRE_DOMAIN_0110.vtu"
+    },
+    {
+      "number": 111,
+      "time": 111.0,
+      "file": "frames/frame_0111.usda",
+      "source": "ENTIRE_DOMAIN_0111.vtu"
+    },
+    {
+      "number": 112,
+      "time": 112.0,
+      "file": "frames/frame_0112.usda",
+      "source": "ENTIRE_DOMAIN_0112.vtu"
+    },
+    {
+      "number": 113,
+      "time": 113.0,
+      "file": "frames/frame_0113.usda",
+      "source": "ENTIRE_DOMAIN_0113.vtu"
+    },
+    {
+      "number": 114,
+      "time": 114.0,
+      "file": "frames/frame_0114.usda",
+      "source": "ENTIRE_DOMAIN_0114.vtu"
+    },
+    {
+      "number": 115,
+      "time": 115.0,
+      "file": "frames/frame_0115.usda",
+      "source": "ENTIRE_DOMAIN_0115.vtu"
+    },
+    {
+      "number": 116,
+      "time": 116.0,
+      "file": "frames/frame_0116.usda",
+      "source": "ENTIRE_DOMAIN_0116.vtu"
+    },
+    {
+      "number": 117,
+      "time": 117.0,
+      "file": "frames/frame_0117.usda",
+      "source": "ENTIRE_DOMAIN_0117.vtu"
+    },
+    {
+      "number": 118,
+      "time": 118.0,
+      "file": "frames/frame_0118.usda",
+      "source": "ENTIRE_DOMAIN_0118.vtu"
+    },
+    {
+      "number": 119,
+      "time": 119.0,
+      "file": "frames/frame_0119.usda",
+      "source": "ENTIRE_DOMAIN_0119.vtu"
+    },
+    {
+      "number": 120,
+      "time": 120.0,
+      "file": "frames/frame_0120.usda",
+      "source": "ENTIRE_DOMAIN_0120.vtu"
+    },
+    {
+      "number": 121,
+      "time": 121.0,
+      "file": "frames/frame_0121.usda",
+      "source": "ENTIRE_DOMAIN_0121.vtu"
+    },
+    {
+      "number": 122,
+      "time": 122.0,
+      "file": "frames/frame_0122.usda",
+      "source": "ENTIRE_DOMAIN_0122.vtu"
+    },
+    {
+      "number": 123,
+      "time": 123.0,
+      "file": "frames/frame_0123.usda",
+      "source": "ENTIRE_DOMAIN_0123.vtu"
+    },
+    {
+      "number": 124,
+      "time": 124.0,
+      "file": "frames/frame_0124.usda",
+      "source": "ENTIRE_DOMAIN_0124.vtu"
+    },
+    {
+      "number": 125,
+      "time": 125.0,
+      "file": "frames/frame_0125.usda",
+      "source": "ENTIRE_DOMAIN_0125.vtu"
+    },
+    {
+      "number": 126,
+      "time": 126.0,
+      "file": "frames/frame_0126.usda",
+      "source": "ENTIRE_DOMAIN_0126.vtu"
+    },
+    {
+      "number": 127,
+      "time": 127.0,
+      "file": "frames/frame_0127.usda",
+      "source": "ENTIRE_DOMAIN_0127.vtu"
+    },
+    {
+      "number": 128,
+      "time": 128.0,
+      "file": "frames/frame_0128.usda",
+      "source": "ENTIRE_DOMAIN_0128.vtu"
+    },
+    {
+      "number": 129,
+      "time": 129.0,
+      "file": "frames/frame_0129.usda",
+      "source": "ENTIRE_DOMAIN_0129.vtu"
+    },
+    {
+      "number": 130,
+      "time": 130.0,
+      "file": "frames/frame_0130.usda",
+      "source": "ENTIRE_DOMAIN_0130.vtu"
+    },
+    {
+      "number": 131,
+      "time": 131.0,
+      "file": "frames/frame_0131.usda",
+      "source": "ENTIRE_DOMAIN_0131.vtu"
+    },
+    {
+      "number": 132,
+      "time": 132.0,
+      "file": "frames/frame_0132.usda",
+      "source": "ENTIRE_DOMAIN_0132.vtu"
+    },
+    {
+      "number": 133,
+      "time": 133.0,
+      "file": "frames/frame_0133.usda",
+      "source": "ENTIRE_DOMAIN_0133.vtu"
+    },
+    {
+      "number": 134,
+      "time": 134.0,
+      "file": "frames/frame_0134.usda",
+      "source": "ENTIRE_DOMAIN_0134.vtu"
+    },
+    {
+      "number": 135,
+      "time": 135.0,
+      "file": "frames/frame_0135.usda",
+      "source": "ENTIRE_DOMAIN_0135.vtu"
+    },
+    {
+      "number": 136,
+      "time": 136.0,
+      "file": "frames/frame_0136.usda",
+      "source": "ENTIRE_DOMAIN_0136.vtu"
+    },
+    {
+      "number": 137,
+      "time": 137.0,
+      "file": "frames/frame_0137.usda",
+      "source": "ENTIRE_DOMAIN_0137.vtu"
+    },
+    {
+      "number": 138,
+      "time": 138.0,
+      "file": "frames/frame_0138.usda",
+      "source": "ENTIRE_DOMAIN_0138.vtu"
+    },
+    {
+      "number": 139,
+      "time": 139.0,
+      "file": "frames/frame_0139.usda",
+      "source": "ENTIRE_DOMAIN_0139.vtu"
+    },
+    {
+      "number": 140,
+      "time": 140.0,
+      "file": "frames/frame_0140.usda",
+      "source": "ENTIRE_DOMAIN_0140.vtu"
+    },
+    {
+      "number": 141,
+      "time": 141.0,
+      "file": "frames/frame_0141.usda",
+      "source": "ENTIRE_DOMAIN_0141.vtu"
+    },
+    {
+      "number": 142,
+      "time": 142.0,
+      "file": "frames/frame_0142.usda",
+      "source": "ENTIRE_DOMAIN_0142.vtu"
+    },
+    {
+      "number": 143,
+      "time": 143.0,
+      "file": "frames/frame_0143.usda",
+      "source": "ENTIRE_DOMAIN_0143.vtu"
+    },
+    {
+      "number": 144,
+      "time": 144.0,
+      "file": "frames/frame_0144.usda",
+      "source": "ENTIRE_DOMAIN_0144.vtu"
+    },
+    {
+      "number": 145,
+      "time": 145.0,
+      "file": "frames/frame_0145.usda",
+      "source": "ENTIRE_DOMAIN_0145.vtu"
+    },
+    {
+      "number": 146,
+      "time": 146.0,
+      "file": "frames/frame_0146.usda",
+      "source": "ENTIRE_DOMAIN_0146.vtu"
+    },
+    {
+      "number": 147,
+      "time": 147.0,
+      "file": "frames/frame_0147.usda",
+      "source": "ENTIRE_DOMAIN_0147.vtu"
+    },
+    {
+      "number": 148,
+      "time": 148.0,
+      "file": "frames/frame_0148.usda",
+      "source": "ENTIRE_DOMAIN_0148.vtu"
+    },
+    {
+      "number": 149,
+      "time": 149.0,
+      "file": "frames/frame_0149.usda",
+      "source": "ENTIRE_DOMAIN_0149.vtu"
+    },
+    {
+      "number": 150,
+      "time": 150.0,
+      "file": "frames/frame_0150.usda",
+      "source": "ENTIRE_DOMAIN_0150.vtu"
+    },
+    {
+      "number": 151,
+      "time": 151.0,
+      "file": "frames/frame_0151.usda",
+      "source": "ENTIRE_DOMAIN_0151.vtu"
+    },
+    {
+      "number": 152,
+      "time": 152.0,
+      "file": "frames/frame_0152.usda",
+      "source": "ENTIRE_DOMAIN_0152.vtu"
+    },
+    {
+      "number": 153,
+      "time": 153.0,
+      "file": "frames/frame_0153.usda",
+      "source": "ENTIRE_DOMAIN_0153.vtu"
+    },
+    {
+      "number": 154,
+      "time": 154.0,
+      "file": "frames/frame_0154.usda",
+      "source": "ENTIRE_DOMAIN_0154.vtu"
+    },
+    {
+      "number": 155,
+      "time": 155.0,
+      "file": "frames/frame_0155.usda",
+      "source": "ENTIRE_DOMAIN_0155.vtu"
+    },
+    {
+      "number": 156,
+      "time": 156.0,
+      "file": "frames/frame_0156.usda",
+      "source": "ENTIRE_DOMAIN_0156.vtu"
+    },
+    {
+      "number": 157,
+      "time": 157.0,
+      "file": "frames/frame_0157.usda",
+      "source": "ENTIRE_DOMAIN_0157.vtu"
+    },
+    {
+      "number": 158,
+      "time": 158.0,
+      "file": "frames/frame_0158.usda",
+      "source": "ENTIRE_DOMAIN_0158.vtu"
+    },
+    {
+      "number": 159,
+      "time": 159.0,
+      "file": "frames/frame_0159.usda",
+      "source": "ENTIRE_DOMAIN_0159.vtu"
+    },
+    {
+      "number": 160,
+      "time": 160.0,
+      "file": "frames/frame_0160.usda",
+      "source": "ENTIRE_DOMAIN_0160.vtu"
+    },
+    {
+      "number": 161,
+      "time": 161.0,
+      "file": "frames/frame_0161.usda",
+      "source": "ENTIRE_DOMAIN_0161.vtu"
+    },
+    {
+      "number": 162,
+      "time": 162.0,
+      "file": "frames/frame_0162.usda",
+      "source": "ENTIRE_DOMAIN_0162.vtu"
+    },
+    {
+      "number": 163,
+      "time": 163.0,
+      "file": "frames/frame_0163.usda",
+      "source": "ENTIRE_DOMAIN_0163.vtu"
+    },
+    {
+      "number": 164,
+      "time": 164.0,
+      "file": "frames/frame_0164.usda",
+      "source": "ENTIRE_DOMAIN_0164.vtu"
+    },
+    {
+      "number": 165,
+      "time": 165.0,
+      "file": "frames/frame_0165.usda",
+      "source": "ENTIRE_DOMAIN_0165.vtu"
+    },
+    {
+      "number": 166,
+      "time": 166.0,
+      "file": "frames/frame_0166.usda",
+      "source": "ENTIRE_DOMAIN_0166.vtu"
+    },
+    {
+      "number": 167,
+      "time": 167.0,
+      "file": "frames/frame_0167.usda",
+      "source": "ENTIRE_DOMAIN_0167.vtu"
+    },
+    {
+      "number": 168,
+      "time": 168.0,
+      "file": "frames/frame_0168.usda",
+      "source": "ENTIRE_DOMAIN_0168.vtu"
+    },
+    {
+      "number": 169,
+      "time": 169.0,
+      "file": "frames/frame_0169.usda",
+      "source": "ENTIRE_DOMAIN_0169.vtu"
+    },
+    {
+      "number": 170,
+      "time": 170.0,
+      "file": "frames/frame_0170.usda",
+      "source": "ENTIRE_DOMAIN_0170.vtu"
+    },
+    {
+      "number": 171,
+      "time": 171.0,
+      "file": "frames/frame_0171.usda",
+      "source": "ENTIRE_DOMAIN_0171.vtu"
+    },
+    {
+      "number": 172,
+      "time": 172.0,
+      "file": "frames/frame_0172.usda",
+      "source": "ENTIRE_DOMAIN_0172.vtu"
+    },
+    {
+      "number": 173,
+      "time": 173.0,
+      "file": "frames/frame_0173.usda",
+      "source": "ENTIRE_DOMAIN_0173.vtu"
+    },
+    {
+      "number": 174,
+      "time": 174.0,
+      "file": "frames/frame_0174.usda",
+      "source": "ENTIRE_DOMAIN_0174.vtu"
+    },
+    {
+      "number": 175,
+      "time": 175.0,
+      "file": "frames/frame_0175.usda",
+      "source": "ENTIRE_DOMAIN_0175.vtu"
+    },
+    {
+      "number": 176,
+      "time": 176.0,
+      "file": "frames/frame_0176.usda",
+      "source": "ENTIRE_DOMAIN_0176.vtu"
+    },
+    {
+      "number": 177,
+      "time": 177.0,
+      "file": "frames/frame_0177.usda",
+      "source": "ENTIRE_DOMAIN_0177.vtu"
+    },
+    {
+      "number": 178,
+      "time": 178.0,
+      "file": "frames/frame_0178.usda",
+      "source": "ENTIRE_DOMAIN_0178.vtu"
+    },
+    {
+      "number": 179,
+      "time": 179.0,
+      "file": "frames/frame_0179.usda",
+      "source": "ENTIRE_DOMAIN_0179.vtu"
+    },
+    {
+      "number": 180,
+      "time": 180.0,
+      "file": "frames/frame_0180.usda",
+      "source": "ENTIRE_DOMAIN_0180.vtu"
+    },
+    {
+      "number": 181,
+      "time": 181.0,
+      "file": "frames/frame_0181.usda",
+      "source": "ENTIRE_DOMAIN_0181.vtu"
+    },
+    {
+      "number": 182,
+      "time": 182.0,
+      "file": "frames/frame_0182.usda",
+      "source": "ENTIRE_DOMAIN_0182.vtu"
+    },
+    {
+      "number": 183,
+      "time": 183.0,
+      "file": "frames/frame_0183.usda",
+      "source": "ENTIRE_DOMAIN_0183.vtu"
+    },
+    {
+      "number": 184,
+      "time": 184.0,
+      "file": "frames/frame_0184.usda",
+      "source": "ENTIRE_DOMAIN_0184.vtu"
+    },
+    {
+      "number": 185,
+      "time": 185.0,
+      "file": "frames/frame_0185.usda",
+      "source": "ENTIRE_DOMAIN_0185.vtu"
+    },
+    {
+      "number": 186,
+      "time": 186.0,
+      "file": "frames/frame_0186.usda",
+      "source": "ENTIRE_DOMAIN_0186.vtu"
+    },
+    {
+      "number": 187,
+      "time": 187.0,
+      "file": "frames/frame_0187.usda",
+      "source": "ENTIRE_DOMAIN_0187.vtu"
+    },
+    {
+      "number": 188,
+      "time": 188.0,
+      "file": "frames/frame_0188.usda",
+      "source": "ENTIRE_DOMAIN_0188.vtu"
+    },
+    {
+      "number": 189,
+      "time": 189.0,
+      "file": "frames/frame_0189.usda",
+      "source": "ENTIRE_DOMAIN_0189.vtu"
+    },
+    {
+      "number": 190,
+      "time": 190.0,
+      "file": "frames/frame_0190.usda",
+      "source": "ENTIRE_DOMAIN_0190.vtu"
+    },
+    {
+      "number": 191,
+      "time": 191.0,
+      "file": "frames/frame_0191.usda",
+      "source": "ENTIRE_DOMAIN_0191.vtu"
+    },
+    {
+      "number": 192,
+      "time": 192.0,
+      "file": "frames/frame_0192.usda",
+      "source": "ENTIRE_DOMAIN_0192.vtu"
+    },
+    {
+      "number": 193,
+      "time": 193.0,
+      "file": "frames/frame_0193.usda",
+      "source": "ENTIRE_DOMAIN_0193.vtu"
+    },
+    {
+      "number": 194,
+      "time": 194.0,
+      "file": "frames/frame_0194.usda",
+      "source": "ENTIRE_DOMAIN_0194.vtu"
+    },
+    {
+      "number": 195,
+      "time": 195.0,
+      "file": "frames/frame_0195.usda",
+      "source": "ENTIRE_DOMAIN_0195.vtu"
+    },
+    {
+      "number": 196,
+      "time": 196.0,
+      "file": "frames/frame_0196.usda",
+      "source": "ENTIRE_DOMAIN_0196.vtu"
+    },
+    {
+      "number": 197,
+      "time": 197.0,
+      "file": "frames/frame_0197.usda",
+      "source": "ENTIRE_DOMAIN_0197.vtu"
+    },
+    {
+      "number": 198,
+      "time": 198.0,
+      "file": "frames/frame_0198.usda",
+      "source": "ENTIRE_DOMAIN_0198.vtu"
+    },
+    {
+      "number": 199,
+      "time": 199.0,
+      "file": "frames/frame_0199.usda",
+      "source": "ENTIRE_DOMAIN_0199.vtu"
+    },
+    {
+      "number": 200,
+      "time": 200.0,
+      "file": "frames/frame_0200.usda",
+      "source": "ENTIRE_DOMAIN_0200.vtu"
+    }
+  ],
+  "fields": [
+    {
+      "name": "EP_G",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.38871437311172485,
+      "maximum": 1.0
+    },
+    {
+      "name": "P_G",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 98889.1640625,
+      "maximum": 261720.28125
+    },
+    {
+      "name": "Gas_Velocity",
+      "type": "vector",
+      "association": "cell",
+      "components": 3,
+      "dataType": "float",
+      "minimum": -15.151272773742676,
+      "maximum": 13.162696838378906
+    },
+    {
+      "name": "Solids_Velocity_1",
+      "type": "vector",
+      "association": "cell",
+      "components": 3,
+      "dataType": "float",
+      "minimum": -3.1458959579467773,
+      "maximum": 11.778975486755371
+    },
+    {
+      "name": "Solids_Velocity_2",
+      "type": "vector",
+      "association": "cell",
+      "components": 3,
+      "dataType": "float",
+      "minimum": -4.333227634429932,
+      "maximum": 5.285041332244873
+    },
+    {
+      "name": "Gas_temperature",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 1058.01953125,
+      "maximum": 2375.155517578125
+    },
+    {
+      "name": "Solids_temperature_1",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 849.0072631835938,
+      "maximum": 1076.33544921875
+    },
+    {
+      "name": "Solids_temperature_2",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 1069.5867919921875,
+      "maximum": 1077.28955078125
+    },
+    {
+      "name": "O2_Gas_mass_fractions_1",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.0,
+      "maximum": 0.23999999463558197
+    },
+    {
+      "name": "N2_Gas_mass_fractions_2",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.003077591070905328,
+      "maximum": 1.0
+    },
+    {
+      "name": "H2O_Gas_mass_fractions_3",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.0,
+      "maximum": 0.053642742335796356
+    },
+    {
+      "name": "CO_Gas_mass_fractions_4",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.0,
+      "maximum": 0.3812962472438812
+    },
+    {
+      "name": "CO2_Gas_mass_fractions_5",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.0,
+      "maximum": 0.3027467727661133
+    },
+    {
+      "name": "H2_Gas_mass_fractions_6",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.0,
+      "maximum": 0.0654628649353981
+    },
+    {
+      "name": "CH4_Gas_mass_fractions_7",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.0,
+      "maximum": 0.08135205507278442
+    },
+    {
+      "name": "TAR_Gas_mass_fractions_8",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.0,
+      "maximum": 0.6980437636375427
+    },
+    {
+      "name": "TAR0_Gas_mass_fractions_9",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.0,
+      "maximum": 1.8355405737024988e-11
+    },
+    {
+      "name": "BIOMASS_Solids_mass_fractions_1_1",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.0,
+      "maximum": 0.10065507143735886
+    },
+    {
+      "name": "MOISTURE_Solids_mass_fractions_1_2",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "name": "CHAR_Solids_mass_fractions_1_3",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.0,
+      "maximum": 0.7792472243309021
+    },
+    {
+      "name": "ASH_Solids_mass_fractions_1_4",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.21034441888332367,
+      "maximum": 1.0
+    }
+  ]
+}

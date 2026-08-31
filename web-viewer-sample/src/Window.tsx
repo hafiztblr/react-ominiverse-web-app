@@ -30,6 +30,12 @@ interface USDPrimType {
     children?: USDPrimType[];
 }
 
+interface CFDFieldType {
+    name: string;
+    displayName: string;
+    association: string;
+}
+
 export interface AppProps {
     sessionId: string
     backendUrl: string
@@ -57,6 +63,9 @@ interface AppState {
     selectedSVGId: string | null;
     animationState: 'stopped' | 'playing' | 'paused';
     isDashboardCollapsed: boolean;
+    cfdFields: CFDFieldType[];
+    selectedCFDField: string;
+    cfdLegend: { minimum: number; maximum: number } | null;
 }
 
 interface AppStreamMessageType {
@@ -74,6 +83,7 @@ export default class App extends React.Component<AppProps, AppState> {
 
         // list of selectable USD assets
         const usdAssets: USDAssetType[] = [
+            { name: "CFD - Animation", url: "C:/Users/USER/Desktop/Hafiz/Omiverse/web-app/cfd_usd/cfd_animation.usda" },
             { name: "Factory", url: "C:/Users/USER/Desktop/Hafiz/Omiverse/web-app/kit-app-template/source/examples/Factory.usd" },
             { name: "Boat", url: "C:/Users/USER/Desktop/Hafiz/Omiverse/web-app/kit-app-template/source/examples/Boat.usd" },
         ];
@@ -94,6 +104,9 @@ export default class App extends React.Component<AppProps, AppState> {
             selectedSVGId: null,
             animationState: 'stopped',
             isDashboardCollapsed: false,
+            cfdFields: [],
+            selectedCFDField: 'Gas_temperature',
+            cfdLegend: null,
         }
     }
 
@@ -402,6 +415,19 @@ export default class App extends React.Component<AppProps, AppState> {
         this.setState({ animationState: 'stopped' });
     }
 
+    private _queryCFDFields(): void {
+        AppStream.sendMessage(JSON.stringify({ event_type: 'cfdFieldsQuery', payload: {} }));
+    }
+
+    private _onCFDFieldChange(event: React.ChangeEvent<HTMLSelectElement>): void {
+        const field = event.target.value;
+        this.setState({ selectedCFDField: field, cfdLegend: null });
+        AppStream.sendMessage(JSON.stringify({
+            event_type: 'setCFDField',
+            payload: { field }
+        }));
+    }
+
 
     /**
     * @function _findUSDPrimByPath
@@ -480,8 +506,33 @@ export default class App extends React.Component<AppProps, AppState> {
                     this._stopProgressSimulation();
                     this.setState({ displayProgress: 100, showStream: true, loadingText: "Asset loaded", showUI: true, isLoading: false })
                     this._getChildren()
+                    if (event.payload.url.toLowerCase().includes('cfd_'))
+                        this._queryCFDFields()
                 }
             }
+        }
+
+        else if (event.event_type === "cfdFieldsResponse") {
+            const fields: CFDFieldType[] = event.payload.fields || [];
+            const selected = fields.some(field => field.name === this.state.selectedCFDField)
+                ? this.state.selectedCFDField
+                : (fields[0]?.name || '');
+            this.setState({ cfdFields: fields, selectedCFDField: selected });
+            if (selected) {
+                AppStream.sendMessage(JSON.stringify({
+                    event_type: 'setCFDField', payload: { field: selected }
+                }));
+            }
+        }
+
+        else if (event.event_type === "cfdFieldChanged") {
+            this.setState({
+                selectedCFDField: event.payload.field,
+                cfdLegend: {
+                    minimum: Number(event.payload.minimum),
+                    maximum: Number(event.payload.maximum)
+                }
+            });
         }
 
         // Loading progress amount notification.
@@ -647,6 +698,30 @@ export default class App extends React.Component<AppProps, AppState> {
                     {/* Bottom Center Controls */}
                     {this.state.showStream && (
                         <div className="bottom-center-controls">
+                            {this.state.cfdFields.length > 0 && (
+                                <div style={{
+                                    display: 'flex', alignItems: 'center', gap: '8px',
+                                    padding: '6px 10px', borderRadius: '6px',
+                                    background: 'rgba(15, 23, 42, 0.92)', color: 'white'
+                                }}>
+                                    <label htmlFor="cfd-field-select">CFD Field</label>
+                                    <select
+                                        id="cfd-field-select"
+                                        value={this.state.selectedCFDField}
+                                        onChange={(event) => this._onCFDFieldChange(event)}
+                                        style={{ maxWidth: '230px' }}
+                                    >
+                                        {this.state.cfdFields.map(field => (
+                                            <option key={field.name} value={field.name}>{field.displayName}</option>
+                                        ))}
+                                    </select>
+                                    {this.state.cfdLegend && (
+                                        <span style={{ fontVariantNumeric: 'tabular-nums', fontSize: '12px' }}>
+                                            {this.state.cfdLegend.minimum.toPrecision(4)} → {this.state.cfdLegend.maximum.toPrecision(4)}
+                                        </span>
+                                    )}
+                                </div>
+                            )}
                             {/* Play / Pause toggle */}
                             {this.state.animationState !== 'playing' ? (
                                 <button

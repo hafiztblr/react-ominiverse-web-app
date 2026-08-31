@@ -208,6 +208,16 @@ class SetupExtension(omni.ext.IExt):
                     await omni.kit.app.get_app().next_update_async()
                 carb.log_info("SetupExtension: Final Framing Adjustment.")
                 frame_viewport_selection(viewport_api)
+
+                # CFD stages provide a front orthographic camera so the planar
+                # domain is upright, undistorted, and fills the web stream.
+                cfd_camera = stage.GetPrimAtPath("/World/CFD/Camera")
+                if cfd_camera and cfd_camera.IsA(UsdGeom.Camera):
+                    from pxr import Sdf
+                    viewport_api.camera_path = Sdf.Path("/World/CFD/Camera")
+                    stage.SetInterpolationType(Usd.InterpolationTypeHeld)
+                    carb.log_info("SetupExtension: Activated CFD front camera.")
+                    carb.log_info("SetupExtension: CFD time samples use one-second held interpolation.")
         except Exception as e:
             carb.log_error(f"SetupExtension: Failed to frame viewport: {e}")
 

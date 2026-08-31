@@ -1,0 +1,229 @@
+{
+  "frameCount": 2,
+  "timeStart": 9.0,
+  "timeEnd": 10.0,
+  "timeStep": 1.0,
+  "colorField": "Gas_temperature",
+  "mesh": {
+    "file": "mesh.usda",
+    "points": 781,
+    "cells": 700,
+    "bounds": [
+      0.0,
+      1.2000000476837158,
+      0.0,
+      5.599999904632568,
+      0.0,
+      0.0
+    ],
+    "vtkCellTypes": [
+      7
+    ],
+    "topologyShared": true
+  },
+  "frames": [
+    {
+      "number": 9,
+      "time": 9.0,
+      "file": "frames/frame_0009.usda",
+      "source": "ENTIRE_DOMAIN_0009.vtu"
+    },
+    {
+      "number": 10,
+      "time": 10.0,
+      "file": "frames/frame_0010.usda",
+      "source": "ENTIRE_DOMAIN_0010.vtu"
+    }
+  ],
+  "fields": [
+    {
+      "name": "EP_G",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.3902297914028168,
+      "maximum": 1.0
+    },
+    {
+      "name": "P_G",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 101325.2578125,
+      "maximum": 127234.5859375
+    },
+    {
+      "name": "Gas_Velocity",
+      "type": "vector",
+      "association": "cell",
+      "components": 3,
+      "dataType": "float",
+      "minimum": -1.1459944248199463,
+      "maximum": 5.925378322601318
+    },
+    {
+      "name": "Solids_Velocity_1",
+      "type": "vector",
+      "association": "cell",
+      "components": 3,
+      "dataType": "float",
+      "minimum": -1.1030802726745605,
+      "maximum": 3.3139657974243164
+    },
+    {
+      "name": "Solids_Velocity_2",
+      "type": "vector",
+      "association": "cell",
+      "components": 3,
+      "dataType": "float",
+      "minimum": -1.1932964324951172,
+      "maximum": 2.984485387802124
+    },
+    {
+      "name": "Gas_temperature",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 1070.2099609375,
+      "maximum": 1090.109619140625
+    },
+    {
+      "name": "Solids_temperature_1",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 918.521728515625,
+      "maximum": 1073.458984375
+    },
+    {
+      "name": "Solids_temperature_2",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 1071.831787109375,
+      "maximum": 1073.633544921875
+    },
+    {
+      "name": "O2_Gas_mass_fractions_1",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 1.3468499161175578e-35,
+      "maximum": 0.2396429479122162
+    },
+    {
+      "name": "N2_Gas_mass_fractions_2",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.048021722584962845,
+      "maximum": 1.0
+    },
+    {
+      "name": "H2O_Gas_mass_fractions_3",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 3.190099474805329e-32,
+      "maximum": 0.04938814416527748
+    },
+    {
+      "name": "CO_Gas_mass_fractions_4",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 1.8744918397379086e-31,
+      "maximum": 0.2585602402687073
+    },
+    {
+      "name": "CO2_Gas_mass_fractions_5",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 1.0854929784998843e-31,
+      "maximum": 0.22952722012996674
+    },
+    {
+      "name": "H2_Gas_mass_fractions_6",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 3.152190957485661e-32,
+      "maximum": 0.044053055346012115
+    },
+    {
+      "name": "CH4_Gas_mass_fractions_7",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 3.992060806123458e-32,
+      "maximum": 0.0551302470266819
+    },
+    {
+      "name": "TAR_Gas_mass_fractions_8",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 2.8835720430614603e-31,
+      "maximum": 0.6671096682548523
+    },
+    {
+      "name": "TAR0_Gas_mass_fractions_9",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "name": "BIOMASS_Solids_mass_fractions_1_1",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.0,
+      "maximum": 0.04328589141368866
+    },
+    {
+      "name": "MOISTURE_Solids_mass_fractions_1_2",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    {
+      "name": "CHAR_Solids_mass_fractions_1_3",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.0,
+      "maximum": 0.7622764706611633
+    },
+    {
+      "name": "ASH_Solids_mass_fractions_1_4",
+      "type": "scalar",
+      "association": "cell",
+      "components": 1,
+      "dataType": "float",
+      "minimum": 0.23275510966777802,
+      "maximum": 1.0
+    }
+  ]
+}
