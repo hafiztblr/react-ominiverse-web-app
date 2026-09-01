@@ -155,13 +155,17 @@ class StageManager:
             "scope": UsdGeom.Scope,
         }
 
+        if isinstance(filters, carb.dictionary.Item):
+            filters = filters.get_dict()
+        # The web client intentionally sends [] to request every prim type.
+        # Only apply schema filtering when at least one filter was supplied.
+        active_filters = list(filters) if filters else []
+
         children = []
         for child in prim.GetChildren():
             # If a child doesn't pass any filter, we skip it.
-            if filters is not None:
-                if isinstance(filters, carb.dictionary.Item):
-                    filters = filters.get_dict()
-                if not any(child.IsA(filter_types[filt]) for filt in filters if filt in filter_types):
+            if active_filters:
+                if not any(child.IsA(filter_types[filt]) for filt in active_filters if filt in filter_types):
                     continue
 
             child_name = child.GetName()
@@ -174,7 +178,11 @@ class StageManager:
                 continue
             child_path = child_path if child_path != '/' else ''
             carb.log_info(f'child_path: {child_path}')
-            info = {"name": child_name, "path": f'{child_path}/{child_name}'}
+            info = {
+                "name": child_name,
+                "path": f'{child_path}/{child_name}',
+                "type": child.GetTypeName() or "Scope",
+            }
 
             # We return an empty list here to indicate that children are
             # available, but the current app does not support pagination,

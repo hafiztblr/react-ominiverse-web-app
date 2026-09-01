@@ -22,7 +22,6 @@ import "./App.css";
 import Window from './Window';
 import StreamOnlyWindow from './StreamOnlyWindow';
 import { Application, AppOnlyForm, ServerURLsForm, ApplicationsForm, VersionsForm, ProfilesForm } from "./Forms"
-import LogoImage from './assets/thingspine.png';
 import StreamConfig from '../stream.config.json';
 import {
     getStreamingSessionInfo,
@@ -260,9 +259,13 @@ class App extends Component<{}, AppState> {
             >
 
                 {/* Header */}
-                <div className="header-bar">
-                    <img src={LogoImage} alt="Logo" className="header-logo" />
-                    <span className="header-title">Player App</span>
+                <div className="header-bar gasifier-header">
+                    <div className="gasifier-mark">GZ</div>
+                    <div className="gasifier-heading">
+                        <span className="header-title">Downdraft Gasifier — Reactor Vessel</span>
+                        <small>Model GZ-140 · Live CFD temperature field</small>
+                    </div>
+                    <div className="sensor-status"><i /> Live telemetry viewer</div>
                 </div>
 
                 { /* End Stream button */}

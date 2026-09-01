@@ -26,7 +26,7 @@ video#remote-video {
     height: 100%;
     object-fit: cover;
     /* Ensures focus/selection remains accurate by filling the element */
-    background-color: #28312d;
+    background-color: #0d1418;
 }
 
 .header-bar {
@@ -439,6 +439,191 @@ video#remote-video {
     flex-grow: 1;
     position: relative;
     overflow: hidden;
+}
+
+/* Gasifier telemetry viewer */
+.gasifier-header { gap:13px; padding:0 28px; border-bottom:1px solid #293238; background:#151c20; }
+.gasifier-mark { display:grid; width:35px; height:35px; place-items:center; border-radius:8px; color:#111719; background:#ff7138; font-size:13px; font-weight:800; }
+.gasifier-heading { display:flex; flex-direction:column; line-height:1.15; }
+.gasifier-heading .header-title { font-size:16px; }
+.gasifier-heading small { margin-top:3px; color:#7890a0; font-size:11px; }
+.sensor-status { display:flex; align-items:center; gap:8px; margin-left:auto; padding:7px 13px; border:1px solid #2a343a; border-radius:18px; color:#8ca0ad; background:#192125; font-size:11px; }
+.sensor-status i { width:7px; height:7px; border-radius:50%; background:#35dec9; box-shadow:0 0 9px #35dec9; }
+
+.dashboard-container { background:#0d1418 !important; }
+.gasifier-side-panel { flex:0 0 260px; padding:27px 20px; border-color:#273137; color:#d9e2e8; background:#0d1418; overflow:auto; }
+.component-panel { position:relative; z-index:20; border-right:1px solid #273137; pointer-events:auto; }
+.telemetry-panel { flex-basis:250px; border-left:1px solid #273137; }
+.gasifier-side-panel h3 { margin:0 0 22px; color:#617682; font-size:11px; font-weight:500; letter-spacing:.06em; text-transform:uppercase; }
+.component-item { display:grid; grid-template-columns:21px 1fr; gap:10px; margin-bottom:22px; }
+.component-item > b { display:grid; width:19px; height:19px; place-items:center; border:1px solid #31414a; border-radius:50%; color:#8da1ad; font-size:10px; font-weight:500; }
+.component-item div { display:flex; flex-direction:column; }
+.component-item strong { font-size:12px; }
+.component-item span,.field-note { margin-top:3px; color:#7390a1; font-size:10px; line-height:1.5; }
+.temperature-scale { display:flex; height:190px; gap:13px; }
+.temperature-gradient { width:14px; border-radius:8px; background:linear-gradient(to bottom,#f34b2c 0%,#ff9d2f 20%,#f6eb45 38%,#58dc6c 58%,#28c8d6 76%,#2374d8 100%); }
+.temperature-ticks { display:flex; flex-direction:column; justify-content:space-between; color:#8298a5; font-size:10px; }
+.field-note { margin:12px 0 28px; }
+.readout-heading { margin-bottom:10px !important; }
+.temperature-readout > div { display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-bottom:1px solid #283239; color:#8ea2ae; font-size:10px; }
+.temperature-readout strong { color:#edf5f8; font-family:Consolas,monospace; font-size:11px; }
+.temperature-readout .hot-value { color:#ff7138; }
+.viewer-hint { position:absolute; bottom:13px; left:50%; z-index:12; transform:translateX(-50%); color:#526a77; font-size:10px; white-space:nowrap; pointer-events:none; }
+.viewer-hint small { display:none; }
+
+@media (max-width:1050px) {
+    .gasifier-side-panel { flex-basis:205px; padding:20px 14px; }
+    .telemetry-panel { flex-basis:205px; }
+}
+@media (max-width:760px) {
+    .component-panel { display:none; }
+    .telemetry-panel { flex-basis:185px; }
+    .sensor-status { display:none; }
+}
+
+.telemetry-updated {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-top:18px;
+    color:#617782;
+    font-size:10px;
+}
+.telemetry-updated i {
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#35dec9;
+    box-shadow:0 0 7px #35dec9;
+}
+
+/* Keep the rails and stream hidden behind one coordinated loading state. */
+.dashboard-container .loading-container {
+    position:fixed;
+    inset:60px 0 0 0;
+    width:auto;
+    transform:none;
+    border:0;
+    border-radius:0;
+    justify-content:center;
+    color:#d9e2e8;
+    background:#0d1418;
+    z-index:1000;
+}
+
+.dashboard-container .loading-container::before {
+    content:"";
+    width:52px;
+    height:52px;
+    border:4px solid rgba(53,222,201,.18);
+    border-top-color:#35dec9;
+    border-radius:50%;
+    animation:rotation .85s linear infinite;
+    box-shadow:0 0 18px rgba(53,222,201,.14);
+}
+.dashboard-container .loading-container .progress-percentage,
+.dashboard-container .loading-container .loading-text,
+.dashboard-container .loading-container .progress-bar-container {
+    display:none;
+}
+
+.scene-filter {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:17px;
+    padding:8px 10px;
+    border:1px solid #2d3940;
+    border-radius:7px;
+    color:#718894;
+    background:#1a2328;
+}
+.scene-filter input { width:100%; border:0; outline:0; color:#cbd7dd; background:transparent; font-size:11px; pointer-events:auto; }
+.scene-filter input::placeholder { color:#657984; }
+.scene-tree { color:#78909d; font-size:11px; }
+.scene-root,.scene-branch,.scene-node,.scene-group { display:grid; grid-template-columns:13px 8px 1fr auto; align-items:center; min-height:27px; gap:4px; }
+.scene-root b,.scene-branch b { color:#9bb0bb; font-weight:500; }
+.scene-branch { padding-left:17px; }
+.scene-node,.scene-group { padding-left:36px; }
+.scene-node::before { content:""; }
+.scene-tree i { width:5px; height:5px; border-radius:50%; background:#526670; }
+.scene-tree em { color:#536a76; font-size:9px; font-style:normal; }
+.scene-tree .scene-group { padding-left:17px; }
+.scene-tree .scene-group em { display:grid; min-width:20px; height:18px; place-items:center; border-radius:10px; background:#1d292f; }
+.scene-tree .scene-group:last-child b { color:#647b87; font-style:italic; }
+.scene-tree .scene-group { cursor:pointer; user-select:none; }
+.scene-tree .scene-group:hover { color:#b7c8d0; background:#151e23; }
+.scene-tree .scene-group:focus-visible { outline:1px solid #35dec9; outline-offset:-1px; }
+.scene-tree .scene-group > span { color:#718994; font-size:15px; line-height:1; }
+.scene-empty { padding:12px 8px; color:#617782; font-style:italic; }
+
+.axis-gizmo { position:absolute; top:18px; right:18px; z-index:14; width:58px; height:58px; pointer-events:none; }
+.axis-gizmo svg > circle:first-child { fill:rgba(18,27,32,.88); stroke:#334149; stroke-width:1.3; }
+.axis-gizmo line { stroke-width:2.2; stroke-linecap:round; }
+.axis-gizmo text { font-size:8px; font-weight:700; }
+.axis-gizmo .axis-x { stroke:#ff7138; fill:#ff7138; }
+.axis-gizmo .axis-y { stroke:#35dec9; fill:#35dec9; }
+.axis-gizmo .axis-z { stroke:#8da1ad; fill:#8da1ad; }
+.axis-gizmo .axis-origin { fill:#dce7eb; }
+
+.temperature-sample-point { position:fixed; z-index:31; width:22px; height:22px; transform:translate(-50%,-50%); border:1px solid; border-radius:50%; pointer-events:none; box-shadow:0 0 14px rgba(255,255,255,.15); }
+.temperature-sample-point i { position:absolute; inset:6px; border-radius:50%; background:#fff; box-shadow:0 0 6px #fff; }
+.temperature-tooltip { min-width:120px; padding:9px 12px; border-color:#344149; border-radius:8px; background:rgba(17,25,29,.96); }
+.temperature-tooltip::before { content:""; position:absolute; left:-7px; top:21px; width:12px; height:12px; transform:rotate(45deg); border-left:1px solid #344149; border-bottom:1px solid #344149; background:rgba(17,25,29,.96); }
+.temperature-tooltip .tooltip-zone { display:flex; align-items:center; gap:6px; color:#8399a5; font-size:10px; }
+.temperature-tooltip .tooltip-zone i { width:8px; height:8px; border-radius:2px; }
+.temperature-tooltip strong { margin-top:2px; font-size:20px; line-height:1.15; }
+
+.temperature-title {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    z-index: 12;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 9px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    color: #fff;
+    background: rgba(24, 31, 28, 0.78);
+    backdrop-filter: blur(8px);
+    pointer-events: none;
+}
+
+.temperature-title span {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.temperature-title small {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 11px;
+}
+
+.temperature-tooltip {
+    position: fixed;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    min-width: 105px;
+    padding: 7px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #fff;
+    background: rgba(15, 20, 18, 0.9);
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+}
+
+.temperature-tooltip strong {
+    font-size: 14px;
+}
+
+.temperature-tooltip span {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 11px;
 }
 
 /* Bottom Center Controls */

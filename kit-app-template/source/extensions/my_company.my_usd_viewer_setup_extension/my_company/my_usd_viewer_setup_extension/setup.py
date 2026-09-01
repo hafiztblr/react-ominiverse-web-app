@@ -19,7 +19,7 @@ import omni.kit.imgui as _imgui
 import omni.usd
 from omni.kit.mainwindow import get_main_window
 from omni.kit.quicklayout import QuickLayout
-from omni.kit.viewport.utility import get_viewport_from_window_name, frame_viewport_selection
+from omni.kit.viewport.utility import get_active_viewport_camera_string, get_viewport_from_window_name, frame_viewport_selection
 
 COMMAND_MACRO_SETTING = "/exts/omni.kit.command_macro.core/"
 COMMAND_MACRO_FILE_SETTING = COMMAND_MACRO_SETTING + "macro_file"
@@ -41,8 +41,12 @@ class SetupExtension(omni.ext.IExt):
 
     def _apply_background(self):
         """Apply the viewport background after renderer/stage initialization."""
-        background_color = (40.0 / 255.0, 49.0 / 255.0, 45.0 / 255.0)
+        # Calibrated RTX-linear value that tone-maps to the web #0d1418.
+        background_color = (0.012, 0.019, 0.024)
         self._settings.set("/rtx/renderer/clearColor", background_color)
+        # RTX otherwise prefers the DomeLight as the visible background.
+        self._settings.set("/rtx/background/source/type", 2)
+        self._settings.set("/rtx/background/source/color", background_color)
         self._settings.set("/rtx/post/background/color", background_color)
         self._settings.set("/rtx/post/background/useBackground", True)
         self._settings.set("/rtx/post/background/colorMode", 1)
@@ -52,7 +56,7 @@ class SetupExtension(omni.ext.IExt):
         """This is called every time the extension is activated. It is used to
         set up the application and load the stage."""
         self._settings = carb.settings.get_settings()
-        # Dark neutral green-gray viewport background (#28312d).
+        # Match the web viewer panels exactly (#0d1418).
         self._apply_background()
         self._settings.set("/rtx/hydra/enabledVisualizer", "")  # Disable any weird visualizers
         self._settings.set("/app/viewport/grid/enabled", False)  # Disable the grid
@@ -225,6 +229,24 @@ class SetupExtension(omni.ext.IExt):
                     await omni.kit.app.get_app().next_update_async()
                 carb.log_info("SetupExtension: Final Framing Adjustment.")
                 frame_viewport_selection(viewport_api)
+
+                # Deterministic straight-on front view for the Y-up gasifier.
+                # The camera remains freely orbitable after this initial pose.
+                from pxr import Gf
+                camera_prim = stage.GetPrimAtPath(get_active_viewport_camera_string())
+                if camera_prim and camera_prim.IsA(UsdGeom.Camera):
+                    target = range_.GetMidpoint()
+                    size = range_.GetSize()
+                    if UsdGeom.GetStageUpAxis(stage) == UsdGeom.Tokens.y:
+                        eye = target + Gf.Vec3d(0.0, 0.0, max(size[1] * 2.0, size[0] * 2.35))
+                        up = Gf.Vec3d(0.0, 1.0, 0.0)
+                    else:
+                        eye = target + Gf.Vec3d(0.0, -max(size[2] * 2.0, size[0] * 2.35), 0.0)
+                        up = Gf.Vec3d(0.0, 0.0, 1.0)
+                    camera_matrix = Gf.Matrix4d().SetLookAt(eye, target, up).GetInverse()
+                    with Usd.EditContext(stage, Usd.EditTarget(stage.GetSessionLayer())):
+                        UsdGeom.Xformable(camera_prim).MakeMatrixXform().Set(camera_matrix)
+                    carb.log_info("SetupExtension: Applied straight-on gasifier camera pose.")
         except Exception as e:
             carb.log_error(f"SetupExtension: Failed to frame viewport: {e}")
 

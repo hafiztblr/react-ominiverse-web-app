@@ -16,7 +16,6 @@ import StreamConfig from '../stream.config.json';
 import DashboardOverlay from "./DashboardOverlay";
 import { headerHeight } from './App';
 import entityMapping from './assets/entity_mapping.json';
-import SVGSelectionPanel from './svg/SVGSelectionPanel';
 
 
 interface USDAssetType {
@@ -27,6 +26,7 @@ interface USDAssetType {
 interface USDPrimType {
     name?: string;
     path: string;
+    type?: string;
     children?: USDPrimType[];
 }
 
@@ -57,6 +57,11 @@ interface AppState {
     selectedSVGId: string | null;
     animationState: 'stopped' | 'playing' | 'paused';
     isDashboardCollapsed: boolean;
+    latestTemperatures: Record<string, number>;
+    temperatureHover: { x: number; y: number; nx: number; ny: number; visible: boolean };
+    lastTelemetryUpdate: string;
+    sceneFilter: string;
+    collapsedScenePrims: Set<string>;
 }
 
 interface AppStreamMessageType {
@@ -96,6 +101,18 @@ export default class App extends React.Component<AppProps, AppState> {
             selectedSVGId: null,
             animationState: 'stopped',
             isDashboardCollapsed: false,
+            latestTemperatures: {
+                DryingZone: 326.3,
+                PyrolysisZone: 565.1,
+                CombustionZone: 875.0,
+                ReductionZone: 707.2,
+                AshZone: 390.6,
+                Outlet: 316.1,
+            },
+            temperatureHover: { x: 0, y: 0, nx: 0, ny: 0, visible: false },
+            lastTelemetryUpdate: 'Waiting for telemetry',
+            sceneFilter: '',
+            collapsedScenePrims: new Set<string>(),
         }
     }
 
@@ -374,16 +391,54 @@ export default class App extends React.Component<AppProps, AppState> {
     * Note that a filter is supported.
     */
     private _getChildren(usdPrim: USDPrimType | null = null): void {
-        // Get geometry prims. The gasifier stage's default/root prim is /Gasifier.
-        console.log(`Requesting children for path: ${usdPrim ? usdPrim.path : '/Gasifier'}.`);
+        console.log(`Requesting children for path: ${usdPrim ? usdPrim.path : '/'}.`);
         const message: AppStreamMessageType = {
             event_type: "getChildrenRequest",
             payload: {
-                prim_path: usdPrim ? usdPrim.path : '/Gasifier',
+                prim_path: usdPrim ? usdPrim.path : '/',
                 filters: [] // Empty filter to get ALL prims for pickability
             }
         };
         AppStream.sendMessage(JSON.stringify(message));
+    }
+
+    private _renderScenePrims(prims: USDPrimType[], depth = 0): React.ReactNode[] {
+        const filter = this.state.sceneFilter.trim().toLowerCase();
+        return prims.flatMap((prim) => {
+            const children = prim.children ?? [];
+            const childRows = this._renderScenePrims(children, depth + 1);
+            const matches = !filter || (prim.name ?? '').toLowerCase().includes(filter) ||
+                prim.path.toLowerCase().includes(filter) || childRows.length > 0;
+            if (!matches) return [];
+            const hasChildren = children.length > 0;
+            const collapsed = this.state.collapsedScenePrims.has(prim.path);
+            return [
+                <div className={`${hasChildren ? 'scene-group' : 'scene-node'}${collapsed ? ' is-collapsed' : ''}`}
+                    key={prim.path} style={{ paddingLeft: `${14 + depth * 18}px` }} title={prim.path}
+                    role={hasChildren ? 'button' : undefined} tabIndex={hasChildren ? 0 : undefined}
+                    aria-expanded={hasChildren ? !collapsed : undefined}
+                    onClick={hasChildren ? () => this._toggleScenePrim(prim.path) : undefined}
+                    onKeyDown={hasChildren ? (event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            this._toggleScenePrim(prim.path);
+                        }
+                    } : undefined}>
+                    <span>{hasChildren ? (collapsed ? '›' : '▾') : ''}</span><i />
+                    <b>{prim.name ?? prim.path.split('/').pop()}</b><em>{prim.type || 'Prim'}</em>
+                </div>,
+                ...(!collapsed || filter ? childRows : []),
+            ];
+        });
+    }
+
+    private _toggleScenePrim(path: string): void {
+        this.setState((state) => {
+            const collapsedScenePrims = new Set(state.collapsedScenePrims);
+            if (collapsedScenePrims.has(path)) collapsedScenePrims.delete(path);
+            else collapsedScenePrims.add(path);
+            return { collapsedScenePrims } as Pick<AppState, 'collapsedScenePrims'>;
+        });
     }
 
     /**
@@ -501,8 +556,14 @@ export default class App extends React.Component<AppProps, AppState> {
             return;
         }
 
+        if (event.event_type === "gasifierTelemetryUpdated" && event.payload?.result === "success") {
+            this.setState({
+                latestTemperatures: event.payload.temperatures,
+                lastTelemetryUpdate: new Date().toLocaleTimeString(),
+            });
+        }
         // response received once a USD asset is fully loaded
-        if (event.event_type === "openedStageResult") {
+        else if (event.event_type === "openedStageResult") {
             if (event.payload.result === "success") {
                 this._queryLoadingState()
             }
@@ -606,6 +667,11 @@ export default class App extends React.Component<AppProps, AppState> {
             }
             if (Array.isArray(children)) {
                 this._makePickable(children);
+                children.forEach((child: USDPrimType) => {
+                    if (Array.isArray(child.children) && child.children.length === 0) {
+                        this._getChildren(child);
+                    }
+                });
             }
 
             // Check if we have a pending focus that matches one of these children
@@ -648,7 +714,48 @@ export default class App extends React.Component<AppProps, AppState> {
         console.log('User is not interacting in streamed viewer');
     }
 
+    private _handleTemperatureHover = (
+        x: number, y: number, nx: number, ny: number, visible: boolean
+    ): void => {
+        this.setState({ temperatureHover: { x, y, nx, ny, visible } });
+    }
+
+    private _hoverTemperature(): { zone: string; value: number } | null {
+        const hover = this.state.temperatureHover;
+        if (!hover.visible || hover.nx < 0.25 || hover.nx > 0.75 || hover.ny < 0.08 || hover.ny > 0.90) return null;
+        const samples = [
+            { y: 0.12, zone: 'Drying', key: 'DryingZone' },
+            { y: 0.29, zone: 'Pyrolysis', key: 'PyrolysisZone' },
+            { y: 0.46, zone: 'Combustion', key: 'CombustionZone' },
+            { y: 0.63, zone: 'Reduction', key: 'ReductionZone' },
+            { y: 0.79, zone: 'Ash', key: 'AshZone' },
+            { y: 0.90, zone: 'Gas Outlet', key: 'Outlet' },
+        ];
+        const values = this.state.latestTemperatures;
+        for (let index = 0; index < samples.length - 1; index++) {
+            const upper = samples[index];
+            const lower = samples[index + 1];
+            if (hover.ny <= lower.y) {
+                const amount = Math.max(0, Math.min(1, (hover.ny - upper.y) / (lower.y - upper.y)));
+                return {
+                    zone: amount < 0.5 ? upper.zone : lower.zone,
+                    value: values[upper.key] + (values[lower.key] - values[upper.key]) * amount,
+                };
+            }
+        }
+        return { zone: 'Gas Outlet', value: values.Outlet };
+    }
+
+    private _temperatureColor(value: number): string {
+        const normalized = Math.max(0, Math.min(1, (value - 250) / 700));
+        return `hsl(${Math.round((1 - normalized) * 220)}, 88%, 58%)`;
+    }
+
     render() {
+        const hoveredTemperature = this._hoverTemperature();
+        const temperatureValues = Object.values(this.state.latestTemperatures);
+        const peakTemperature = Math.max(...temperatureValues);
+        const averageTemperature = temperatureValues.reduce((sum, value) => sum + value, 0) / temperatureValues.length;
         return (
             <div
                 className="dashboard-container"
@@ -660,13 +767,25 @@ export default class App extends React.Component<AppProps, AppState> {
                     overflow: 'hidden'
                 }}
             >
-                {/* Left Sidebar: 2D SVG Selection */}
-                <SVGSelectionPanel
-                    onSelect={this._handleSVGSelect}
-                    selectedId={this.state.selectedSVGId}
-                />
+                <aside className="gasifier-side-panel component-panel">
+                    <h3>Scene</h3>
+                    <label className="scene-filter">
+                        <span>⌕</span>
+                        <input
+                            value={this.state.sceneFilter}
+                            onChange={(event) => this.setState({ sceneFilter: event.target.value })}
+                            placeholder="Filter nodes"
+                            aria-label="Filter scene nodes"
+                        />
+                    </label>
+                    <div className="scene-tree">
+                        {this.state.usdPrims.length > 0
+                            ? this._renderScenePrims(this.state.usdPrims)
+                            : <div className="scene-empty">Reading USD hierarchy…</div>}
+                    </div>
+                </aside>
 
-                {/* Right Side: Main Viewer Content */}
+                {/* Full-width 3D gasifier viewer */}
                 <div className="main-viewer-content">
                     {/* Full-Screen Streamed app */}
                     <div style={{
@@ -701,6 +820,7 @@ export default class App extends React.Component<AppProps, AppState> {
                             onStarted={() => this._onStreamStarted()}
                             onFocus={() => this._handleAppStreamFocus()}
                             onBlur={() => this._handleAppStreamBlur()}
+                            onPointerHover={this._handleTemperatureHover}
                             style={{
                                 width: '100%',
                                 height: '100%',
@@ -712,8 +832,21 @@ export default class App extends React.Component<AppProps, AppState> {
                         />
                     </div>
 
+                    {this.state.showStream && <div className="axis-gizmo" title="World orientation" aria-label="World axis orientation">
+                        <svg viewBox="0 0 64 64" role="img">
+                            <circle cx="32" cy="32" r="29" />
+                            <line className="axis-x" x1="32" y1="34" x2="51" y2="42" />
+                            <line className="axis-y" x1="32" y1="34" x2="32" y2="12" />
+                            <line className="axis-z" x1="32" y1="34" x2="17" y2="47" />
+                            <text className="axis-x" x="53" y="46">X</text>
+                            <text className="axis-y" x="29" y="10">Y</text>
+                            <text className="axis-z" x="9" y="53">Z</text>
+                            <circle className="axis-origin" cx="32" cy="34" r="3" />
+                        </svg>
+                    </div>}
+
                     {/* Bottom Center Controls */}
-                    {this.state.showStream && (
+                    {false && (
                         <div className="bottom-center-controls">
                             {/* Play / Pause toggle */}
                             {this.state.animationState !== 'playing' ? (
@@ -753,8 +886,40 @@ export default class App extends React.Component<AppProps, AppState> {
                         </div>
                     )}
 
+                    {this.state.showStream && (
+                        <div className="viewer-hint">
+                            <span>Drag to orbit · scroll to zoom · hover for temperature</span>
+                            <small>Approximate CFD visualization · °C</small>
+                        </div>
+                    )}
+
+                    {hoveredTemperature && (
+                        <>
+                            <div
+                                className="temperature-sample-point"
+                                style={{
+                                    left: this.state.temperatureHover.x,
+                                    top: this.state.temperatureHover.y,
+                                    borderColor: this._temperatureColor(hoveredTemperature.value),
+                                }}
+                            ><i /></div>
+                            <div
+                                className="temperature-tooltip"
+                                style={{ left: this.state.temperatureHover.x + 18, top: this.state.temperatureHover.y - 22 }}
+                            >
+                                <span className="tooltip-zone">
+                                    <i style={{ background: this._temperatureColor(hoveredTemperature.value) }} />
+                                    {hoveredTemperature.zone} zone
+                                </span>
+                                <strong style={{ color: this._temperatureColor(hoveredTemperature.value) }}>
+                                    {hoveredTemperature.value.toFixed(1)} °C
+                                </strong>
+                            </div>
+                        </>
+                    )}
+
                     {/* Floating Immersive Overlay (Now relative to viewer only) */}
-                    {this.state.showUI &&
+                    {false &&
                         <div
                             className={`immersive-overlay ${this.state.isDashboardCollapsed ? 'collapsed' : ''}`}
                             style={{
@@ -787,6 +952,29 @@ export default class App extends React.Component<AppProps, AppState> {
                         </div>
                     }
                 </div>
+
+                <aside className="gasifier-side-panel telemetry-panel">
+                    <h3>Temperature field</h3>
+                    <div className="temperature-scale">
+                        <div className="temperature-gradient" />
+                        <div className="temperature-ticks">
+                            <span>950°C</span><span>775°C</span><span>600°C</span><span>425°C</span><span>250°C</span>
+                        </div>
+                    </div>
+                    <p className="field-note">Approximate internal temperature derived from zone telemetry.</p>
+                    <h3 className="readout-heading">Live readout</h3>
+                    <div className="temperature-readout">
+                        <div><span>Peak temperature</span><strong className="hot-value">{peakTemperature.toFixed(1)}°C</strong></div>
+                        <div><span>Average temperature</span><strong>{averageTemperature.toFixed(1)}°C</strong></div>
+                        <div><span>Drying</span><strong>{this.state.latestTemperatures.DryingZone.toFixed(1)}°C</strong></div>
+                        <div><span>Pyrolysis</span><strong>{this.state.latestTemperatures.PyrolysisZone.toFixed(1)}°C</strong></div>
+                        <div><span>Combustion</span><strong>{this.state.latestTemperatures.CombustionZone.toFixed(1)}°C</strong></div>
+                        <div><span>Reduction</span><strong>{this.state.latestTemperatures.ReductionZone.toFixed(1)}°C</strong></div>
+                        <div><span>Ash</span><strong>{this.state.latestTemperatures.AshZone.toFixed(1)}°C</strong></div>
+                        <div><span>Gas outlet</span><strong>{this.state.latestTemperatures.Outlet.toFixed(1)}°C</strong></div>
+                    </div>
+                    <div className="telemetry-updated"><i /> Updated {this.state.lastTelemetryUpdate}</div>
+                </aside>
             </div>
         );
     }

@@ -30,6 +30,7 @@ interface AppStreamProps {
     handleCustomEvent: (event: any) => void;
     onFocus: () => void;
     onBlur: () => void;
+    onPointerHover: (x: number, y: number, normalizedX: number, normalizedY: number, visible: boolean) => void;
 }
 
 interface AppStreamState {
@@ -192,6 +193,14 @@ export default class AppStream extends Component<AppStreamProps, AppStreamState>
     };
 
     private _onOrbitMove = (event: React.PointerEvent<HTMLDivElement>) => {
+        const bounds = event.currentTarget.getBoundingClientRect();
+        this.props.onPointerHover(
+            event.clientX,
+            event.clientY,
+            (event.clientX - bounds.left) / bounds.width,
+            (event.clientY - bounds.top) / bounds.height,
+            true,
+        );
         if (!this._orbiting || event.pointerId !== this._orbitPointerId) return;
         const deltaX = event.clientX - this._orbitX;
         const deltaY = event.clientY - this._orbitY;
@@ -205,6 +214,10 @@ export default class AppStream extends Component<AppStreamProps, AppStreamState>
         }
         event.preventDefault();
         event.stopPropagation();
+    };
+
+    private _onPointerLeave = () => {
+        if (!this._orbiting) this.props.onPointerHover(0, 0, 0, 0, false);
     };
 
     private _onOrbitEnd = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -270,8 +283,9 @@ export default class AppStream extends Component<AppStreamProps, AppStreamState>
                     onPointerMoveCapture={this._onOrbitMove}
                     onPointerUpCapture={this._onOrbitEnd}
                     onPointerCancelCapture={this._onOrbitEnd}
+                    onPointerLeave={this._onPointerLeave}
                     style={{
-                        backgroundColor: '#28312d',
+                        backgroundColor: '#0d1418',
                         cursor: this._orbiting ? 'grabbing' : 'grab',
                         touchAction: 'none',
                         outline: 'none',
