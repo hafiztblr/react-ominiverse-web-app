@@ -26,7 +26,7 @@ video#remote-video {
     height: 100%;
     object-fit: cover;
     /* Ensures focus/selection remains accurate by filling the element */
-    background-color: #000;
+    background-color: #28312d;
 }
 
 .header-bar {

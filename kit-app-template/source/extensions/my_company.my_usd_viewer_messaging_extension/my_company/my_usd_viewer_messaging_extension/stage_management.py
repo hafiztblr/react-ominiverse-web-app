@@ -8,7 +8,12 @@
 # without an express license agreement from NVIDIA CORPORATION or
 # its affiliates is strictly prohibited.
 
-from pxr import UsdGeom, Usd
+from pxr import Gf, UsdGeom, Usd
+
+import colorsys
+import asyncio
+import math
+import time
 
 import carb
 import carb.dictionary
@@ -33,7 +38,9 @@ class StageManager:
         # Internal messaging state
         self._is_external_update: bool = False
         self._camera_attrs = {}
+        self._orbit_state = None
         self._subscriptions = []
+        self._sample_telemetry_task = None
 
         # -- register outgoing events/messages
         outgoing = [
@@ -45,6 +52,8 @@ class StageManager:
             "makePrimsPickableResponse",
             # response to the request to reset camera attributes
             "resetStageResponse",
+            # response after applying live gasifier telemetry
+            "gasifierTelemetryUpdated",
         ]
 
         for o in outgoing:
@@ -70,6 +79,10 @@ class StageManager:
             'playAnimation': self._on_play_animation,
             'pauseAnimation': self._on_pause_animation,
             'stopAnimation': self._on_stop_animation,
+            # live temperature data forwarded by the web client
+            'updateGasifierTelemetry': self._on_update_gasifier_telemetry,
+            # web-style left-button camera orbit
+            'orbitCamera': self._on_orbit_camera,
         }
 
         ed = get_eventdispatcher()
@@ -103,7 +116,29 @@ class StageManager:
                 on_event=self._on_stage_event_selection_changed,
             )
         )
+        if carb.settings.get_settings().get_as_bool("/app/gasifier/enableSampleTelemetry"):
+            self._sample_telemetry_task = asyncio.ensure_future(self._run_sample_telemetry())
 
+    async def _run_sample_telemetry(self):
+        """Drive the live CFD field directly in Kit every ten seconds."""
+        step = 0
+        # Wait for the setup extension to finish opening the stage.
+        await asyncio.sleep(5.0)
+        while True:
+            phase = step * 0.72
+            step += 1
+            telemetry = {
+                "reactor_dryingZoneTemperatureC": round(326.3 + 28.0 * math.sin(phase), 1),
+                "reactor_pyrolysisZoneTemperatureC": round(565.1 + 52.0 * math.sin(phase + 0.7), 1),
+                "reactor_combustionZoneTemperatureC": round(875.0 + 58.0 * math.sin(phase + 1.2), 1),
+                "reactor_reductionZoneTemperatureC": round(707.2 + 47.0 * math.sin(phase + 1.8), 1),
+                "reactor_ashZoneTemperatureC": round(390.6 + 34.0 * math.sin(phase + 2.4), 1),
+                "reactor_gasOutletTemperatureC": round(316.1 + 24.0 * math.sin(phase + 2.9), 1),
+            }
+            get_eventdispatcher().dispatch_event(
+                "updateGasifierTelemetry", payload={"telemetry": telemetry}
+            )
+            await asyncio.sleep(10.0)
     def get_children(self, prim_path, filters=None):
         """
         Collect any children of the given `prim_path`, potentially filtered by `filters`
@@ -204,6 +239,7 @@ class StageManager:
             # Clear before using, so that we're sure the data is only
             # from the new stage.
             self._camera_attrs.clear()
+            self._orbit_state = None
             # Capture the active camera's camera data, used to reset
             # the scene to a known good state.
             if (prim := ctx.get_stage().GetPrimAtPath(get_active_viewport_camera_string())):
@@ -250,6 +286,7 @@ class StageManager:
         except Exception as e:
             payload = {"result": "error", "error": str(e)}
         else:
+            self._orbit_state = None
             payload = {"result": "success", "error": ""}
 
         get_eventdispatcher().dispatch_event("resetStageResponse", payload=payload)
@@ -287,8 +324,63 @@ class StageManager:
         try:
             # Use the programmatic API instead of the command to avoid registration issues
             omni.kit.viewport.utility.frame_viewport_selection()
+            self._orbit_state = None
         except Exception as e:
             carb.log_error(f"Failed to frame selection: {str(e)}")
+
+    def _on_orbit_camera(self, event: carb.events.IEvent):
+        """Orbit the active camera around the loaded stage using mouse deltas."""
+        try:
+            payload = self._payload_to_dict(event.payload)
+            delta_x = max(-120.0, min(120.0, float(payload.get("deltaX", 0.0))))
+            delta_y = max(-120.0, min(120.0, float(payload.get("deltaY", 0.0))))
+            stage = omni.usd.get_context().get_stage()
+            camera_prim = stage.GetPrimAtPath(get_active_viewport_camera_string()) if stage else None
+            if not camera_prim or not camera_prim.IsA(UsdGeom.Camera):
+                raise RuntimeError("The active viewport camera is unavailable")
+
+            up_axis = UsdGeom.GetStageUpAxis(stage)
+            if self._orbit_state is None:
+                bounds = UsdGeom.BBoxCache(
+                    Usd.TimeCode.Default(), [UsdGeom.Tokens.default_]
+                ).ComputeWorldBound(stage.GetDefaultPrim() or stage.GetPseudoRoot()).ComputeAlignedRange()
+                target = bounds.GetMidpoint()
+                camera_world = UsdGeom.Xformable(camera_prim).ComputeLocalToWorldTransform(Usd.TimeCode.Default())
+                eye = camera_world.ExtractTranslation()
+                offset = eye - target
+                radius = max(0.1, offset.GetLength())
+                if up_axis == UsdGeom.Tokens.y:
+                    yaw = math.atan2(offset[0], offset[2])
+                    pitch = math.asin(max(-1.0, min(1.0, offset[1] / radius)))
+                else:
+                    yaw = math.atan2(offset[1], offset[0])
+                    pitch = math.asin(max(-1.0, min(1.0, offset[2] / radius)))
+                self._orbit_state = [target, radius, yaw, pitch, up_axis]
+
+            target, radius, yaw, pitch, up_axis = self._orbit_state
+            yaw -= delta_x * 0.006
+            pitch = max(math.radians(-85.0), min(math.radians(85.0), pitch + delta_y * 0.006))
+            cosine = math.cos(pitch)
+            if up_axis == UsdGeom.Tokens.y:
+                eye = target + Gf.Vec3d(
+                    radius * math.sin(yaw) * cosine,
+                    radius * math.sin(pitch),
+                    radius * math.cos(yaw) * cosine,
+                )
+                up = Gf.Vec3d(0.0, 1.0, 0.0)
+            else:
+                eye = target + Gf.Vec3d(
+                    radius * math.cos(yaw) * cosine,
+                    radius * math.sin(yaw) * cosine,
+                    radius * math.sin(pitch),
+                )
+                up = Gf.Vec3d(0.0, 0.0, 1.0)
+            camera_to_world = Gf.Matrix4d().SetLookAt(eye, target, up).GetInverse()
+            with Usd.EditContext(stage, Usd.EditTarget(stage.GetSessionLayer())):
+                UsdGeom.Xformable(camera_prim).MakeMatrixXform().Set(camera_to_world)
+            self._orbit_state = [target, radius, yaw, pitch, up_axis]
+        except Exception as exc:
+            carb.log_error(f"Failed to orbit camera: {exc}")
 
     def _on_play_animation(self, event: carb.events.IEvent):
         """
@@ -332,10 +424,154 @@ class StageManager:
         except Exception as e:
             carb.log_error(f"Failed to stop animation: {str(e)}")
 
+    @staticmethod
+    def _payload_to_dict(value):
+        """Convert Carbonite dictionary values into ordinary Python values."""
+        if isinstance(value, carb.dictionary.Item):
+            value = value.get_dict()
+        if isinstance(value, dict):
+            return {str(key): StageManager._payload_to_dict(item) for key, item in value.items()}
+        if isinstance(value, (list, tuple)):
+            return [StageManager._payload_to_dict(item) for item in value]
+        return value
+
+    @staticmethod
+    def _temperature_color(value, minimum, maximum):
+        span = max(1.0e-6, maximum - minimum)
+        normalized = max(0.0, min(1.0, (value - minimum) / span))
+        return Gf.Vec3f(*colorsys.hsv_to_rgb((1.0 - normalized) * 0.67, 0.92, 1.0))
+
+    @staticmethod
+    def _interpolate_axial_temperature(z, profile):
+        for (z0, t0), (z1, t1) in zip(profile, profile[1:]):
+            if z <= z1:
+                amount = max(0.0, min(1.0, (z - z0) / (z1 - z0)))
+                amount = amount * amount * (3.0 - 2.0 * amount)
+                return t0 + (t1 - t0) * amount
+        return profile[-1][1]
+
+    def _on_update_gasifier_telemetry(self, event: carb.events.IEvent):
+        """Recolor the existing CFD mesh from six live zone temperatures."""
+        aliases = {
+            "DryingZone": ("reactor_dryingZoneTemperatureC", "drying", "Drying", "DryingZone"),
+            "PyrolysisZone": ("reactor_pyrolysisZoneTemperatureC", "pyrolysis", "Pyrolysis", "PyrolysisZone"),
+            "CombustionZone": ("reactor_combustionZoneTemperatureC", "combustion", "Combustion", "CombustionZone"),
+            "ReductionZone": ("reactor_reductionZoneTemperatureC", "reduction", "Reduction", "ReductionZone"),
+            "AshZone": ("reactor_ashZoneTemperatureC", "ash", "Ash", "AshZone"),
+            "Outlet": ("reactor_gasOutletTemperatureC", "outlet", "gasOutlet", "Outlet"),
+        }
+        try:
+            payload = self._payload_to_dict(event.payload)
+            telemetry = payload.get("telemetry", payload)
+            if isinstance(telemetry.get("data"), dict):
+                telemetry = {**telemetry, **telemetry["data"]}
+            if isinstance(telemetry.get("temperatures"), dict):
+                telemetry = {**telemetry, **telemetry["temperatures"]}
+
+            temperatures = {}
+            for zone, keys in aliases.items():
+                raw_value = next((telemetry[key] for key in keys if key in telemetry), None)
+                if raw_value is None:
+                    raise ValueError(f"Missing temperature for {zone}; accepted keys: {', '.join(keys)}")
+                value = float(raw_value)
+                if not math.isfinite(value) or value < -273.15 or value > 2500.0:
+                    raise ValueError(f"Invalid {zone} temperature: {raw_value}")
+                temperatures[zone] = value
+
+            stage = omni.usd.get_context().get_stage()
+            if not stage:
+                raise RuntimeError("No USD stage is open")
+            field_root = stage.GetPrimAtPath("/Gasifier/TemperatureField")
+            fields = [
+                prim for prim in field_root.GetChildren()
+                if prim.IsA(UsdGeom.Mesh)
+            ] if field_root else []
+            # Also support the generated gasifier_cfd.usd hierarchy.
+            single_field = stage.GetPrimAtPath("/Gasifier/TemperatureField/Field")
+            if single_field and single_field.IsA(UsdGeom.Mesh) and single_field not in fields:
+                fields.append(single_field)
+            if not fields:
+                raise RuntimeError("No CFD meshes were found below /Gasifier/TemperatureField")
+
+            profile = [
+                (0.15, temperatures["Outlet"]),
+                (1.5, temperatures["AshZone"]),
+                (3.7, temperatures["ReductionZone"]),
+                (6.0, temperatures["CombustionZone"]),
+                (8.4, temperatures["PyrolysisZone"]),
+                (10.8, temperatures["DryingZone"]),
+            ]
+            with Usd.EditContext(stage, Usd.EditTarget(stage.GetSessionLayer())):
+                for field in fields:
+                    field_values = []
+                    colors = []
+                    points = UsdGeom.Mesh(field).GetPointsAttr().Get() or []
+                    for point in points:
+                        # gasifier.usda is Y-up; gasifier_cfd.usd is Z-up.
+                        is_y_up = UsdGeom.GetStageUpAxis(stage) == UsdGeom.Tokens.y
+                        if is_y_up:
+                            x, axial, radial_other = point
+                        else:
+                            x, radial_other, axial = point
+                        radius = min(1.0, math.hypot(x, radial_other) / 1.25)
+                        combustion_weight = math.exp(-((axial - 3.0) / 1.05) ** 2)
+                        wall_loss = radius ** 1.65 * (10.0 + 38.0 * combustion_weight)
+                        theta = math.atan2(radial_other, x)
+                        asymmetry = radius * (2.0 + 5.0 * combustion_weight) * (
+                            0.5 + 0.5 * math.sin(2.0 * theta + 0.7 * axial)
+                        )
+                        # gasifier.usda spans Y=0..6, so map it onto the
+                        # generator's 0.15..10.8 telemetry profile.
+                        profile_position = (
+                            0.15 + max(0.0, min(6.0, axial)) * (10.65 / 6.0)
+                            if is_y_up else axial
+                        )
+                        value = self._interpolate_axial_temperature(profile_position, profile)
+                        value -= wall_loss + asymmetry
+                        value = max(250.0, min(950.0, value))
+                        field_values.append(value)
+                        colors.append(self._temperature_color(value, 250.0, 950.0))
+                    temperature_attr = field.GetAttribute("field:temperature")
+                    if temperature_attr:
+                        temperature_attr.Set(field_values)
+                    field.GetAttribute("primvars:displayColor").Set(colors)
+                for zone in ("DryingZone", "PyrolysisZone", "CombustionZone", "ReductionZone", "AshZone"):
+                    zone_prim = stage.GetPrimAtPath(f"/Gasifier/Reactor/{zone}")
+                    if zone_prim:
+                        zone_attr = zone_prim.GetAttribute("telemetry:temperature")
+                        if zone_attr:
+                            zone_attr.Set(temperatures[zone])
+                outlet_prim = stage.GetPrimAtPath("/Gasifier/GasOutlet")
+                if outlet_prim:
+                    outlet_attr = outlet_prim.GetAttribute("telemetry:temperature")
+                    if outlet_attr:
+                        outlet_attr.Set(temperatures["Outlet"])
+
+            response = {"result": "success", "temperatures": temperatures}
+            status = (
+                f"[{time.strftime('%H:%M:%S')}] [Gasifier CFD] Gradient updated | "
+                f"Drying={temperatures['DryingZone']:.1f} C | "
+                f"Pyrolysis={temperatures['PyrolysisZone']:.1f} C | "
+                f"Combustion={temperatures['CombustionZone']:.1f} C | "
+                f"Reduction={temperatures['ReductionZone']:.1f} C | "
+                f"Ash={temperatures['AshZone']:.1f} C | "
+                f"Outlet={temperatures['Outlet']:.1f} C | meshes={len(fields)}"
+            )
+            print(status, flush=True)
+            carb.log_info(status)
+        except Exception as exc:
+            response = {"result": "error", "error": str(exc)}
+            carb.log_error(f"Failed to update gasifier telemetry: {exc}")
+        get_eventdispatcher().dispatch_event("gasifierTelemetryUpdated", payload=response)
+
     def on_shutdown(self):
         """This is called every time the extension is deactivated. It is used
         to clean up the extension state."""
         # Reseting the state.
         self._subscriptions.clear()
+        if self._sample_telemetry_task:
+            self._sample_telemetry_task.cancel()
+            self._sample_telemetry_task = None
         self._is_external_update: bool = False
         self._camera_attrs.clear()
+        self._orbit_state = None

@@ -38,16 +38,22 @@ async def _load_layout(layout_file: str):
 
 class SetupExtension(omni.ext.IExt):
     """Extension that sets up the USD Viewer application."""
+
+    def _apply_background(self):
+        """Apply the viewport background after renderer/stage initialization."""
+        background_color = (40.0 / 255.0, 49.0 / 255.0, 45.0 / 255.0)
+        self._settings.set("/rtx/renderer/clearColor", background_color)
+        self._settings.set("/rtx/post/background/color", background_color)
+        self._settings.set("/rtx/post/background/useBackground", True)
+        self._settings.set("/rtx/post/background/colorMode", 1)
+        self._settings.set("/rtx/post/background/alpha", 1.0)
+
     def on_startup(self, _ext_id: str):
         """This is called every time the extension is activated. It is used to
         set up the application and load the stage."""
         self._settings = carb.settings.get_settings()
-        # Core Visibility Fixes: Force absolute black background and clear environment
-        self._settings.set("/rtx/renderer/clearColor", (0.0, 0.0, 0.0))
-        self._settings.set("/rtx/post/background/color", (0.0, 0.0, 0.0))
-        self._settings.set("/rtx/post/background/useBackground", True)
-        self._settings.set("/rtx/post/background/colorMode", 1)  # Force constant color mode
-        self._settings.set("/rtx/post/background/alpha", 1.0)
+        # Dark neutral green-gray viewport background (#28312d).
+        self._apply_background()
         self._settings.set("/rtx/hydra/enabledVisualizer", "")  # Disable any weird visualizers
         self._settings.set("/app/viewport/grid/enabled", False)  # Disable the grid
         self._settings.set("/rtx/eco/enabled", False)          # Disable eco mode if washing out pixels
@@ -148,10 +154,19 @@ class SetupExtension(omni.ext.IExt):
         for _ in range(120): # ~2 seconds at 60fps
             await omni.kit.app.get_app().next_update_async()
 
+        # Renderer startup and stage loading can replace post-process settings.
+        self._apply_background()
+
         # 2. Add lighting if missing (RTX needs a light to show anything)
         try:
             from pxr import UsdGeom
             stage = usd_context.get_stage()
+            # The authored transparent cylinder produces dark vertical facet
+            # bands in RTX streaming. The internal CFD mesh already supplies
+            # the visible reactor volume, so hide only this redundant shell.
+            reactor_shell = stage.GetPrimAtPath("/Gasifier/Reactor/Shell")
+            if reactor_shell:
+                UsdGeom.Imageable(reactor_shell).MakeInvisible()
             # Most robust check: check for any prim that has "Light" in its type name
             lights = [p for p in stage.Traverse() if "Light" in p.GetTypeName()]
             if not lights:
@@ -161,9 +176,11 @@ class SetupExtension(omni.ext.IExt):
                 dome_light = UsdLux.DomeLight.Define(stage, "/DefaultDomeLight")
                 # Use the older GetAttribute style for better compatibility
                 if dome_light.GetIntensityAttr():
-                    dome_light.GetIntensityAttr().Set(3000)
+                    dome_light.GetIntensityAttr().Set(500)
                 if dome_light.GetExposureAttr():
-                    dome_light.GetExposureAttr().Set(1.0)
+                    dome_light.GetExposureAttr().Set(0.0)
+
+            self._apply_background()
         except Exception as e:
             carb.log_error(f"SetupExtension: Failed to add light: {e}")
 

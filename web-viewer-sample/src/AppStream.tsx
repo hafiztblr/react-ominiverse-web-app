@@ -38,6 +38,10 @@ interface AppStreamState {
 
 export default class AppStream extends Component<AppStreamProps, AppStreamState> {
     private _requested: boolean;
+    private _orbiting = false;
+    private _orbitPointerId: number | null = null;
+    private _orbitX = 0;
+    private _orbitY = 0;
 
     static defaultProps = {
         style: {}
@@ -174,6 +178,47 @@ export default class AppStream extends Component<AppStreamProps, AppStreamState>
         (AppStreamer as any)._stream = null; // Accessing a private member
     }
 
+    private _onOrbitStart = (event: React.PointerEvent<HTMLDivElement>) => {
+        if (event.button !== 0) return;
+        this._orbiting = true;
+        this._orbitPointerId = event.pointerId;
+        this._orbitX = event.clientX;
+        this._orbitY = event.clientY;
+        event.currentTarget.setPointerCapture(event.pointerId);
+        event.currentTarget.style.cursor = 'grabbing';
+        event.currentTarget.focus();
+        event.preventDefault();
+        event.stopPropagation();
+    };
+
+    private _onOrbitMove = (event: React.PointerEvent<HTMLDivElement>) => {
+        if (!this._orbiting || event.pointerId !== this._orbitPointerId) return;
+        const deltaX = event.clientX - this._orbitX;
+        const deltaY = event.clientY - this._orbitY;
+        this._orbitX = event.clientX;
+        this._orbitY = event.clientY;
+        if (deltaX || deltaY) {
+            AppStream.sendMessage(JSON.stringify({
+                event_type: 'orbitCamera',
+                payload: { deltaX, deltaY },
+            }));
+        }
+        event.preventDefault();
+        event.stopPropagation();
+    };
+
+    private _onOrbitEnd = (event: React.PointerEvent<HTMLDivElement>) => {
+        if (event.pointerId !== this._orbitPointerId) return;
+        this._orbiting = false;
+        this._orbitPointerId = null;
+        event.currentTarget.style.cursor = 'grab';
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+            event.currentTarget.releasePointerCapture(event.pointerId);
+        }
+        event.preventDefault();
+        event.stopPropagation();
+    };
+
     _onStart(message: any) {
         if (message.action === 'start' && message.status === 'success' && !this.state.streamReady) {
             console.info('streamReady');
@@ -218,14 +263,25 @@ export default class AppStream extends Component<AppStreamProps, AppStreamState>
             return (
                 <div
                     id="main-div"
+                    tabIndex={0}
+                    onFocus={this.props.onFocus}
+                    onBlur={this.props.onBlur}
+                    onPointerDownCapture={this._onOrbitStart}
+                    onPointerMoveCapture={this._onOrbitMove}
+                    onPointerUpCapture={this._onOrbitEnd}
+                    onPointerCancelCapture={this._onOrbitEnd}
                     style={{
-                        backgroundColor: this.state.streamReady ? 'white' : '#dddddd',
+                        backgroundColor: '#28312d',
+                        cursor: this._orbiting ? 'grabbing' : 'grab',
+                        touchAction: 'none',
+                        outline: 'none',
                         visibility: this.state.streamReady ? 'visible' : 'hidden',
                         ...this.props.style
                     }}
                 >
                     <video
                         id="remote-video"
+                        tabIndex={-1}
                         style={{
                             width: '100%',
                             height: '100%',

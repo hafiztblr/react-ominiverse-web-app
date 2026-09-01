@@ -1,0 +1,15 @@
+Temperature Profile (Top to Bottom)
+reactor_dryingZoneTemperatureC: 326.3 °C
+reactor_pyrolysisZoneTemperatureC: 565.1 °C
+reactor_combustionZoneTemperatureC: 875.0 °C (The hottest point, where oxygen burns)
+reactor_reductionZoneTemperatureC: 707.2 °C (Cools down because making H2/CO absorbs heat)
+reactor_ashZoneTemperatureC: 390.6 °C
+reactor_gasOutletTemperatureC: 316.1 °C (Final exhaust temperature)
+💨 Syngas Composition (At the Gas Outlet)
+gasCooler_H2VolPercentage (Hydrogen): 25.80%
+gasCooler_COVolPercentage (Carbon Monoxide): 18.84%
+gasCooler_CO2VolPercentage (Carbon Dioxide): 5.77%
+gasCooler_CH4VolPercentage (Methane): 3.32%
+gasCooler_H2SVolPercentage (Hydrogen Sulfide): 0.27%
+gasCooler_O2VolPercentage (Oxygen): 0.00% (Perfect! All oxygen was consumed in the combustion zone) 
+ 

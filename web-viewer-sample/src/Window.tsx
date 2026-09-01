@@ -67,6 +67,9 @@ interface AppStreamMessageType {
 export default class App extends React.Component<AppProps, AppState> {
 
     private _progressInterval: any = null;
+    private _telemetrySocket: WebSocket | null = null;
+    private _telemetryReconnectTimer: ReturnType<typeof setTimeout> | null = null;
+    private _lastTelemetry: Record<string, unknown> | null = null;
     // private _streamConfig: StreamConfigType = getConfig();
 
     constructor(props: AppProps) {
@@ -74,8 +77,7 @@ export default class App extends React.Component<AppProps, AppState> {
 
         // list of selectable USD assets
         const usdAssets: USDAssetType[] = [
-            { name: "Factory", url: "C:/Users/USER/Desktop/Hafiz/Omiverse/web-app/kit-app-template/source/examples/Factory.usd" },
-            { name: "Boat", url: "C:/Users/USER/Desktop/Hafiz/Omiverse/web-app/kit-app-template/source/examples/Boat.usd" },
+            { name: "Gasifier", url: "C:/Users/USER/Desktop/Hafiz/Omiverse/web-app/gasifier.usda" },
         ];
 
         this.state = {
@@ -104,10 +106,73 @@ export default class App extends React.Component<AppProps, AppState> {
             console.info("Starting robust progress simulation...");
             this._startProgressSimulation();
         }
+        this._connectTelemetrySocket();
     }
 
     componentWillUnmount() {
         this._stopProgressSimulation();
+        if (this._telemetryReconnectTimer) clearTimeout(this._telemetryReconnectTimer);
+        this._telemetrySocket?.close();
+    }
+
+    private _connectTelemetrySocket(): void {
+        const url = import.meta.env.VITE_TELEMETRY_WS_URL as string | undefined;
+        if (!url) {
+            console.info('VITE_TELEMETRY_WS_URL is not set; Kit sample telemetry is active.');
+            return;
+        }
+        this._telemetrySocket = new WebSocket(url);
+        this._telemetrySocket.onopen = () => console.info(`Telemetry WebSocket connected: ${url}`);
+        this._telemetrySocket.onmessage = (message) => {
+            try {
+                const telemetry = this._parseTelemetryMessage(String(message.data));
+                this._lastTelemetry = telemetry;
+                this._sendTelemetryToKit(telemetry);
+            } catch (error) {
+                console.error('Ignored invalid telemetry WebSocket message:', error);
+            }
+        };
+        this._telemetrySocket.onerror = () => this._telemetrySocket?.close();
+        this._telemetrySocket.onclose = () => {
+            this._telemetrySocket = null;
+            this._telemetryReconnectTimer = setTimeout(() => this._connectTelemetrySocket(), 2000);
+        };
+    }
+
+    private _parseTelemetryMessage(text: string): Record<string, unknown> {
+        try {
+            const parsed = JSON.parse(text) as unknown;
+            if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+                return parsed as Record<string, unknown>;
+            }
+        } catch {
+            // The sample-data.txt key/value format is also accepted below.
+        }
+        const keys = [
+            'reactor_dryingZoneTemperatureC',
+            'reactor_pyrolysisZoneTemperatureC',
+            'reactor_combustionZoneTemperatureC',
+            'reactor_reductionZoneTemperatureC',
+            'reactor_ashZoneTemperatureC',
+            'reactor_gasOutletTemperatureC',
+        ];
+        const result: Record<string, number> = {};
+        for (const key of keys) {
+            const match = text.match(new RegExp(`${key}(?:\\s*\\([^)]*\\))?\\s*:\\s*(-?\\d+(?:\\.\\d+)?)`));
+            if (match) result[key] = Number(match[1]);
+        }
+        if (Object.keys(result).length !== keys.length) {
+            throw new Error('Message is neither a telemetry JSON object nor complete sample-data text');
+        }
+        return result;
+    }
+
+    private _sendTelemetryToKit(telemetry: Record<string, unknown>): void {
+        if (!this.state.isKitReady) return;
+        AppStream.sendMessage(JSON.stringify({
+            event_type: 'updateGasifierTelemetry',
+            payload: { telemetry },
+        }));
     }
 
     private _handleSVGSelect = (id: string) => {
@@ -181,7 +246,8 @@ export default class App extends React.Component<AppProps, AppState> {
     private _onStreamStarted(): void {
         this._pollForKitReady();
         // Proactively make the whole root pickable to cover all deep hierarchy objects
-        this._makePickable([{ name: 'World', path: '/World' }]);
+        this._makePickable([{ name: 'Gasifier', path: '/Gasifier' }]);
+        if (this._lastTelemetry) this._sendTelemetryToKit(this._lastTelemetry);
     }
 
     /**
@@ -308,12 +374,12 @@ export default class App extends React.Component<AppProps, AppState> {
     * Note that a filter is supported.
     */
     private _getChildren(usdPrim: USDPrimType | null = null): void {
-        // Get geometry prims. If no usdPrim is specified then get children of /World.
-        console.log(`Requesting children for path: ${usdPrim ? usdPrim.path : '/World'}.`);
+        // Get geometry prims. The gasifier stage's default/root prim is /Gasifier.
+        console.log(`Requesting children for path: ${usdPrim ? usdPrim.path : '/Gasifier'}.`);
         const message: AppStreamMessageType = {
             event_type: "getChildrenRequest",
             payload: {
-                prim_path: usdPrim ? usdPrim.path : '/World',
+                prim_path: usdPrim ? usdPrim.path : '/Gasifier',
                 filters: [] // Empty filter to get ALL prims for pickability
             }
         };
@@ -453,7 +519,9 @@ export default class App extends React.Component<AppProps, AppState> {
             // is in Kit
             if (this.state.isKitReady === false) {
                 console.info("Kit is ready to load assets")
-                this.setState({ isKitReady: true })
+                this.setState({ isKitReady: true }, () => {
+                    if (this._lastTelemetry) this._sendTelemetryToKit(this._lastTelemetry);
+                })
                 this._queryLoadingState()
             }
 
