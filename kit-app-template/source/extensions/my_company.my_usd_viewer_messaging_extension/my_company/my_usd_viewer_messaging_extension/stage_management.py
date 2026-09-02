@@ -470,6 +470,7 @@ class StageManager:
         }
         try:
             payload = self._payload_to_dict(event.payload)
+            color_scale = payload.get("colorScale", {})
             telemetry = payload.get("telemetry", payload)
             if isinstance(telemetry.get("data"), dict):
                 telemetry = {**telemetry, **telemetry["data"]}
@@ -485,6 +486,11 @@ class StageManager:
                 if not math.isfinite(value) or value < -273.15 or value > 2500.0:
                     raise ValueError(f"Invalid {zone} temperature: {raw_value}")
                 temperatures[zone] = value
+
+            scale_min = float(color_scale.get("min", min(temperatures.values())))
+            scale_max = float(color_scale.get("max", max(temperatures.values())))
+            if not math.isfinite(scale_min) or not math.isfinite(scale_max) or scale_max <= scale_min:
+                raise ValueError(f"Invalid color scale: {scale_min}..{scale_max}")
 
             stage = omni.usd.get_context().get_stage()
             if not stage:
@@ -536,9 +542,9 @@ class StageManager:
                         )
                         value = self._interpolate_axial_temperature(profile_position, profile)
                         value -= wall_loss + asymmetry
-                        value = max(250.0, min(950.0, value))
+                        value = max(scale_min, min(scale_max, value))
                         field_values.append(value)
-                        colors.append(self._temperature_color(value, 250.0, 950.0))
+                        colors.append(self._temperature_color(value, scale_min, scale_max))
                     temperature_attr = field.GetAttribute("field:temperature")
                     if temperature_attr:
                         temperature_attr.Set(field_values)
@@ -555,7 +561,7 @@ class StageManager:
                     if outlet_attr:
                         outlet_attr.Set(temperatures["Outlet"])
 
-            response = {"result": "success", "temperatures": temperatures}
+            response = {"result": "success", "temperatures": temperatures, "colorScale": {"min": scale_min, "max": scale_max}}
             status = (
                 f"[{time.strftime('%H:%M:%S')}] [Gasifier CFD] Gradient updated | "
                 f"Drying={temperatures['DryingZone']:.1f} C | "
