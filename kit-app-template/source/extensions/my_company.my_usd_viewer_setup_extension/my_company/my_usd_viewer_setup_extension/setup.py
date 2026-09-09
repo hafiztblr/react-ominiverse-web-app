@@ -219,6 +219,15 @@ class SetupExtension(omni.ext.IExt):
                 carb.log_info(f"SetupExtension: Diagnostic data written to {diag_file}")
                 carb.log_info(f"SetupExtension: Hierarchy data written to {hierarchy_file}")
                 
+                # Match the USD Composer Overview Camera and Camera Light selections.
+                # Preserve the authored overview pose instead of reframing it below.
+                overview_camera = stage.GetPrimAtPath("/World/Overview_Camera")
+                if overview_camera and overview_camera.IsA(UsdGeom.Camera):
+                    viewport_api.camera_path = overview_camera.GetPath()
+                    self._settings.set("/rtx/useViewLightingMode", True)
+                    carb.log_info("SetupExtension: Selected Overview_Camera with Camera Light.")
+                    return
+
                 carb.log_info("SetupExtension: Initial Framing.")
                 omni.usd.get_context().get_selection().clear_selected_prim_paths()
                 from omni.kit.viewport.utility import frame_viewport_selection

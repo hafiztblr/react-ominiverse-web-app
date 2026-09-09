@@ -54,6 +54,7 @@ class StageManager:
             "resetStageResponse",
             # response after applying live gasifier telemetry
             "gasifierTelemetryUpdated",
+            "hoverPrimResponse",
         ]
 
         for o in outgoing:
@@ -67,6 +68,7 @@ class StageManager:
         incoming = {
             # request to get children of a prim
             'getChildrenRequest': self._on_get_children,
+            'hoverPrimRequest': self._on_hover_prim,
             # request to select a prim
             'selectPrimsRequest': self._on_select_prims,
             # request to make primitives pickable
@@ -336,6 +338,32 @@ class StageManager:
         except Exception as e:
             carb.log_error(f"Failed to frame selection: {str(e)}")
 
+    def _on_hover_prim(self, event):
+        """Pick the visible USD geometry under a normalized stream coordinate."""
+        payload = self._payload_to_dict(event.payload)
+        request_id = payload.get("requestId")
+
+        def respond(prim_path="", *_args):
+            get_eventdispatcher().dispatch_event("hoverPrimResponse", payload={
+                "requestId": request_id, "primPath": str(prim_path or "")
+            })
+
+        try:
+            x, y = float(payload.get("x", -1)), float(payload.get("y", -1))
+            viewport = omni.kit.viewport.utility.get_viewport_from_window_name("Viewport")
+            if not viewport or not (0 <= x < 1 and 0 <= y < 1):
+                respond()
+                return
+            width, height = viewport.resolution
+            if width <= 0 or height <= 0:
+                respond()
+                return
+            viewport.request_query((int(x * width), int(y * height)), respond,
+                                   query_name="gasifier-temperature-hover")
+        except Exception as exc:
+            carb.log_warn(f"Hover query failed: {exc}")
+            respond()
+
     def _on_orbit_camera(self, event: carb.events.IEvent):
         """Orbit the active camera around the loaded stage using mouse deltas."""
         try:
@@ -399,6 +427,11 @@ class StageManager:
         try:
             import omni.timeline
             timeline = omni.timeline.get_timeline_interface()
+            payload = self._payload_to_dict(event.payload)
+            if "loop" in payload:
+                timeline.set_looping(bool(payload["loop"]))
+            if payload.get("restart", False):
+                timeline.set_current_time(timeline.get_start_time())
             timeline.play()
             carb.log_info("Animation playback started.")
         except Exception as e:
